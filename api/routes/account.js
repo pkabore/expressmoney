@@ -20,21 +20,24 @@ router.get("/account", ensureAuthentication, (req, res) => {
       if (err) {
         return res.status(500).end();
       }
-      res.json({ profile });
+      return res.json(profile);
     });
 });
 
 router.post(
   "/login",
-  passport.authenticate("local", { failureFlash: true }),
-  (err, res, req, next) => {
-    if (err) {
-      console.log(err);
-      console.log(req.session, req.user);
+  (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) { return next(err); }
+    if (!user) {
+      return res.status(400).json(info);
     }
-    next();
-  }
-);
+    req.logIn(user, (err) => {
+      if (err) { return next(err); }
+      return res.status(200).end();
+    });
+  })(req, res, next);
+});
 
 router.post("/logout", (req, res) => {
   req.logout();

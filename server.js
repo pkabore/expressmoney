@@ -10,7 +10,6 @@ const HeaderAPIKeyStrategy = require("passport-headerapikey")
   .HeaderAPIKeyStrategy;
 const Joi = require("joi");
 const bcrypt = require("bcryptjs");
-const flash = require("connect-flash");
 const csurf = require("csurf");
 const onHeaders = require("on-headers");
 
@@ -27,7 +26,7 @@ const isDev = process.env.NODE_ENV !== "production";
 const port = process.env.PORT || 3000;
 
 async function start() {
-  // const nuxt = await loadNuxt(isDev ? "dev" : "start");
+  const nuxt = await loadNuxt(isDev ? "dev" : "start");
 
   await databaseConnection();
 
@@ -57,7 +56,7 @@ async function start() {
     new LocalStrategy(
       {
         usernameField: "tel",
-        passwordField: "pwd"
+        passwordField: "pwd",
       },
       async (tel, pwd, done) => {
         Account.findOne({ tel: tel })
@@ -68,7 +67,7 @@ async function start() {
             }
             if (!account) {
               return done(null, false, {
-                message: "Mot de passe ou numéro de téléphone incorrect."
+                message: "Mot de passe ou numéro de téléphone incorrect.",
               });
             }
             bcrypt.compare(pwd, account.pwd, (bcrypt_err, bcrypt_res) => {
@@ -77,14 +76,14 @@ async function start() {
               }
               if (!bcrypt_res) {
                 return done(null, false, {
-                  message: "Mot de passe ou numéro de téléphone incorrect."
+                  message: "Mot de passe ou numéro de téléphone incorrect.",
                 });
               }
               const sessionAccount = {
                 _id: account._id,
                 name: account.name,
                 isAccountValidated: account.isAccountValidated,
-                tel: account.tel
+                tel: account.tel,
               };
               return done(null, sessionAccount);
             });
@@ -97,7 +96,7 @@ async function start() {
     new HeaderAPIKeyStrategy(
       {
         header: "Authorization",
-        prefix: "Api-Key "
+        prefix: "Api-Key ",
       },
       false,
       (apikey, done) => {
@@ -128,17 +127,16 @@ async function start() {
       cookie: {
         ephemeral: true,
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production"
-      }
+        secure: process.env.NODE_ENV === "production",
+      },
     })
   );
-  app.use(flash());
   app.use(passport.initialize());
   app.use(passport.session());
 
   app.use("/api/auth", account);
-  // app.use(ensureAuthentication, complete);
-  // app.use("/operations", ensureAuthentication, operations);
+  app.use("/api/complete", ensureAuthentication, complete);
+  app.use("/api/operations", ensureAuthentication, operations);
 
   app.get(
     "/dossiers/:accountId/:id",
@@ -161,7 +159,7 @@ async function start() {
     "/dossiers/:id",
     passport.authenticate("headerapikey", {
       session: false,
-      failureRedirect: "/account/login"
+      failureRedirect: "/account/login",
     }),
     (req, res) => {
       res.sendFile(__dirname + `/dossiers/${req.params.id}`);
@@ -183,23 +181,16 @@ async function start() {
   //   next();
   // });
 
-  // if (require.main === module) {
-  //   const port = process.env.PORT || 3001;
-  //   app.listen(port, () => {
-  //     console.log(`API server listening on port ${port}`);
-  //   });
-  // }
+  //Render every route with Nuxt.js
+  app.use(nuxt.render);
 
-  // Render every route with Nuxt.js
-  // app.use(nuxt.render);
-
-  // // Build only in dev mode with hot-reloading
-  // if (isDev) {
-  //   build(nuxt);
-  // }
-  // Listen the server
-  // app.listen(port, "0.0.0.0");
-  // console.log("Server listening on `localhost:" + port + "`.");
+  //Build only in dev mode with hot-reloading
+  if (isDev) {
+    build(nuxt);
+  }
+  //Listen the server
+  app.listen(port, "0.0.0.0");
+  console.log("Server listening on `localhost:" + port + "`.");
 }
 
-module.export = start;
+start();
