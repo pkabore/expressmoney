@@ -1,6 +1,6 @@
 <template>
   <v-app>
-	  	<AppBarDrawer />
+	  <AppBar />
 	  <v-main>
 	    <v-container>
 	    </v-container>

@@ -1,93 +1,107 @@
 <template>
-    <header>
-        <nav
-            class="navbar is-tansparent"
-            role="navigation"
-            aria-label="main navigation"
+    <div>
+      <v-app-bar
+        color="transparent"
+        elevate-on-scroll
+        app
+        flat
+        dense
+      >
+        <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+        
+        <v-toolbar-title>Express Money</v-toolbar-title>
+
+        
+  
+        <v-spacer></v-spacer>
+  
+        <v-btn icon v-if="isAuthenticated">
+          <v-icon>mdi-home</v-icon>
+        </v-btn>
+  
+        <v-btn icon v-if="isAuthenticated">
+          <v-icon>mdi-bell</v-icon>
+        </v-btn>
+        <v-menu left bottom v-if="isAuthenticated">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                icon
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-icon>mdi-dots-vertical</v-icon>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item key="1" @click="handleProfile">
+                <v-list-item-title>Compte</v-list-item-title>
+              </v-list-item>
+              <v-list-item key="2" @click="handleLogout">
+                <v-list-item-title>Logout</v-list-item-title>
+              </v-list-item>
+            </v-list>
+        </v-menu>
+      </v-app-bar>
+  
+      <v-navigation-drawer
+        v-model="drawer"
+        absolute
+        top
+        temporary
+      >
+        <v-list
+          nav
+          dense
         >
-            <div class="navbar-brand">
-                <NuxtLink class="navbar-item" to="/">Express Money</NuxtLink>
-                <a
-                    class="navbar-burger"
-                    role="button"
-                    aria-label="menu"
-                    aria-expanded="false"
-                >
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                </a>
-            </div>
-            <div class="navbar-menu pt-0">
-                <div class="navbar-end">
-                    <NuxtLink class="navbar-item mt-0 undefined" to="/"
-                        >Accueil</NuxtLink
-                    >
-                    <NuxtLink class="navbar-item undefined" to="/operations"
-                        >Crédit</NuxtLink
-                    >
-                    <NuxtLink class="navbar-item undefined" to="/contact"
-                        >Contact</NuxtLink
-                    >
-                    <NuxtLink class="navbar-item undefined" to="/about"
-                        >À propos
-                    </NuxtLink>
-                    <div v-if="isAuthenticated" class="navbar-item">
-                        <div class="field is-grouped">
-                            <p class="control">
-                                <NuxtLink to="/account" class="navbar-item is-inverted">
-                                    <span class="icon">
-                                        <i class="fas fa-sign-in-alt"></i>
-                                    </span>
-                                    <span>{{ account.name }}</span>
-                                </NuxtLink>
-                            </p>
-                            <p class="control">
-                                <a
-                                    class="navbar-item button is-primary"
-                                    href="#"
-                                    @click.prevent="handleLogout"
-                                    ><span class="icon"
-                                        ><i
-                                            class="fas fa-user-circle"
-                                        ></i></span
-                                    ><span>Se déconnecter</span></a
-                                >
-                            </p>
-                        </div>
-                    </div>
-                    <div v-else class="navbar-item">
-                        <div class="field is-grouped">
-                            <p class="control">
-                                <NuxtLink class="button is-inverted is-primary" to="/login"
-                                    ><span class="icon"
-                                        ><i
-                                            class="fas fa-sign-in-alt"
-                                        ></i></span
-                                    ><span>Se connecter</span></NuxtLink
-                                >
-                            </p>
-                            <p class="control">
-                                <NuxtLink
-                                    class="button is-primary"
-                                    to="/register"
-                                    ><span class="icon"
-                                        ><i
-                                            class="fas fa-user-circle"
-                                        ></i></span
-                                    ><span>S'inscrire</span></NuxtLink
-                                >
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </header>
+          <v-list-item-group
+            v-model="group"
+            active-class="deep-purple--text text--accent-4"
+          >
+            <v-list-item>
+                
+                    <v-icon>mdi-home</v-icon>&nbsp;
+                <NuxtLink to="/">
+                    <v-list-item-title>Accueil</v-list-item-title>
+                </NuxtLink>
+            </v-list-item>
+            <v-list-item>
+                <v-icon>mdi-cash</v-icon>&nbsp;
+                <NuxtLink to="/operations">
+                    <v-list-item-title>Crédit</v-list-item-title>
+                </NuxtLink>
+            </v-list-item>
+  
+            <v-list-item>
+                <v-icon>mdi-phone</v-icon>&nbsp;
+                <NuxtLink to="/contact">
+                    <v-list-item-title>Contact</v-list-item-title>
+                </NuxtLink>
+            </v-list-item>
+  
+            <v-list-item>
+                <v-icon>mdi-information</v-icon>&nbsp;
+                <NuxtLink to="/about">
+                    <v-list-item-title>About</v-list-item-title>
+                </NuxtLink>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </v-navigation-drawer>
+</div>
 </template>
 
 <script>
-export default {
+  export default {
+    data: () => ({
+      drawer: false,
+      group: null,
+    }),
+
+    watch: {
+      group () {
+        this.drawer = false
+      },
+    },
     computed: {
         isAuthenticated() {
             return this.$auth.loggedIn
@@ -97,6 +111,9 @@ export default {
         }
     },
     methods: {
+        handleProfile() {
+            this.$router.push('/account');
+        },
         async handleLogout() {
             const csrf = await this.$axios.$get("/api/auth/csrf");
             const config = {
@@ -109,5 +126,5 @@ export default {
             await this.$auth.logout("cookie");
         }
     }
-};
+  }
 </script>
