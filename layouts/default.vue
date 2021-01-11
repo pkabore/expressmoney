@@ -3,6 +3,7 @@
 	  <AppBar />
 	  <v-main>
 	    <v-container>
+	    	<Nuxt />
 	    </v-container>
 	  </v-main>
 	</v-app>

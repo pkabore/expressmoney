@@ -1,59 +1,51 @@
 <template>
-  <div class="columns is-centered is-vcentered pt-6">
-    <div class="column is-one-third-desktop is-half-tablet is-offset-three">
-      <form @submit.prevent="handleLogin" method="POST">
-        <h2 class="title has-text-centered">
-          <span class="icon"><i class="fas fa-sign-in-alt"></i></span
-          ><span>&nbsp; Se connecter</span>
-        </h2>
-        <p class="has-text-centered help is-danger" id="errorMessage">
-          {{ error }}
-        </p>
-        <div class="field">
-          <div class="control mx-1">
-            <label class="help is-black" for="tel">N° de téléphone:</label>
-            <input
-              class="input"
-              v-model="login.tel"
-              id="tel"
-              type="tel"
-              required="required"
-              placeholder="Numéro de téléphone"
-              name="tel"
-              value=""
-            />
-            <label class="help is-black" for="pass">Mot de passe:</label>
-            <input
-              class="input"
-              v-model="login.pwd"
-              id="pass"
-              type="password"
-              required="required"
-              placeholder="Mot de passe"
-              name="pwd"
-              value=""
-            />
-            <button class="mt-2 button is-primary is-fullwidth" type="submit">
-              Se connecter
-            </button>
-          </div>
-        </div>
-        <p class="has-text-centered help is-info">
-          <NuxtLink to="/register">Créer un compte</NuxtLink>
-        </p>
-      </form>
-    </div>
-  </div>
+  <v-container class="mt-6 pt-6">
+    <v-spacer></v-spacer>
+    <v-row align="center" justify="space-around">
+      <v-col cols="12" sm="7" md="6" lg="4">
+        <h2 class="title center--text">Se connecter</h2>
+        <v-form :elevation="1"
+      @submit.prevent="handleLogin"
+    >
+      <p>{{ error }}</p>
+      <v-text-field
+        v-model="tel"
+        label="Numéro de téléphone"
+        required
+        type="tel"
+        class="my-0 pb-0"
+      ></v-text-field>
+      <v-text-field
+        :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
+        :type="showPass ? 'text' : 'password'"
+        name="pwd"
+        label="Mot de passe"
+        class="my-0 pt-0"
+        value=""
+        v-model="pwd"
+        @click:append="showPass = !showPass"
+      ></v-text-field>
+      <template>
+      <v-row align="center" justify="space-around">
+        <v-btn type="submit" color="primary">
+          Se connecter
+          <v-icon>mdi-sign-in</v-icon>
+        </v-btn>
+      </v-row>
+      </template>
+    </v-form>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
 export default {
   data() {
     return {
-      login: {
-        tel: "",
-        pwd: "",
-      },
+      tel: "",
+      pwd: "",
+      showPass: false,
       error: "",
     };
   },
@@ -67,21 +59,13 @@ export default {
           },
         };
         this.$axios.setHeader("XSRF-TOKEN", csrf.token);
-        this.$auth.loginWith("cookie", {
-          data: this.login
-        }).then((user) => {
-          //this.$auth.setUser(user);
-          this.$buefy.toast.open({
-                        duration: 3000,
-                        message: "Authentification réussie",
-                        position: "is-top",
-                        type: "is-success",
-                    });
-        })
+        await this.$auth.loginWith("cookie", {
+          data: { tel: this.tel, pwd: this.pwd },
+        });
       } catch (err) {
         this.error = err.response.data.message;
       }
-    },
+    }
   },
 };
 </script>

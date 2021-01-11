@@ -1,15 +1,15 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="desserts"
-    sort-by="calories"
+    :items="operations"
+    sort-by="date"
     class="elevation-1"
   >
     <template v-slot:top>
       <v-toolbar
         flat
       >
-        <v-toolbar-title>My CRUD</v-toolbar-title>
+        <v-toolbar-title>Opérations</v-toolbar-title>
         <v-divider
           class="mx-4"
           inset
@@ -28,68 +28,42 @@
               v-bind="attrs"
               v-on="on"
             >
-              New Item
+              Demande de Crédit
             </v-btn>
           </template>
           <v-card>
             <v-card-title>
-              <span class="headline">{{ formTitle }}</span>
+              <span class="headline">Nouvelle Demande</span>
             </v-card-title>
 
             <v-card-text>
               <v-container>
-                <v-row>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
                     <v-text-field
-                      v-model="editedItem.name"
-                      label="Dessert name"
+                      v-model="newRequest.rname"
+                      label="Nom du receveur"
                     ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
                     <v-text-field
-                      v-model="editedItem.calories"
-                      label="Calories"
+                      v-model="newRequest.rphone"
+                      label="Numéro Orange Money Receveur"
+                      type="tel"
                     ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
                     <v-text-field
-                      v-model="editedItem.fat"
-                      label="Fat (g)"
+                      v-model="newRequest.amount"
+                      label="Montant"
+                      type="number"
+                      min=0
+                      max=50000
                     ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
                     <v-text-field
-                      v-model="editedItem.carbs"
-                      label="Carbs (g)"
+                      v-model="newRequest.rib"
+                      label="Numéro RIB du receveur"
+                      type="number"
                     ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
                     <v-text-field
-                      v-model="editedItem.protein"
-                      label="Protein (g)"
+                      v-model="newRequest.pwd"
+                      label="Votre mot de passe"
+                      type="password"
                     ></v-text-field>
-                  </v-col>
-                </v-row>
               </v-container>
             </v-card-text>
 
@@ -125,7 +99,7 @@
         </v-dialog>
       </v-toolbar>
     </template>
-    <template v-slot:item.actions="{ item }">
+     <template> <!-- v-slot:item.actions="{/* item */}" -->
       <v-icon
         small
         class="mr-2"
@@ -140,19 +114,36 @@
         mdi-delete
       </v-icon>
     </template>
-    <template v-slot:no-data>
-      <v-btn
-        color="primary"
-        @click="initialize"
-      >
-        Reset
-      </v-btn>
-    </template>
   </v-data-table>
 </template>
 
 <script>
 export default {
+    data() {
+      return {
+        headers: [
+          {
+            text: 'Demande de crédit',
+            align: 'start',
+            sortable: false,
+            value: '_id',
+          },
+          { text: 'Nom du receveur', value: 'rname' },
+          { text: 'Numéro du receveur', value: 'rphone' },
+          { text: 'Montant', value: 'request_amount' },
+          { text: 'Statut', value: 'request_status' },
+          { text: 'Date', value: 'request_date' },
+        ],
+        newRequest: {
+          rfname: '',
+          rlname: '',
+          rphone: '',
+          amount: 0,
+          rib: '',
+          pwd: '',
+        }
+      }
+    },
     computed: {
         isAuthenticated() {
             return this.$auth.loggedIn;

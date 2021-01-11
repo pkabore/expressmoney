@@ -1,49 +1,42 @@
 <template>
-<div class="columns is-centered mt-4">
-    <div class="column is-one-third-desktop is-half-tablet">
-        <form @submit.prevent="handleRegistration" method="POST">
-            <h2 class="title has-text-centered">
-                <span class="icon">
-                    <i class="fas fa-user-circle"></i>
-                </span>
-                <span>&nbsp; Créer un compte</span>
-            </h2>
-            <p class="help is-danger has-text-centered mt-1">{{ error }}</p>
-            <div class="columns my-0 is-mobile">
-                <div class="column my-0 py-0">
-                    <div class="field">
-                        <div class="control mx-1 my-0">
-                            <label class="help is-black" for="fname">Prénom:</label>
-                            <input class="input" id="fname" type="text" v-model="account.fname" required="required" placeholder="Prénom" name="fname" />
-                        </div>
-                    </div>
-                </div>
-                <div class="column my-0 py-0">
-                    <div class="field">
-                        <div class="control mx-1 my-0">
-                            <label class="help is-black" for="lname">Nom:</label>
-                            <input class="input" id="lname" type="text" v-model="account.lname" required="required" placeholder="Nom" name="lname" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="field my-0">
-                <div class="control mx-1">
-                    <label class="help is-black" for="tel">N° de téléphone:</label>
-                    <input class="input" id="tel" v-model="account.tel" type="tel" required="required" placeholder="Numéro de téléphone" name="tel" />
-                    <label class="help is-black" for="pass">Choisissez un mot de passe:</label>
-                    <input class="input" id="pass" v-model="account.pwd" type="password" required="required" placeholder="Mot de passe" name="pwd" />
-                    <label class="help is-black" for="passC">Confirmez mot de passe:</label>
-                    <input class="input" type="password" v-model="account.confirmedPWD" required="required" placeholder="Confirmez mot de passe" name="confirmedPWD" />
-                    <button class="mt-2 button is-primary is-fullwidth" type="submit">Créer un compte</button>
-                </div>
-            </div>
-            <p class="has-text-centered help is-info">
-                <NuxtLink to="/login">Vous avez déjà un compte? Cliquez ici pour vous connecter</NuxtLink>
-            </p>
-        </form>
-    </div>
-</div>
+  <v-container class="mt-6 pt-6">
+    <v-spacer></v-spacer>
+    <v-row align="center" justify="space-around">
+      <v-col cols="12" sm="7" md="6" lg="4">
+        <h2 class="title center--text">Se connecter</h2>
+        <v-form :elevation="1"
+      @submit.prevent="handleLogin"
+    >
+      <p>{{ error }}</p>
+      <v-text-field
+        v-model="tel"
+        label="Numéro de téléphone"
+        required
+        type="tel"
+        class="my-0 pb-0"
+      ></v-text-field>
+      <v-text-field
+        :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
+        :type="showPass ? 'text' : 'password'"
+        name="pwd"
+        label="Mot de passe"
+        class="my-0 pt-0"
+        value=""
+        v-model="pwd"
+        @click:append="showPass = !showPass"
+      ></v-text-field>
+      <template>
+      <v-row align="center" justify="space-around">
+        <v-btn type="submit" color="primary">
+          Créer un compte
+          <v-icon>mdi-sign-in</v-icon>
+        </v-btn>
+      </v-row>
+      </template>
+    </v-form>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -76,7 +69,6 @@ export default {
             }
         }
         const response = await this.$axios.$post('/api/auth/register', { data: this.account }, config);
-        //this.$loading = false;
         if (response.message){
             try {
                 const credentials = { tel: this.account.tel, pwd: this.account.pwd}
