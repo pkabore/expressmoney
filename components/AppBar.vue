@@ -1,11 +1,16 @@
 <template>
     <header>
-        <nav
-            class="navbar is-tansparent"
-            role="navigation"
-            aria-label="main navigation"
-        >
-            <div class="navbar-brand">
+        <b-navbar centered fixed-top>
+            <template #brand>
+                <b-navbar-item tag="router-link" :to="{ path: '/' }">
+                    <!-- <img
+                        src="https://raw.githubusercontent.com/pkabore/assets/main/logo.ico?token=AJH7GZN5RIP2B4N6F365AJLAA3SKI"
+                        alt="Demander du crédit, c'est simple et rapide avec Express Money"
+                    > -->
+                    Express Money
+                </b-navbar-item>
+            </template>
+            <!-- <div class="navbar-brand">
                 <NuxtLink class="navbar-item" to="/">Express Money</NuxtLink>
                 <a
                     class="navbar-burger"
@@ -17,28 +22,27 @@
                     <span aria-hidden="true"></span>
                     <span aria-hidden="true"></span>
                 </a>
-            </div>
-            <div class="navbar-menu pt-0">
-                <div class="navbar-end">
-                    <NuxtLink class="navbar-item mt-0 undefined" to="/"
-                        >Accueil</NuxtLink
-                    >
-                    <NuxtLink class="navbar-item undefined" to="/operations"
-                        >Crédit</NuxtLink
-                    >
-                    <NuxtLink class="navbar-item undefined" to="/contact"
-                        >Contact</NuxtLink
-                    >
-                    <NuxtLink class="navbar-item undefined" to="/about"
-                        >À propos
-                    </NuxtLink>
+            </div> -->
+            <template #start>
+                <NuxtLink class="navbar-item mt-0" to="/"
+                    >Accueil</NuxtLink
+                >
+                <NuxtLink class="navbar-item" to="/operations"
+                    >Crédit</NuxtLink
+                >
+                <NuxtLink class="navbar-item" to="/contact"
+                    >Contact</NuxtLink
+                >
+                <NuxtLink class="navbar-item" to="/about"
+                    >À propos
+                </NuxtLink>
+            </template>
+            <template #end>
                     <div v-if="isAuthenticated" class="navbar-item">
                         <div class="field is-grouped">
                             <p class="control">
                                 <NuxtLink to="/account" class="navbar-item is-inverted">
-                                    <span class="icon">
-                                        <i class="fas fa-sign-in-alt"></i>
-                                    </span>
+                                    <font-awesome-icon :icon="['fas', 'user-circle']"  />&nbsp;
                                     <span>{{ account.name }}</span>
                                 </NuxtLink>
                             </p>
@@ -47,11 +51,7 @@
                                     class="navbar-item button is-primary"
                                     href="#"
                                     @click.prevent="handleLogout"
-                                    ><span class="icon"
-                                        ><i
-                                            class="fas fa-user-circle"
-                                        ></i></span
-                                    ><span>Se déconnecter</span></a
+                                    ><font-awesome-icon :icon="['fas', 'sign-out-alt']"  />&nbsp;<span>Se déconnecter</span></a
                                 >
                             </p>
                         </div>
@@ -59,30 +59,19 @@
                     <div v-else class="navbar-item">
                         <div class="field is-grouped">
                             <p class="control">
-                                <NuxtLink class="button is-inverted is-primary" to="/login"
-                                    ><span class="icon"
-                                        ><i
-                                            class="fas fa-sign-in-alt"
-                                        ></i></span
-                                    ><span>Se connecter</span></NuxtLink
-                                >
+                                <NuxtLink class="button is-inverted is-primary" to="/login">
+                                    <font-awesome-icon :icon="['fas', 'sign-in-alt']"  />&nbsp;<span>Se connecter</span>
+                                </NuxtLink>
                             </p>
                             <p class="control">
-                                <NuxtLink
-                                    class="button is-primary"
-                                    to="/register"
-                                    ><span class="icon"
-                                        ><i
-                                            class="fas fa-user-circle"
-                                        ></i></span
-                                    ><span>S'inscrire</span></NuxtLink
-                                >
+                                <NuxtLink class="button is-primary" to="/register">
+                                    <font-awesome-icon :icon="['fas', 'user-circle']"  />&nbsp;<span>S'inscrire</span>
+                                </NuxtLink>
                             </p>
                         </div>
                     </div>
-                </div>
-            </div>
-        </nav>
+            </template>
+        </b-navbar>
     </header>
 </template>
 

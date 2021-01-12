@@ -3,10 +3,7 @@
     <div class="column is-one-third-desktop is-half-tablet">
         <form @submit.prevent="handleRegistration" method="POST">
             <h2 class="title has-text-centered">
-                <span class="icon">
-                    <i class="fas fa-user-circle"></i>
-                </span>
-                <span>&nbsp; Créer un compte</span>
+                S'inscrire
             </h2>
             <p class="help is-danger has-text-centered mt-1">{{ error }}</p>
             <div class="columns my-0 is-mobile">
@@ -76,7 +73,6 @@ export default {
             }
         }
         const response = await this.$axios.$post('/api/auth/register', { data: this.account }, config);
-        //this.$loading = false;
         if (response.message){
             try {
                 const credentials = { tel: this.account.tel, pwd: this.account.pwd}
@@ -86,7 +82,14 @@ export default {
             }
         }
       } catch (err) {
-        this.error = err.response.data.err;
+          if (err.response){
+            if (err.response.data.err.includes('fname') || err.response.data.err.includes('lname'))
+                    this.error = "Veuillez renseigner un Nom et Prénom valide";
+            if (err.response.data.err.includes('pwd'))
+                this.error = "Veuillez renseignez un mot de passe correct";
+            if(err.response.data.err.includes('Numéro'))
+                this.error = err.response.data.err;
+          }
       }
     }
   }

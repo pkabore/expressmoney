@@ -15,7 +15,7 @@ const ensureAuthentication = (req, res, next) => {
 /*-------------------------account routes------------------------------*/
 router.get("/account", ensureAuthentication, (req, res) => {
   Account.findOne({ tel: req.user.tel })
-    .select("-pwd")
+    .select("-pwd -isAccountValidated -tel -rib")
     .exec((err, profile) => {
       if (err) {
         return res.status(500).end();
@@ -24,16 +24,18 @@ router.get("/account", ensureAuthentication, (req, res) => {
     });
 });
 
-router.post(
-  "/login",
-  (req, res, next) => {
-  passport.authenticate('local', (err, user, info) => {
-    if (err) { return next(err); }
+router.post("/login", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
     if (!user) {
       return res.status(400).json(info);
     }
-    req.logIn(user, (err) => {
-      if (err) { return next(err); }
+    req.logIn(user, err => {
+      if (err) {
+        return next(err);
+      }
       return res.status(200).end();
     });
   })(req, res, next);

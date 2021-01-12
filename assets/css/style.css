@@ -1,0 +1,25 @@
+body, html {
+  font-family: "Roboto", sans-serif !important;
+  background-color: #fafafa;
+}
+
+.divider{
+  height: 1px;
+  width: 100%;
+  background-color:white;
+}
+
+.card, .column{
+  min-height: 100% !important;
+  background-color: #fafafa;
+}
+/* .navbar .navbar-brand {
+  text-align: center;
+  display: block;
+  width: 100%;
+}
+
+.navbar .navbar-brand > .navbar-item,
+.navbar .navbar-brand .navbar-link {
+  display: inline-block;
+} */
