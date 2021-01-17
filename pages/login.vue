@@ -1,15 +1,15 @@
 <template>
   <div>
     <div class="columns is-centered mt-6">
-      <div class="column is-half-tablet is-one-third-desktop">
+      <div class="column is-half-tablet is-one-third-desktop box">
         <h2 class="has-text-centered title has-text-primary mb-3">
           <font-awesome-icon
             class="is-small"
             :icon="['fas', 'sign-in-alt']"
           />&nbsp; Se connecter
         </h2>
-        <p class="help has-text-centered is-danger">{{ error }}</p>
         <form @submit.prevent="handleLogin">
+          <p class="help has-text-centered is-danger">{{ error }}</p>
           <div class="field">
             <label class="label help" for="tel">Numéro de téléphone</label>
             <input v-model="tel" id="tel" class="input" type="tel" />
