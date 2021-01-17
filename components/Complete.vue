@@ -1,15 +1,7 @@
 <template>
   <form class="mt-6" method="POST" @submit.prevent="submitHandler">
-    <p class="help is-danger has-text-centered">{{ error }}</p>
     <b-field>
-      <b-upload
-        v-model="dropFiles"
-        multiple
-        drag-drop
-        id="files"
-        ref="files"
-        @change="handleFilesUpload()"
-      >
+      <b-upload v-model="dropFiles" multiple drag-drop>
         <section class="section">
           <div class="content has-text-centered">
             <p class="my-0 py-1">
@@ -25,6 +17,7 @@
             <p class="help has-text-left is-primary my-0">
               3. Attestation de prise de service
             </p>
+            <p class="help is-danger has-text-left mt-4 mb-0">{{ error }}</p>
           </div>
         </section>
       </b-upload>
@@ -49,7 +42,7 @@
       <div class="control mx-1">
         <label class="help is-black" for="city">Ville:</label>
         <div class="select is-fullwidth" id="city">
-          <select name="city" required>
+          <select name="city" required v-model="city">
             <option class="py-3" value="">Ville</option>
             <option class="py-3" value="Ouagadougou">Ouagadougou</option>
             <option class="py-3" value="Bobo Dioulasso">Bobo Dioulasso</option>
@@ -68,7 +61,7 @@
           type="text"
           required="required"
           placeholder="Numéro RIB"
-          name="rib"
+          v-model="rib"
         />
         <label class="help is-black" for="pass"
           >Entrez votre mot de passe:</label
@@ -80,6 +73,7 @@
           required="required"
           placeholder="Mot de passe"
           name="pwd"
+          v-model="pwd"
         />
       </div>
     </div>
@@ -97,20 +91,17 @@ export default {
     return {
       dropFiles: [],
       files: "",
-      error: ""
+      error: "",
+      rib: "",
+      city: "",
+      pwd: ""
     };
   },
   methods: {
     deleteDropFile(index) {
       this.dropFiles.splice(index, 1);
     },
-    handleFilesUpload() {
-      this.files = this.$refs.files.files;
-    },
     async submitHandler() {
-      /*
-          Initialize the form data
-        */
       const csrf = await this.$axios.$get("/api/auth/csrf");
       const config = {
         headers: {
@@ -118,29 +109,39 @@ export default {
           "Content-Type": "multipart/form-data"
         }
       };
-      this.$axios.setHeader("XSRF-TOKEN", csrf.token);
       let formData = new FormData();
-
-      /*
-          Iterate over any file sent over appending the files
-          to the form data.
-        */
-      for (var i = 0; i < this.files.length; i++) {
-        let file = this.files[i];
-
-        formData.append("files[" + i + "]", file);
+      const len = this.dropFiles.length;
+      if (len !== 3) {
+        this.error = "Veuillez charger touts les fichiers requis";
+        return;
       }
 
-      /*
-          Make the request to the POST /multiple-files URL
-        */
+      this.dropFiles.map(file => {
+        const maxSize = 4194304;
+        if (!file.type.includes('image/') && !file.type.includes('application/pdf')){
+          this.error = "Formats supportés: PDF/Image";
+          return
+        }
+        if (file.size > maxSize){
+          this.error = "Taille maximale par fichier: 4Mo";
+          return;
+        }
+      })
+
+      for (let i = 0; i < 3; i++) {
+        formData.append("papers", this.dropFiles[i]);
+      }
+      formData.append("city", this.city);
+      formData.append("rib", this.rib);
+      formData.append("pwd", this.pwd);
+
       this.$axios
         .post("/api/complete", formData, config)
-        .then(function() {
-          console.log("SUCCESS!!");
-          this.$route.push("/operations");
+        .then(res => {
+          this.$router.push("/operations");
         })
         .catch(e => {
+          console.log(e);
           this.error = e.response.data.message;
         });
     }

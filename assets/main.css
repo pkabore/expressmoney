@@ -1,32 +1,30 @@
-body, html {
-  margin: 0;
-  padding: 0;
-  max-width: 100%;
-  font-family: "Roboto", sans-serif;
-  background-color: #f6f6f6;
+body,
+html {
+	margin: 0;
+	padding: 0;
+	max-width: 100%;
+	font-family: "Roboto", sans-serif;
+	background-color: #f6f6f6;
 }
 
-main{
-  min-height: calc(100vh - 70px);
+main {
+	min-height: calc(100vh - 70px);
 }
 
-footer{
-  height: 50px;
+footer {
+	height: 50px;
 }
 
-strong{
-  font-weight: normal;
+strong {
+	font-weight: normal;
 }
 
-.columns {
-  display: flex;
-  width: 100%;
+.bg-dark {
+	background-color: #343a40;
 }
 
-.column {
-  flex: 1;
-}
-
-.bg-dark{
-  background-color: #343A40;
+.border {
+	border: 1px dashed #3da3b9;
+	border-right: 1px dashed #3da3b9;
+	border-radius: 3px;
 }

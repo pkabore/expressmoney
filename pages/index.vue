@@ -1,20 +1,15 @@
 <template>
   <div>
-    <section class="hero pt-6 is-light is-large pb-0">
-      <div class="hero-head">
-        <h1 class="title has-text-primary has-text-centered">
+    <section class="section">
+    <h1 class="title has-text-primary has-text-centered">
           Bienvenu(e) chez Express Money
         </h1>
         <h2 class="subtitle has-text-primary has-text-centered">
           Express Money, Express Crédit
         </h2>
-      </div>
-      <div class="hero-body pt-4 mt-6 pb-3">
-        <div class="columns">
+        <div class="columns box">
           <div class="column is-third-desktop">
-            <div class="card">
-              <div class="card-content">
-                <h2 class="title has-text-primary">Vous êtes :</h2>
+                <h2 class="title has-text-primary is-size-6-mobile is-size-5-tablet">Vous êtes:</h2>
                 <ul>
                   <li key="1">
                     <font-awesome-icon
@@ -38,20 +33,16 @@
                     Travailleur du secteur privé ?
                   </li>
                 </ul>
-              </div>
-            </div>
           </div>
 
           <div class="column is-two-thirds-desktop">
-            <div class="card">
-              <div class="card-content">
-                <h2 class="title has-text-primary">
-                  Et vous êtes dans l’une des situations suivantes :
+                <h2 class="title has-text-primary is-size-6-mobile is-size-5-tablet">
+                  Et vous êtes dans l’une des situations suivantes:
                 </h2>
-                <ul>
+                <ul class="is-size-5-mobile is-size-6-desktop">
                   <li>
                     <font-awesome-icon
-                      :icon="['fas', 'dot-circle']"
+                      :icon="['fas', 'circle']"
                       class="has-text-primary"
                     />
                     Vous avez du mal à finir les mois avec votre salaire ou
@@ -59,7 +50,7 @@
                   </li>
                   <li>
                     <font-awesome-icon
-                      :icon="['fas', 'dot-circle']"
+                      :icon="['fas', 'circle']"
                       class="has-text-primary"
                     />
                     Vous êtes en situation d’urgence et vous n’avez pas d’argent
@@ -67,14 +58,14 @@
                   </li>
                   <li>
                     <font-awesome-icon
-                      :icon="['fas', 'dot-circle']"
+                      :icon="['fas', 'circle']"
                       class="has-text-primary"
                     />
                     Vous voulez envoyer de l’argent à une personne en urgence.
                   </li>
                   <li>
                     <font-awesome-icon
-                      :icon="['fas', 'dot-circle']"
+                      :icon="['fas', 'circle']"
                       class="has-text-primary"
                     />
                     Vous êtes travailleur et vous trouver gênant ou vous avez du
@@ -84,17 +75,12 @@
                 </ul>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
     </section>
     <section class="section has-background-light py-1">
-      <div class="columns">
+      <div class="columns box">
         <div class="column">
-          <div class="card">
-            <div class="card-content">
-              <h2 class="title has-text-centered has-text-primary mt-1">
-                <font-awesome-icon :icon="['fas', 'door-open']" />
+            <h2 class="subtitle has-text-centered has-text-primary mt-1">
+                <font-awesome-icon :icon="['fas', 'map-marker-alt']" />
                 Vous êtes au bon endroit.
               </h2>
               <p class="has-text-justify">
@@ -104,24 +90,22 @@
                 bourse suivante.
               </p>
               <p class="has-text-centered mt-5" v-if="!this.$auth.loggedIn">
-                <NuxtLink to="/register" class="is-primary"
+                <NuxtLink to="/register" class="button is-outlined is-block is-primary"
                   ><font-awesome-icon
                     class="is-small"
                     :icon="['fas', 'hand-point-right']"
                   />&nbsp; Créer un compte pour commencer</NuxtLink
                 >
               </p>
-            </div>
           </div>
         </div>
-      </div>
     </section>
     <section class="section">
-      <h1
-        class="title has-text-primary has-text-centered has-text-primary mb-6"
+      <h2
+        class="subtitle has-text-primary has-text-centered has-text-primary mb-6"
       >
         Avantages
-      </h1>
+      </h2>
       <div class="container">
         <div class="columns is-centered">
           <div class="column mt-0 pt-0 mx-0">
@@ -205,7 +189,7 @@
                 >
                   <font-awesome-icon
                     class="is-small"
-                    :icon="['fas', 'check-circle']"
+                    :icon="['fas', 'mouse-pointer']"
                   />&nbsp; Notre Service est en ligne
                 </h1>
                 <h2 class="subtile my-2 is-size-6-mobile">
@@ -224,7 +208,7 @@
           </div>
         </div>
         <p class="has-text-centered" v-if="!this.$auth.loggedIn">
-          <NuxtLink to="/register" class="is-primary"
+          <NuxtLink to="/register" class="button is-outlined is-block is-primary"
             ><font-awesome-icon
               class="is-small"
               :icon="['fas', 'hand-point-right']"

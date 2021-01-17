@@ -2,10 +2,11 @@
   <div>
     <div class="columns is-centered">
       <div class="column is-four-fiths-desktop is-four-fiths-tablet">
-        <div class="columns mt-6">
+        <div class="columns mt-4">
           <div class="column">
             <section class="section card">
-              <h2 class="title has-text-center has-text-primary">
+              <h2 class="title has-text-centered has-text-primary">
+                <font-awesome-icon :icon="['fas', 'question-circle']" />
                 À propos de nous
               </h2>
               <p>
@@ -19,7 +20,8 @@
           </div>
           <div class="column">
             <section class="section card">
-              <h2 class="title has-text-center has-text-primary">
+              <h2 class="title has-text-centered has-text-primary">
+                <font-awesome-icon :icon="['fas', 'briefcase']" />
                 Notre mission
               </h2>
               <p>
@@ -35,10 +37,11 @@
         </div>
       </div>
     </div>
-    <NuxtLink to="/register" class="button is-outlined is-primary"
-      ><font-awesome-icon :icon="['fas', 'hand-point-right']" />&nbsp; Créer un
-      compte Express Money pour commencer</NuxtLink
-    >
+    <p class="has-text-centered mb-3">
+      <NuxtLink to="/register" v-if="!this.$auth.loggedIn" class="button is-outlined is-block is-primary">
+        <font-awesome-icon :icon="['fas', 'hand-point-right']" />&nbsp; Créer un compte Express Money pour commencer
+      </NuxtLink>
+    </p>
   </div>
 </template>
 

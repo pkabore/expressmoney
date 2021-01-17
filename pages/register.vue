@@ -1,4 +1,5 @@
 <template>
+<div>
   <div class="columns is-centered mt-4">
     <div class="column is-one-third-desktop is-half-tablet">
       <form @submit.prevent="handleRegistration" method="POST">
@@ -8,7 +9,7 @@
             :icon="['fas', 'user-circle']"
           />&nbsp; S'inscrire
         </h2>
-        <p class="label help is-danger has-text-centered mt-1">{{ error }}</p>
+        <p class="help is-danger has-text-centered mt-1">{{ error }}</p>
         <div class="columns my-0 is-mobile">
           <div class="column my-0 py-0">
             <div class="field">
@@ -93,6 +94,7 @@
       </form>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
@@ -136,6 +138,7 @@ export default {
               pwd: this.account.pwd
             };
             await this.$auth.loginWith("cookie", { data: credentials });
+            this.$router.push('/operations');
           } catch (err) {
             this.error = err.message;
           }
