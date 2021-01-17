@@ -21,6 +21,10 @@ export default {
       {
         rel: "stylesheet",
         href: `https://fonts.googleapis.com/css2?family=Open+Sans&display=swap`
+      },
+      {
+        rel: "stylesheet",
+        href: `https://fonts.googleapis.com/css2?family=Quicksand&display=swap`
       }
     ]
   },
@@ -32,11 +36,16 @@ export default {
     height: "2px"
   },
 
+  // pageTransition: {
+  //   name: 'page',
+  //   mode: 'out-in',
+  //   // beforeEnter (el) {
+  //   //   console.log('Before enter...');
+  //   // }
+  // },
+
   components: true,
-  server: {
-    port: 8000, // default: 3000
-    host: "0.0.0.0" // default: localhost
-  },
+
   buildModules: ["@nuxtjs/moment", "@nuxtjs/fontawesome"],
 
   fontawesome: {
@@ -54,7 +63,7 @@ export default {
 
   modules: ["@nuxtjs/auth-next", "@nuxtjs/axios", "nuxt-helmet", "nuxt-buefy"],
 
-  css: [/*"~/assets/scss/variables",*/ "~/assets/css/style"],
+  css: ["~/assets/scss/main", "~/assets/main.css"],
 
   auth: {
     watchLoggedIn: true,

@@ -2,8 +2,6 @@
   <section class="mt-6 container">
     <div class="columns is-centered">
       <div class="column" v-if="account.isAccountValidated === 'validated'">
-        <div class="columns is-flex">
-          <div class="column">
             <h2 class="title is-size-6-mobile">
               <b-icon pack="fas" icon="user" size="2x"></b-icon>
               Mes opérations
@@ -15,9 +13,8 @@
               Nouvelle Demande de Crédit
             </NuxtLink>
           </div>
-        </div>
-      </div>
-      <div v-else>
+    </div>
+    <div>
           <Complete />
       </div>
         <b-table
