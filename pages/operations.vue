@@ -1,18 +1,14 @@
 <template>
   <div>
+    <section class="section">
     <div class="columns mt-6 is-centered" v-if="account.isAccountValidated === 'validated'">
       <div class="column">
         <h2 class="title is-size-6-mobile">
-          <b-icon pack="fas" icon="user" size="2x"></b-icon>
           Mes opérations
         </h2>
       </div>
       <div class="column is-align-self-end">
-        <NuxtLink to="/request" class="button is-block is-outlined is-primary">
-        <font-awesome-icon
-              class="is-small"
-              :icon="['fas', 'pencil-alt']"
-            />
+        <NuxtLink to="/request" class="button is-block is-primary">
           Nouvelle Demande de Crédit
         </NuxtLink>
       </div>
@@ -73,12 +69,22 @@
         aria-next-label="Suivant"
         aria-previous-label="Précédent"
         aria-page-label="Page"
-        aria-current-label="Page actuelle">
+        aria-current-label="Page actuelle"
+        class="mt-3">
       </b-pagination>
       </div>
     </div>
     <div v-if="account.isAccountValidated === ''">
-      <Complete />
+      <b-notification type="is-success is-light" aria-close-label="Close notification">
+        <h2 class="subtitle has-text-centered">Félicitations <font-awesome-icon class="is-small" :icon="['fas', 'check-circle']" /></h2>
+        <p>Merci d'avoir créé votre compte chez Express Money. <br>
+        Pour effectuer une demande de crédit, veuillez completer les informations nécessaires.<br>
+        Express Money vous remercie pour votre confiance.
+        </p>
+      </b-notification>
+      <p class="has-text-centered">
+        <NuxtLink to="/complete" class="is-info is-block button">Compléter mes informations</NuxtLink>
+      </p>
     </div>
     <div v-if="account.isAccountValidated === 'pending'" class="columns is-centered mt-6 pt-4">
       <div class="column is-third-desktop is-half-tablet">
@@ -95,6 +101,7 @@
       </b-notification>
       </div>
     </div>
+    </section>
   </div>
 </template>
 
@@ -108,7 +115,7 @@ data() {
         isLoading: true
       }
     },
-    async created() {
+    async fetch() {
       try {
         const response = await this.$axios.get(`/api/operations`);
         let total = 0;

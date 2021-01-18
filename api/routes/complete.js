@@ -43,7 +43,7 @@ router.post('/', ensureAuthentication, (req, res, next) => {
 	upload(req, res, (err) => {
 		if (err instanceof multer.MulterError) {
 			const filesErrorMessage = `Format supporté: PDF|JPEG|JPG, taille max: 4MB`;
-			return res.status(400).json({ errorMessage: filesErrorMessage });
+			return res.status(400).json({ message: filesErrorMessage });
 			console.log(err);
 		} else if (err) {
 			console.log(err);
@@ -58,7 +58,7 @@ router.post('/', ensureAuthentication, (req, res, next) => {
 			const passwordsDoMatch = await bcrypt.compare(req.body.pwd, account.pwd);
 			if (!passwordsDoMatch) return res.status(403).json({ message: 'Mot de passe incorrect' });
 
-			deleteOldFiles(account.idUri, account.wcardUri, account.codcUri);
+			//deleteOldFiles(account.idUri, account.wcardUri, account.codcUri);
 
 			account.city = req.body.city;
 			account.rib = req.body.rib;

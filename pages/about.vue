@@ -1,5 +1,6 @@
 <template>
   <div>
+    <section class="section">
     <div class="columns is-centered">
       <div class="column is-four-fiths-desktop is-four-fiths-tablet">
         <div class="columns mt-4">
@@ -38,10 +39,11 @@
       </div>
     </div>
     <p class="has-text-centered mb-3">
-      <NuxtLink to="/register" v-if="!this.$auth.loggedIn" class="button is-outlined is-block is-primary">
+      <NuxtLink to="/register" v-if="!this.$auth.loggedIn" class="button is-block is-primary">
         <font-awesome-icon :icon="['fas', 'hand-point-right']" />&nbsp; Créer un compte Express Money pour commencer
       </NuxtLink>
     </p>
+    </section>
   </div>
 </template>
 

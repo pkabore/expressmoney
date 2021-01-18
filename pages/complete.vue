@@ -1,4 +1,5 @@
 <template>
+<section class="section">
   <form class="mt-6" method="POST" @submit.prevent="submitHandler">
     <b-field>
       <b-upload v-model="dropFiles" multiple drag-drop>
@@ -83,6 +84,7 @@
       </button>
     </div>
   </form>
+</section>
 </template>
 
 <script>
@@ -135,15 +137,12 @@ export default {
       formData.append("rib", this.rib);
       formData.append("pwd", this.pwd);
 
-      this.$axios
-        .post("/api/complete", formData, config)
-        .then(res => {
-          this.$router.push("/operations");
-        })
-        .catch(e => {
-          console.log(e);
-          this.error = e.response.data.message;
-        });
+      try {
+        await this.$axios.post("/api/complete", formData, config);
+        this.$router.push('/operations');
+      } catch (error) {
+        this.error = error.response.data.message;
+      }
     }
   }
 };

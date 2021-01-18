@@ -1,5 +1,6 @@
 <template>
 <div>
+  <section class="section">
   <div class="columns is-centered mt-4">
     <div class="column is-one-third-desktop is-half-tablet">
       <form @submit.prevent="handleRegistration" method="POST">
@@ -94,6 +95,7 @@
       </form>
     </div>
   </div>
+  </section>
   </div>
 </template>
 

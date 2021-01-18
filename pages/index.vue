@@ -1,45 +1,57 @@
 <template>
   <div>
     <section class="section">
-    <h1 class="title has-text-primary has-text-centered">
-          Bienvenu(e) chez Express Money
-        </h1>
-        <h2 class="subtitle has-text-primary has-text-centered">
-          Express Money, Express Crédit
-        </h2>
-        <div class="columns box">
-          <div class="column is-third-desktop">
-                <h2 class="title has-text-primary is-size-6-mobile is-size-5-tablet">Vous êtes:</h2>
-                <ul>
-                  <li key="1">
-                    <font-awesome-icon
-                      class="has-text-primary"
-                      :icon="['fas', 'check-circle']"
-                    />
-                    Etudiant ?
-                  </li>
-                  <li key="2">
-                    <font-awesome-icon
-                      class="has-text-primary"
-                      :icon="['fas', 'check-circle']"
-                    />
-                    Travailleur du secteur public ?
-                  </li>
-                  <li key="3">
-                    <font-awesome-icon
-                      class="has-text-primary"
-                      :icon="['fas', 'check-circle']"
-                    />
-                    Travailleur du secteur privé ?
-                  </li>
-                </ul>
+      <div class="columns">
+        <div class="column left-border">
+          <img
+            src="../static/logo.svg" height="30" weight="80" class="image"
+            alt="Demander du crédit, c'est simple et rapide avec Express Money"
+          >
+        </div>
+        <div class="column">
+          <h1 class="title has-text-primary has-text-centered">
+            Bienvenu(e) chez Express Money
+          </h1>
+          <h2 class="subtitle mb-4 has-text-primary has-text-centered">
+            Express Money, Express Crédit
+          </h2>
+        </div>
+      </div>
+    </section>
+    <section class="section has-background-white">
+      <div class="columns">
+        <div class="column is-third-desktop">
+          <h2 class="title has-text-primary is-size-6-mobile is-size-5-tablet">Vous êtes:</h2>
+            <ul>
+              <li key="1">
+                <font-awesome-icon
+                  class="has-text-primary"
+                  :icon="['fas', 'check-circle']"
+                />
+                  Etudiant ?
+                </li>
+                <li key="2">
+                  <font-awesome-icon
+                    class="has-text-primary"
+                    :icon="['fas', 'check-circle']"
+                  />
+                  Travailleur du secteur public ?
+                </li>
+                <li key="3">
+                  <font-awesome-icon
+                    class="has-text-primary"
+                    :icon="['fas', 'check-circle']"
+                  />
+                  Travailleur du secteur privé ?
+                </li>
+              </ul>
           </div>
 
           <div class="column is-two-thirds-desktop">
                 <h2 class="title has-text-primary is-size-6-mobile is-size-5-tablet">
                   Et vous êtes dans l’une des situations suivantes:
                 </h2>
-                <ul class="is-size-5-mobile is-size-6-desktop">
+                <ul>
                   <li>
                     <font-awesome-icon
                       :icon="['fas', 'circle']"
@@ -76,8 +88,8 @@
               </div>
             </div>
     </section>
-    <section class="section has-background-light py-1">
-      <div class="columns box">
+    <section class="section has-background-light py-3">
+      <div class="columns">
         <div class="column">
             <h2 class="subtitle has-text-centered has-text-primary mt-1">
                 <font-awesome-icon :icon="['fas', 'map-marker-alt']" />
@@ -90,7 +102,7 @@
                 bourse suivante.
               </p>
               <p class="has-text-centered mt-5" v-if="!this.$auth.loggedIn">
-                <NuxtLink to="/register" class="button is-outlined is-block is-primary"
+                <NuxtLink to="/register" class="button is-primary"
                   ><font-awesome-icon
                     class="is-small"
                     :icon="['fas', 'hand-point-right']"
@@ -100,7 +112,7 @@
           </div>
         </div>
     </section>
-    <section class="section">
+    <section class="section has-background-white">
       <h2
         class="subtitle has-text-primary has-text-centered has-text-primary mb-6"
       >
@@ -109,7 +121,7 @@
       <div class="container">
         <div class="columns is-centered">
           <div class="column mt-0 pt-0 mx-0">
-            <div class="card">
+            <div class="card is-shadowless">
               <div class="card-content">
                 <h1
                   class="title has-text-primary is-size-6-mobile is-size-5-tablet has-text-centered"
@@ -132,7 +144,7 @@
             </div>
           </div>
           <div class="column mt-0 pt-0 mx-0">
-            <div class="card">
+            <div class="card is-shadowless">
               <div class="card-content">
                 <h1
                   class="title has-text-primary is-size-6-mobile is-size-5-tablet has-text-centered"
@@ -157,7 +169,7 @@
         </div>
         <div class="columns">
           <div class="column mt-0 pt-0 mx-0">
-            <div class="card">
+            <div class="card is-shadowless">
               <div class="card-content">
                 <h1
                   class="title has-text-primary is-size-6-mobile is-size-5-tablet has-text-centered"
@@ -182,7 +194,7 @@
             </div>
           </div>
           <div class="column mt-0 pt-0 mx-0">
-            <div class="card">
+            <div class="card is-shadowless">
               <div class="card-content">
                 <h1
                   class="title has-text-primary is-size-6-mobile is-size-5-tablet has-text-centered"
@@ -208,7 +220,7 @@
           </div>
         </div>
         <p class="has-text-centered" v-if="!this.$auth.loggedIn">
-          <NuxtLink to="/register" class="button is-outlined is-block is-primary"
+          <NuxtLink to="/register" class="button is-primary"
             ><font-awesome-icon
               class="is-small"
               :icon="['fas', 'hand-point-right']"
@@ -232,4 +244,9 @@ export default {
 };
 </script>
 
-<style lang="css" scoped></style>
+
+<style scoped>
+  .left-border{
+    border-right: 1px dotted grey;
+  }
+</style>

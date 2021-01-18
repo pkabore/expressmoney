@@ -1,7 +1,8 @@
 <template>
   <div>
+    <section class="section">
     <div class="columns is-centered mt-6">
-      <div class="column is-half-tablet is-one-third-desktop box">
+      <div class="column is-half-tablet is-one-third-desktop">
         <h2 class="has-text-centered title has-text-primary mb-3">
           <font-awesome-icon
             class="is-small"
@@ -26,6 +27,7 @@
         </form>
       </div>
     </div>
+    </section>
   </div>
 </template>
 

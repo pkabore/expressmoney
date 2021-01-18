@@ -28,7 +28,7 @@ export default {
 	plugins: [],
 
 	loading: {
-		color: 'light-blue',
+		color: 'success',
 		height: '2px'
 	},
 
@@ -42,7 +42,7 @@ export default {
 
 	components: true,
 
-	buildModules: [ '@nuxtjs/fontawesome', 'nuxt-buefy' ],
+	buildModules: [ '@nuxtjs/fontawesome' ],
 
 	fontawesome: {
 		icons: {
@@ -51,15 +51,11 @@ export default {
 		}
 	},
 
-	moment: {
-		defaultLocale: 'fr',
-		locales: [ 'fr' ]
-	},
 	telemetry: false,
 
 	modules: [ '@nuxtjs/auth-next', '@nuxtjs/axios', 'nuxt-helmet', 'nuxt-buefy' ],
 
-	css: [ '~/assets/scss/main', '~/assets/main.css' ],
+	css: [ '~/assets/scss/main' ],
 
 	auth: {
 		watchLoggedIn: true,

@@ -1,12 +1,12 @@
 <template>
   <header>
-    <b-navbar centered fixed-top class="is-primary is-inverted">
+    <b-navbar centered class="is-transparent">
       <template #brand>
         <b-navbar-item tag="router-link" :to="{ path: '/' }">
-          <!-- <img
-                        src="https://raw.githubusercontent.com/pkabore/assets/main/logo.ico?token=AJH7GZN5RIP2B4N6F365AJLAA3SKI"
-                        alt="Demander du crédit, c'est simple et rapide avec Express Money"
-                    > -->
+          <img
+            src="../static/logo.svg"
+            alt="Demander du crédit, c'est simple et rapide avec Express Money"
+          >
           Express Money
         </b-navbar-item>
       </template>
@@ -63,7 +63,6 @@ export default {
           "XSRF-TOKEN": csrf.token
         }
       };
-      console.log(this.$store.state);
       this.$axios.setHeader("XSRF-TOKEN", csrf.token);
       await this.$auth.logout("cookie");
     }

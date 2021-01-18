@@ -1,11 +1,13 @@
 <template>
-  <div class="card">
+  <div>
+    <section class="section">
     <p>
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla, voluptas
       quibusdam. Perferendis deleniti sapiente sunt, voluptate perspiciatis sed
       minima mollitia natus, quo inventore, veritatis odit eius rem fugit
       aliquid numquam?
     </p>
+    </section>
   </div>
 </template>
 
