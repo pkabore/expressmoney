@@ -16,7 +16,7 @@ export default {
 			{ rel: 'icon', type: 'image/x-icon', href: '/logo.ico' },
 			{
 				rel: 'stylesheet',
-				href: `https://fonts.googleapis.com/css2?family=Roboto&display=swap`
+				href: `https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap`
 			},
 			{
 				rel: 'stylesheet',

@@ -15,7 +15,7 @@
                 dynamiques qui vient soutenir les travailleurs et ou les
                 étudiants Boursiers qui, malgré leur salaire ou Bourse ont pour
                 la plupart du temps du mal couvrir tous leurs besoins et se
-                retrouvent très souvent dans <em>des situations d’urgence</em>
+                retrouvent très souvent dans <em>des situations d’urgence.</em>
               </p>
             </section>
           </div>

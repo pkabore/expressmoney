@@ -1,45 +1,42 @@
 <template>
   <div>
-    <section class="section">
-      <div class="columns">
+    <section class="section has-background-white">
+      <!-- <div class="columns">
         <div class="column left-border">
           <img
             src="../static/logo.svg" height="30" weight="80" class="image"
             alt="Demander du crédit, c'est simple et rapide avec Express Money"
           >
         </div>
-        <div class="column">
+        <div class="column"> -->
           <h1 class="title has-text-primary has-text-centered">
-            Bienvenu(e) chez Express Money
+            Bienvenu(e)
           </h1>
-          <h2 class="subtitle mb-4 has-text-primary has-text-centered">
+          <h2 class="subtitle mb-4 has-text-centered">
             Express Money, Express Crédit
           </h2>
-        </div>
-      </div>
+        <!-- </div>
+      </div> -->
     </section>
-    <section class="section has-background-white">
+    <section class="section">
       <div class="columns">
         <div class="column is-third-desktop">
           <h2 class="title has-text-primary is-size-6-mobile is-size-5-tablet">Vous êtes:</h2>
             <ul>
               <li key="1">
                 <font-awesome-icon
-                  class="has-text-primary"
                   :icon="['fas', 'check-circle']"
                 />
                   Etudiant ?
                 </li>
                 <li key="2">
                   <font-awesome-icon
-                    class="has-text-primary"
                     :icon="['fas', 'check-circle']"
                   />
                   Travailleur du secteur public ?
                 </li>
                 <li key="3">
                   <font-awesome-icon
-                    class="has-text-primary"
                     :icon="['fas', 'check-circle']"
                   />
                   Travailleur du secteur privé ?
@@ -55,7 +52,6 @@
                   <li>
                     <font-awesome-icon
                       :icon="['fas', 'circle']"
-                      class="has-text-primary"
                     />
                     Vous avez du mal à finir les mois avec votre salaire ou
                     bourse
@@ -63,7 +59,6 @@
                   <li>
                     <font-awesome-icon
                       :icon="['fas', 'circle']"
-                      class="has-text-primary"
                     />
                     Vous êtes en situation d’urgence et vous n’avez pas d’argent
                     à cet instant.
@@ -71,14 +66,12 @@
                   <li>
                     <font-awesome-icon
                       :icon="['fas', 'circle']"
-                      class="has-text-primary"
                     />
                     Vous voulez envoyer de l’argent à une personne en urgence.
                   </li>
                   <li>
                     <font-awesome-icon
                       :icon="['fas', 'circle']"
-                      class="has-text-primary"
                     />
                     Vous êtes travailleur et vous trouver gênant ou vous avez du
                     mal à obtenir de l’aide financière auprès de vos collègues
@@ -88,14 +81,14 @@
               </div>
             </div>
     </section>
-    <section class="section has-background-light py-3">
+    <section class="section has-background-white py-3">
       <div class="columns">
         <div class="column">
             <h2 class="subtitle has-text-centered has-text-primary mt-1">
                 <font-awesome-icon :icon="['fas', 'map-marker-alt']" />
                 Vous êtes au bon endroit.
               </h2>
-              <p class="has-text-justify">
+              <p class="has-text-centered">
                 Avec Express Money,
                 <strong>emprunter la somme qui vous convient</strong> pour votre
                 problème (en 5 minutes) et la rembourser à votre salaire ou
@@ -112,12 +105,12 @@
           </div>
         </div>
     </section>
-    <section class="section has-background-white">
-      <h2
-        class="subtitle has-text-primary has-text-centered has-text-primary mb-6"
+    <section class="section">
+      <h1
+        class="title has-text-primary is-size-6-mobile is-size-5-tablet has-text-centered mb-6"
       >
         Avantages
-      </h2>
+      </h1>
       <div class="container">
         <div class="columns is-centered">
           <div class="column mt-0 pt-0 mx-0">

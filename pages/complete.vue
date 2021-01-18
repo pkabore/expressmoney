@@ -139,6 +139,7 @@ export default {
 
       try {
         await this.$axios.post("/api/complete", formData, config);
+        await this.$auth.fetchUser()
         this.$router.push('/operations');
       } catch (error) {
         this.error = error.response.data.message;

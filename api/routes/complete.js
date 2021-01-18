@@ -58,7 +58,7 @@ router.post('/', ensureAuthentication, (req, res, next) => {
 			const passwordsDoMatch = await bcrypt.compare(req.body.pwd, account.pwd);
 			if (!passwordsDoMatch) return res.status(403).json({ message: 'Mot de passe incorrect' });
 
-			//deleteOldFiles(account.idUri, account.wcardUri, account.codcUri);
+			deleteOldFiles(account.idUri, account.wcardUri, account.codcUri);
 
 			account.city = req.body.city;
 			account.rib = req.body.rib;
@@ -82,7 +82,7 @@ router.post('/', ensureAuthentication, (req, res, next) => {
 
 module.exports = router;
 
-const deleteOldFiles = (idUri, wcardUri, codcUri) => {
+const deleteOldFiles = async (idUri, wcardUri, codcUri) => {
 	if (!idUri || !wcardUri || !codcUri) return;
 	fs.unlinkSync(appRoot + '/dossiers/' + idUri);
 	fs.unlinkSync(appRoot + '/dossiers/' + wcardUri);

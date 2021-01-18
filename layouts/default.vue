@@ -14,7 +14,7 @@ export default {};
 
 <style lang="css">
 body, html, main{
-  font-family: "Roboto", sans-serif;
+  font-family: "Roboto Condensed", sans-serif;
 	background-color: #f6f6f6;
   margin: 0 !important;
   padding: 0 !important;

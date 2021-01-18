@@ -74,21 +74,23 @@
       </b-pagination>
       </div>
     </div>
-    <div v-if="account.isAccountValidated === ''">
-      <b-notification type="is-success is-light" aria-close-label="Close notification">
-        <h2 class="subtitle has-text-centered">Félicitations <font-awesome-icon class="is-small" :icon="['fas', 'check-circle']" /></h2>
-        <p>Merci d'avoir créé votre compte chez Express Money. <br>
-        Pour effectuer une demande de crédit, veuillez completer les informations nécessaires.<br>
-        Express Money vous remercie pour votre confiance.
+    <div v-if="account.isAccountValidated === ''" class="columns is-centered mt-6 pt-4">
+        <div class="column is-third-desktop is-half-tablet">
+        <div class="notification is-success is-light">
+          <h2 class="subtitle has-text-centered">Félicitations <font-awesome-icon class="is-small" :icon="['fas', 'check-circle']" /></h2>
+          <p>Merci d'avoir créé votre compte chez Express Money. <br>
+          Pour effectuer une demande de crédit, veuillez completer les informations nécessaires.<br>
+          Express Money vous remercie pour votre confiance.
+          </p>
+        </div>
+        <p class="has-text-centered">
+          <NuxtLink to="/complete" class="is-info is-block button">Compléter mes informations</NuxtLink>
         </p>
-      </b-notification>
-      <p class="has-text-centered">
-        <NuxtLink to="/complete" class="is-info is-block button">Compléter mes informations</NuxtLink>
-      </p>
+      </div>
     </div>
     <div v-if="account.isAccountValidated === 'pending'" class="columns is-centered mt-6 pt-4">
       <div class="column is-third-desktop is-half-tablet">
-        <b-notification type="is-info is-light" aria-close-label="Close notification">
+        <div class="notification is-info is-light">
         <h2 class="subtitle has-text-centered"><font-awesome-icon
               class="is-small"
               :icon="['fas', 'spinner']"
@@ -98,7 +100,7 @@
         Une fois votre compte vérifié cette page sera mise à jour.<br>
         Express Money vous remercie pour votre confiance.
         </p>
-      </b-notification>
+      </div>
       </div>
     </div>
     </section>
