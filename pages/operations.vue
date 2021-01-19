@@ -22,31 +22,33 @@
         hoverable
         paginated
         :per-page="perPage"
-        :current-page.sync="currentPage"
+        :current-page.sync="current"
         :pagination-position="paginationPosition"
         pagination-rounded
+        default-sort="createdAt"
+        default-sort-direction="desc"
         :loading="isLoading">
-        <b-table-column field="id" label="ID" width="40" numeric v-slot="props">
+        <b-table-column field="id" label="ID" width="40" sortable numeric v-slot="props">
             {{ props.row.id }}
         </b-table-column>
 
-        <b-table-column field="rname" label="Nom du Receveur" v-slot="props">
+        <b-table-column field="rname" label="Nom du Receveur" sortable v-slot="props">
             {{ props.row.rname }}
         </b-table-column>
 
-        <b-table-column field="rnumber" label="Numéro du Receveur" v-slot="props">
+        <b-table-column field="rnumber" label="Numéro du Receveur" sortable v-slot="props">
             {{ props.row.rnumber }}
         </b-table-column>
 
-        <b-table-column field="amount" label="Montant" v-slot="props">
+        <b-table-column field="amount" label="Montant" sortable v-slot="props">
             {{ props.row.amount }}
         </b-table-column>
 
-        <b-table-column field="devise" label="Devise" v-slot="props">
+        <b-table-column field="devise" label="Devise" sortable v-slot="props">
             {{ props.row.currency }}
         </b-table-column>
         
-        <b-table-column field="status" label="Statut" v-slot="props">
+        <b-table-column field="status" label="Statut" sortable v-slot="props">
             <span v-if="props.row.status === 'Réussi'" class="tag is-success">
                 {{ props.row.status }}
             </span>
@@ -58,7 +60,7 @@
             </span>
         </b-table-column>
 
-        <b-table-column field="createdAt" label="Date" centered v-slot="props">
+        <b-table-column field="createdAt" label="Date" sortable centered v-slot="props">
                 {{ new Date(props.row.createdAt).toLocaleString('fr-FR') }}
         </b-table-column>
       </b-table>
@@ -102,9 +104,9 @@ export default {
 data() {
       return {
         operations: [],
-        total: 6,
+        total: 10,
         current: 'sync',
-        perPage: 3,
+        perPage: 5,
         rangeBefore: 1,
         rangeAfter: 1,
         isRounded: true,
