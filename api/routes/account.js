@@ -47,7 +47,7 @@ router.post('/logout', (req, res) => {
 router.post('/register', (req, res, next) => {
 	const tel = req.body.data.tel;
 	Account.findOne({ tel }).select('tel').exec((err, doc) => {
-		if (err) return res.status(400).json({ err });
+		if (err) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
 		if (doc) return res.status(400).json({ err: 'Numéro déjà utilisé. Veuillez vous connecter.' });
 		const fieldsValidationResult = validateAccountInformations(req.body.data);
 		if (fieldsValidationResult) return res.status(400).json({ err: fieldsValidationResult });

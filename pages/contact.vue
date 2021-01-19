@@ -1,12 +1,9 @@
 <template>
   <div>
     <section class="section">
-    <p>
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla, voluptas
-      quibusdam. Perferendis deleniti sapiente sunt, voluptate perspiciatis sed
-      minima mollitia natus, quo inventore, veritatis odit eius rem fugit
-      aliquid numquam?
-    </p>
+    <h1 class="title has-text-centered">
+      Nous contacter
+    </h1>
     </section>
   </div>
 </template>

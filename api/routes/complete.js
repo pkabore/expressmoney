@@ -27,6 +27,7 @@ const storage = multer.diskStorage({
 		cb(null, id);
 	}
 });
+
 let upload = multer({
 	storage,
 	fileFilter: (req, file, cb) => {
@@ -44,14 +45,11 @@ router.post('/', ensureAuthentication, (req, res, next) => {
 		if (err instanceof multer.MulterError) {
 			const filesErrorMessage = `Format supporté: PDF|JPEG|JPG, taille max: 4MB`;
 			return res.status(400).json({ message: filesErrorMessage });
-			console.log(err);
 		} else if (err) {
-			console.log(err);
+			return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
 		}
 		Account.findOne({ tel: req.user.tel, isAccountValidated: { $ne: 'Confirmé' } }, async (err, account) => {
-			if (err) {
-				return next(err);
-			}
+			if (err) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
 			if (!account) {
 				return res.redirect('/operations');
 			}
@@ -69,9 +67,7 @@ router.post('/', ensureAuthentication, (req, res, next) => {
 			uris = [];
 
 			account.save((err, result) => {
-				if (err) {
-					return next(err);
-				}
+				if (err) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
 				if (result) {
 					res.json({ message: 'ok' });
 				}

@@ -1,11 +1,11 @@
 <template>
   <div>
     <section class="section">
-    <div class="columns mt-6 is-centered" v-if="account.isAccountValidated === 'validated'">
+    <div class="columns is-centered" v-if="account.isAccountValidated === 'validated'">
       <div class="column">
-        <h2 class="title is-size-6-mobile">
+        <h1 class="title is-size-6-mobile">
           Mes opérations
-        </h2>
+        </h1>
       </div>
       <div class="column is-align-self-end">
         <NuxtLink to="/request" class="button is-block is-primary">
@@ -20,6 +20,11 @@
         striped
         narrowed
         hoverable
+        paginated
+        :per-page="perPage"
+        :current-page.sync="currentPage"
+        :pagination-position="paginationPosition"
+        pagination-rounded
         :loading="isLoading">
         <b-table-column field="id" label="ID" width="40" numeric v-slot="props">
             {{ props.row.id }}
@@ -57,21 +62,6 @@
                 {{ new Date(props.row.createdAt).toLocaleString('fr-FR') }}
         </b-table-column>
       </b-table>
-
-      <b-pagination
-        :total="total"
-        v-model="current"
-        order="is-left"
-        size="is-small"
-        per-page=10
-        icon-prev="chevron-left"
-        icon-next="chevron-right"
-        aria-next-label="Suivant"
-        aria-previous-label="Précédent"
-        aria-page-label="Page"
-        aria-current-label="Page actuelle"
-        class="mt-3">
-      </b-pagination>
       </div>
     </div>
     <div v-if="account.isAccountValidated === ''" class="columns is-centered mt-6 pt-4">
@@ -112,8 +102,12 @@ export default {
 data() {
       return {
         operations: [],
-        total: 0,
-        current: "sync",
+        total: 6,
+        current: 'sync',
+        perPage: 3,
+        rangeBefore: 1,
+        rangeAfter: 1,
+        isRounded: true,
         isLoading: true
       }
     },

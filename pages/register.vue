@@ -87,7 +87,7 @@
             </button>
           </div>
         </div>
-        <p class="has-text-centered label help is-info">
+        <p class="has-text-centered help is-info">
           <NuxtLink to="/login"
             >Vous avez déjà un compte? Cliquez ici pour vous connecter</NuxtLink
           >

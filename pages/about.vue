@@ -6,7 +6,7 @@
         <div class="columns mt-4">
           <div class="column">
             <section class="section card">
-              <h2 class="title has-text-centered has-text-primary">
+              <h2 class="title has-text-centered">
                 <font-awesome-icon :icon="['fas', 'question-circle']" />
                 À propos de nous
               </h2>
@@ -21,7 +21,7 @@
           </div>
           <div class="column">
             <section class="section card">
-              <h2 class="title has-text-centered has-text-primary">
+              <h2 class="title has-text-centered">
                 <font-awesome-icon :icon="['fas', 'briefcase']" />
                 Notre mission
               </h2>

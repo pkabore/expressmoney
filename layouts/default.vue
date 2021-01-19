@@ -14,7 +14,7 @@ export default {};
 
 <style lang="css">
 body, html, main{
-  font-family: "Roboto Condensed", sans-serif;
+  font-family: "Quicksand", sans-serif;
 	background-color: #f6f6f6;
   margin: 0 !important;
   padding: 0 !important;
@@ -24,10 +24,6 @@ body, html, main{
 form {
   max-width: 400px;
   margin: 0 auto;
-}
-
-.card {
-  background-color: inherit;
 }
 
 * {
@@ -42,9 +38,4 @@ strong {
 	background-color: #343a40;
 }
 
-.border {
-	border: 1px dashed #3da3b9;
-	border-right: 1px dashed #3da3b9;
-	border-radius: 3px;
-}
 </style>

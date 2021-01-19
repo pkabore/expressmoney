@@ -9,7 +9,7 @@
           >
         </div>
         <div class="column"> -->
-          <h1 class="title has-text-primary has-text-centered">
+          <h1 class="title has-text-centered">
             Bienvenu(e)
           </h1>
           <h2 class="subtitle mb-4 has-text-centered">
@@ -21,7 +21,7 @@
     <section class="section">
       <div class="columns">
         <div class="column is-third-desktop">
-          <h2 class="title has-text-primary is-size-6-mobile is-size-5-tablet">Vous êtes:</h2>
+          <h2 class="subtitle">Vous êtes:</h2>
             <ul>
               <li key="1">
                 <font-awesome-icon
@@ -45,7 +45,7 @@
           </div>
 
           <div class="column is-two-thirds-desktop">
-                <h2 class="title has-text-primary is-size-6-mobile is-size-5-tablet">
+                <h2 class="subtitle">
                   Et vous êtes dans l’une des situations suivantes:
                 </h2>
                 <ul>
@@ -96,10 +96,7 @@
               </p>
               <p class="has-text-centered mt-5" v-if="!this.$auth.loggedIn">
                 <NuxtLink to="/register" class="button is-primary"
-                  ><font-awesome-icon
-                    class="is-small"
-                    :icon="['fas', 'hand-point-right']"
-                  />&nbsp; Créer un compte pour commencer</NuxtLink
+                  >Créer un compte pour commencer</NuxtLink
                 >
               </p>
           </div>
@@ -107,7 +104,7 @@
     </section>
     <section class="section">
       <h1
-        class="title has-text-primary is-size-6-mobile is-size-5-tablet has-text-centered mb-6"
+        class="title has-text-primary has-text-centered mb-6"
       >
         Avantages
       </h1>
@@ -117,16 +114,12 @@
             <div class="card is-shadowless">
               <div class="card-content">
                 <h1
-                  class="title has-text-primary is-size-6-mobile is-size-5-tablet has-text-centered"
-                >
-                  <font-awesome-icon
-                    class="is-small"
-                    :icon="['fas', 'paper-plane']"
-                  />&nbsp;Rapidité
+                  class="subtitle has-text-centered"
+                >Rapidité
                 </h1>
-                <h2 class="subtile my-2 is-size-6-mobile">
+                <p class="my-2">
                   <strong>Rapidité d’obtention du prêt en 5min</strong>
-                </h2>
+                </p>
                 <p>
                   Lorem ipsum dolor sit, amet consectetur adipisicing elit.
                   Obcaecati veritatis expedita ad ipsa quia. Provident id odio,
@@ -140,16 +133,12 @@
             <div class="card is-shadowless">
               <div class="card-content">
                 <h1
-                  class="title has-text-primary is-size-6-mobile is-size-5-tablet has-text-centered"
-                >
-                  <font-awesome-icon
-                    class="is-small"
-                    :icon="['fas', 'link']"
-                  />&nbsp; Disponibilité
+                  class="subtitle has-text-centered"
+                >Disponibilité
                 </h1>
-                <h2 class="subtile my-2 is-size-6-mobile">
+                <p class="my-2">
                   <strong> Disponible 7j /7 et 24h/24</strong>
-                </h2>
+                </p>
                 <p>
                   Lorem ipsum dolor, sit amet consectetur adipisicing elit.
                   Ipsum velit, asperiores mollitia tempore eveniet ipsam atque
@@ -165,18 +154,14 @@
             <div class="card is-shadowless">
               <div class="card-content">
                 <h1
-                  class="title has-text-primary is-size-6-mobile is-size-5-tablet has-text-centered"
-                >
-                  <font-awesome-icon
-                    class="is-small"
-                    :icon="['fas', 'percentage']"
-                  />&nbsp; Taux
+                  class="subtitle has-text-centered"
+                > Taux
                 </h1>
-                <h2 class="subtile my-2 is-size-6-mobile">
+                <p class="my-2">
                   Taux de remboursement insignifiant <br /><strong
                     >(Juste les frais de transfert)</strong
                   >
-                </h2>
+                </p>
                 <p>
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius
                   consectetur tempore, quas harum a et fugit quos nemo dolores
@@ -190,18 +175,14 @@
             <div class="card is-shadowless">
               <div class="card-content">
                 <h1
-                  class="title has-text-primary is-size-6-mobile is-size-5-tablet has-text-centered"
-                >
-                  <font-awesome-icon
-                    class="is-small"
-                    :icon="['fas', 'mouse-pointer']"
-                  />&nbsp; Notre Service est en ligne
+                  class="subtitle has-text-centered"
+                >Notre Service est en ligne
                 </h1>
-                <h2 class="subtile my-2 is-size-6-mobile">
+                <p class="my-2">
                   Entièrement en ligne <br /><strong
                     >(Ne nécessite aucun déplacement)</strong
                   >
-                </h2>
+                </p>
                 <p>
                   Lorem ipsum dolor sit amet consectetur adipisicing elit.
                   Provident, laboriosam asperiores illo dolore, quam ducimus,

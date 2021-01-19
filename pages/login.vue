@@ -24,6 +24,12 @@
               Se connecter
             </button>
           </div>
+          <p class="has-text-centered help">
+            <NuxtLink to="/register">Première visite? Créer un compte</NuxtLink>
+          </p>
+          <p class="has-text-centered help is-dark">
+            <NuxtLink to="/reset" class="">Mot de passe oublié?</NuxtLink>
+          </p>
         </form>
       </div>
     </div>
