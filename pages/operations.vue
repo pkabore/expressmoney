@@ -1,19 +1,15 @@
 <template>
   <div>
     <section class="section">
-    <div class="columns is-centered" v-if="account.isAccountValidated === 'validated'">
-      <div class="column">
-        <h1 class="title is-size-6-mobile">
+        <h1 class="title has-text-centered is-size-6-mobile">
           Mes opérations
         </h1>
-      </div>
-      <div class="column is-align-self-end">
-        <NuxtLink to="/request" class="button is-block is-primary">
+        <p class="has-text-centered mb-3" v-if="account.isAccountValidated === 'Validé'">
+          <NuxtLink to="/request" class="button is-fullwidth is-success">
           Nouvelle Demande de Crédit
-        </NuxtLink>
-      </div>
-    </div>
-    <div class="columns" v-if="account.isAccountValidated === 'validated'">
+          </NuxtLink>
+        </p>
+    <div class="columns" v-if="account.isAccountValidated === 'Validé'">
       <div class="column">
         <b-table
         :data="operations"
@@ -22,8 +18,6 @@
         hoverable
         paginated
         :per-page="perPage"
-        :current-page.sync="current"
-        :pagination-position="paginationPosition"
         pagination-rounded
         default-sort="createdAt"
         default-sort-direction="desc"
@@ -69,7 +63,7 @@
     <div v-if="account.isAccountValidated === ''" class="columns is-centered mt-6 pt-4">
         <div class="column is-third-desktop is-half-tablet">
         <div class="notification is-success is-light">
-          <h2 class="subtitle has-text-centered">Félicitations <font-awesome-icon class="is-small" :icon="['fas', 'check-circle']" /></h2>
+          <h2 class="subtitle has-text-centered">Félicitations <b-icon size="is-small" icon="check-circle" /></h2>
           <p>Merci d'avoir créé votre compte chez Express Money. <br>
           Pour effectuer une demande de crédit, veuillez completer les informations nécessaires.<br>
           Express Money vous remercie pour votre confiance.
@@ -80,19 +74,16 @@
         </p>
       </div>
     </div>
-    <div v-if="account.isAccountValidated === 'pending'" class="columns is-centered mt-6 pt-4">
+    <div v-if="account.isAccountValidated === 'En attente'" class="columns is-centered mt-6 pt-4">
       <div class="column is-third-desktop is-half-tablet">
         <div class="notification is-info is-light">
-        <h2 class="subtitle has-text-centered"><font-awesome-icon
-              class="is-small"
-              :icon="['fas', 'spinner']"
-            />
-            Votre compte est en cours de vérification</h2>
-        <p>La durée habituelle de vérification peut aller jusqu'à 24h. <br>
+        <h2 class="subtitle has-text-centered"><b-icon size="is-small" icon="spinner" />Votre compte est en cours de vérification</h2>
+        <p>La durée habituelle de vérification peut aller jusqu'à 2. <br>
         Une fois votre compte vérifié cette page sera mise à jour.<br>
         Express Money vous remercie pour votre confiance.
         </p>
       </div>
+      <b-message type="is-warning"><NuxtLink to="/complete">Pendant que votre compte n'est pas encore approuvé vous pouvez mettre à jour votre dossier si nécessaire.</NuxtLink></b-message>
       </div>
     </div>
     </section>
@@ -101,15 +92,16 @@
 
 <script>
 export default {
+head:{
+  title : "Opérations",
+  meta: [
+    { hid: 'description', name: 'description', content: "Prendre un crédit pour soi-même ou pour un(e) bénéficiaire." }
+  ]
+},
 data() {
       return {
         operations: [],
-        total: 10,
-        current: 'sync',
         perPage: 5,
-        rangeBefore: 1,
-        rangeAfter: 1,
-        isRounded: true,
         isLoading: true
       }
     },
@@ -128,15 +120,7 @@ data() {
         console.log(error);
       }
     },
-    watch: {
-      dialog (val) {
-        val || this.close()
-      }
-    },
     methods: {
-      getDate(createdAt) {
-        return this.$moment(createdAt).from();
-      }
     },
     computed: {
         isAuthenticated() {

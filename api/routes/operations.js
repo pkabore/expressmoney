@@ -23,7 +23,7 @@ router.get('/', ensureAuthentication, async (req, res, next) => {
 });
 
 router.post('/request', ensureAuthentication, async (req, res, next) => {
-	Account.findOne({ _id: req.user._id, isAccountValidated: 'validated' }).select('pwd name').exec((err, account) => {
+	Account.findOne({ _id: req.user._id, isAccountValidated: 'Validé' }).select('pwd name').exec((err, account) => {
 		if (err) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
 		bcrypt.compare(req.body.pwd, account.pwd, (bcrypt_err, bcrypt_res) => {
 			if (bcrypt_err) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });

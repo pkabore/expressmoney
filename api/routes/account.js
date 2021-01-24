@@ -14,7 +14,7 @@ const ensureAuthentication = (req, res, next) => {
 
 /*-------------------------account routes------------------------------*/
 router.get('/account', ensureAuthentication, (req, res) => {
-	Account.findOne({ tel: req.user.tel }).select('-pwd -tel -rib').exec((err, profile) => {
+	Account.findOne({ tel: req.user.tel }).select('-pwd -_id').exec((err, profile) => {
 		if (err) {
 			return res.status(500).end();
 		}

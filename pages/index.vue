@@ -9,7 +9,7 @@
           >
         </div>
         <div class="column"> -->
-          <h1 class="title has-text-centered">
+          <h1 class="title has-text-centered has-text-primary">
             Bienvenu(e)
           </h1>
           <h2 class="subtitle mb-4 has-text-centered">
@@ -24,21 +24,15 @@
           <h2 class="subtitle">Vous êtes:</h2>
             <ul>
               <li key="1">
-                <font-awesome-icon
-                  :icon="['fas', 'check-circle']"
-                />
+                <b-icon icon="checkbox-marked-circle-outline" size="is-small"></b-icon>
                   Etudiant ?
                 </li>
                 <li key="2">
-                  <font-awesome-icon
-                    :icon="['fas', 'check-circle']"
-                  />
+                  <b-icon icon="checkbox-marked-circle-outline" size="is-small"></b-icon>
                   Travailleur du secteur public ?
                 </li>
                 <li key="3">
-                  <font-awesome-icon
-                    :icon="['fas', 'check-circle']"
-                  />
+                  <b-icon icon="checkbox-marked-circle-outline" size="is-small"></b-icon>
                   Travailleur du secteur privé ?
                 </li>
               </ul>
@@ -50,29 +44,21 @@
                 </h2>
                 <ul>
                   <li>
-                    <font-awesome-icon
-                      :icon="['fas', 'circle']"
-                    />
+                    <b-icon icon="circle" size="is-small"></b-icon>
                     Vous avez du mal à finir les mois avec votre salaire ou
                     bourse
                   </li>
                   <li>
-                    <font-awesome-icon
-                      :icon="['fas', 'circle']"
-                    />
+                    <b-icon icon="circle" size="is-small"></b-icon>
                     Vous êtes en situation d’urgence et vous n’avez pas d’argent
                     à cet instant.
                   </li>
                   <li>
-                    <font-awesome-icon
-                      :icon="['fas', 'circle']"
-                    />
+                    <b-icon icon="circle" size="is-small"></b-icon>
                     Vous voulez envoyer de l’argent à une personne en urgence.
                   </li>
                   <li>
-                    <font-awesome-icon
-                      :icon="['fas', 'circle']"
-                    />
+                    <b-icon icon="circle" size="is-small"></b-icon>
                     Vous êtes travailleur et vous trouver gênant ou vous avez du
                     mal à obtenir de l’aide financière auprès de vos collègues
                     en cas de besoin
@@ -84,20 +70,20 @@
     <section class="section has-background-white py-3">
       <div class="columns">
         <div class="column">
-            <h2 class="subtitle has-text-centered has-text-primary mt-1">
-                <font-awesome-icon :icon="['fas', 'map-marker-alt']" />
+            <h2 class="title has-text-centered has-text-primary mt-1">
+                <b-icon icon="map" size="is-medium"></b-icon>
                 Vous êtes au bon endroit.
               </h2>
-              <p class="has-text-centered">
-                Avec Express Money,
-                <strong>emprunter la somme qui vous convient</strong> pour votre
-                problème (en 5 minutes) et la rembourser à votre salaire ou
+              <p class="has-text-centered is-size-5-desktop">
+                Avec Express Money,<br>
+                <strong>emprunter la somme qui vous convient</strong> <br>pour votre
+                problème (en 5 minutes) <br>et la rembourser à votre salaire ou
                 bourse suivante.
               </p>
               <p class="has-text-centered mt-5" v-if="!this.$auth.loggedIn">
-                <NuxtLink to="/register" class="button is-primary"
-                  >Créer un compte pour commencer</NuxtLink
-                >
+                <NuxtLink to="/register" class="button is-primary">
+                <b-icon icon="arrow-right" size="is-small"></b-icon>&nbsp;&nbsp;
+                Créer un compte pour commencer</NuxtLink>
               </p>
           </div>
         </div>
@@ -111,95 +97,60 @@
       <div class="container">
         <div class="columns is-centered">
           <div class="column mt-0 pt-0 mx-0">
-            <div class="card is-shadowless">
-              <div class="card-content">
-                <h1
-                  class="subtitle has-text-centered"
-                >Rapidité
-                </h1>
-                <p class="my-2">
-                  <strong>Rapidité d’obtention du prêt en 5min</strong>
-                </p>
-                <p>
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                  Obcaecati veritatis expedita ad ipsa quia. Provident id odio,
-                  error voluptatum earum quibusdam neque ipsum similique quasi?
-                  Minima accusantium modi voluptatum aliquid!
-                </p>
-              </div>
+            <div class="box">
+              <h1
+                  class="subtitle has-text-success has-text-centered bold-text"
+                ><b-icon icon="checkbox-marked-circle-outline" size="is-small"></b-icon>&nbsp; Rapidité
+              </h1>
+              <p class="has-text-centered">
+                <strong>Rapidité d’obtention du prêt en 5min</strong>
+              </p>
             </div>
           </div>
           <div class="column mt-0 pt-0 mx-0">
-            <div class="card is-shadowless">
-              <div class="card-content">
-                <h1
-                  class="subtitle has-text-centered"
-                >Disponibilité
-                </h1>
-                <p class="my-2">
-                  <strong> Disponible 7j /7 et 24h/24</strong>
-                </p>
-                <p>
-                  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                  Ipsum velit, asperiores mollitia tempore eveniet ipsam atque
-                  culpa quidem veritatis enim! Placeat voluptatibus doloremque
-                  porro consectetur impedit eum architecto mollitia! Et!
-                </p>
-              </div>
+            <div class="box">
+              <h1
+                  class="subtitle has-text-success has-text-centered bold-text"
+                ><b-icon icon="checkbox-marked-circle-outline" size="is-small"></b-icon>&nbsp; Disponibilité
+              </h1>
+              <p class="has-text-centered">
+                <strong> Disponible 7j /7 et 24h/24</strong>
+              </p>
             </div>
           </div>
         </div>
         <div class="columns">
           <div class="column mt-0 pt-0 mx-0">
-            <div class="card is-shadowless">
-              <div class="card-content">
+            <div class="box">
                 <h1
-                  class="subtitle has-text-centered"
-                > Taux
+                  class="subtitle has-text-success has-text-centered bold-text"
+                ><b-icon icon="checkbox-marked-circle-outline" size="is-small"></b-icon>&nbsp; Taux
                 </h1>
-                <p class="my-2">
+                <p class="has-text-centered">
                   Taux de remboursement insignifiant <br /><strong
                     >(Juste les frais de transfert)</strong
                   >
                 </p>
-                <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius
-                  consectetur tempore, quas harum a et fugit quos nemo dolores
-                  magnam nisi suscipit cum aliquid, error vitae ipsa ipsum
-                  blanditiis amet.
-                </p>
               </div>
-            </div>
           </div>
           <div class="column mt-0 pt-0 mx-0">
-            <div class="card is-shadowless">
-              <div class="card-content">
+            <div class="box">
                 <h1
-                  class="subtitle has-text-centered"
-                >Notre Service est en ligne
+                  class="subtitle has-text-success has-text-centered bold-text"
+                ><b-icon icon="checkbox-marked-circle-outline" size="is-small"></b-icon>&nbsp; Notre Service est en ligne
                 </h1>
-                <p class="my-2">
+                <p class="has-text-centered">
                   Entièrement en ligne <br /><strong
                     >(Ne nécessite aucun déplacement)</strong
                   >
                 </p>
-                <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Provident, laboriosam asperiores illo dolore, quam ducimus,
-                  sunt expedita temporibus atque fuga est. Quas incidunt ex
-                  blanditiis non tenetur, animi consequuntur alias!
-                </p>
               </div>
-            </div>
           </div>
         </div>
         <p class="has-text-centered" v-if="!this.$auth.loggedIn">
-          <NuxtLink to="/register" class="button is-primary"
-            ><font-awesome-icon
-              class="is-small"
-              :icon="['fas', 'hand-point-right']"
-            />&nbsp; Créer un compte pour commencer</NuxtLink
-          >
+          <NuxtLink to="/register" class="button is-primary">
+            <b-icon icon="arrow-right" size="is-small"></b-icon>&nbsp;&nbsp; Créer un compte pour commencer
+          </NuxtLink>
         </p>
       </div>
     </section>
@@ -209,18 +160,15 @@
 <script>
 export default {
   auth: false,
+  head:{
+    title : "Accueil",
+    meta: [
+			{ hid: 'description', name: 'description', content: "La mission d'Epress Money est de fournir du soutien aux étudiants et fonctionnaires  des crédits quand ils ont des besoins urgents." }
+		]
+  },
   data() {
-    return {
-      title: "Accueil"
-    };
+    return {};
   },
   computed: {}
 };
 </script>
-
-
-<style scoped>
-  .left-border{
-    border-right: 1px dotted grey;
-  }
-</style>

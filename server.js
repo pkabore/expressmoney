@@ -3,6 +3,8 @@ const session = require('client-sessions');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const Account = require('./api/models/Account.js');
+const Operation = require('./api/models/Operation.js');
+const Notification = require('./api/models/Notification.js');
 const APIKey = require('./api/models/APIKey.js');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
@@ -133,13 +135,20 @@ async function start() {
 	app.use('/api/complete', complete);
 	app.use('/api/operations', operations);
 
-	app.get('/dossiers/:accountId/:id', ensureAuthentication, async (req, res) => {
+	const fs = require('fs');
+	app.get('/dossiers/:id', ensureAuthentication, async (req, res) => {
 		if (!req.params.id) return res.status(403).end();
-		const account = await Account.findById(req.params.accountId);
+		const account = await Account.findById(req.user.id);
 		if (!account) return res.status(403).end();
 		if (account.idUri !== req.params.id && account.wcardUri !== req.params.id && account.codcUri !== req.params.id)
 			return res.status(403).end();
-		else res.sendFile(__dirname + `/dossiers/${req.params.id}`);
+		const path = __dirname + `/dossiers/${req.params.id}`;
+		try {
+			if (fs.existsSync(path)) return res.sendFile(path);
+			else res.status(404).send('Fichier non trouvé!');
+		} catch (err) {
+			console.error(err);
+		}
 	});
 
 	app.get(
@@ -149,24 +158,19 @@ async function start() {
 			failureRedirect: '/account/login'
 		}),
 		(req, res) => {
-			res.sendFile(__dirname + `/dossiers/${req.params.id}`);
+			const path = __dirname + `/dossiers/${req.params.id}`;
+			try {
+				if (fs.existsSync(path)) return res.sendFile(path);
+				else res.status(404).send('Fichier non trouvé!');
+			} catch (err) {
+				console.error(err);
+			}
 		}
 	);
 	/*------------------------------------------------------------------------*/
 	app.get('/api/auth/csrf', (req, res) => {
 		res.json({ token: req.csrfToken() });
 	});
-
-	// app.use((req, res, next) => {
-	//   onHeaders(res, function() {
-	//     this.cookie("csrf-token", req.csrfToken(), {
-	//       secure: process.env.NODE_ENV === "production",
-	//       httpOnly: true,
-	//       sameSite: true
-	//     });
-	//   });
-	//   next();
-	// });
 
 	//Render every route with Nuxt.js
 	app.use(nuxt.render);
@@ -175,6 +179,7 @@ async function start() {
 	if (isDev) {
 		build(nuxt);
 	}
+
 	//Listen the server
 	app.listen(port, '0.0.0.0');
 	console.log('Server listening on `localhost:' + port + '`.');

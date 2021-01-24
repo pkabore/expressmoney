@@ -5,10 +5,9 @@
       <div class="column is-four-fiths-desktop is-four-fiths-tablet">
         <div class="columns mt-4">
           <div class="column">
-            <section class="section card">
-              <h2 class="title has-text-centered">
-                <font-awesome-icon :icon="['fas', 'question-circle']" />
-                À propos de nous
+              <h2 class="title has-text-info has-text-centered">
+                <b-icon icon="help-circle" size="is-medium"/>
+                A propos de nous
               </h2>
               <p>
                 Express Money est une innovation de jeunes socio-entrepreneurs
@@ -17,12 +16,10 @@
                 la plupart du temps du mal couvrir tous leurs besoins et se
                 retrouvent très souvent dans <em>des situations d’urgence.</em>
               </p>
-            </section>
           </div>
           <div class="column">
-            <section class="section card">
-              <h2 class="title has-text-centered">
-                <font-awesome-icon :icon="['fas', 'briefcase']" />
+              <h2 class="title has-text-info has-text-centered">
+                <b-icon icon="briefcase" size="is-medium"/>
                 Notre mission
               </h2>
               <p>
@@ -33,14 +30,13 @@
                 confidentialités ou de confiance qui leur seront envoyer lors de
                 la validation de leurs comptes par sms ou mail.
               </p>
-            </section>
           </div>
         </div>
       </div>
     </div>
     <p class="has-text-centered mb-3">
-      <NuxtLink to="/register" v-if="!this.$auth.loggedIn" class="button is-block is-primary">
-        <font-awesome-icon :icon="['fas', 'hand-point-right']" />&nbsp; Créer un compte Express Money pour commencer
+      <NuxtLink to="/register" v-if="!this.$auth.loggedIn" class="button is-primary">
+        <b-icon icon="arrow-right" size="is-small"></b-icon>&nbsp;&nbsp; Créer un compte Express Money pour commencer
       </NuxtLink>
     </p>
     </section>
@@ -49,6 +45,12 @@
 
 <script>
 export default {
-  auth: false
+  auth: false,
+  head:{
+    title : "A propos",
+    meta: [
+			{ hid: 'description', name: 'description', content: "La mission d'Epress Money est de fournir du soutien aux étudiants et fonctionnaires  des crédits quand ils ont des besoins urgents." }
+		]
+  }
 };
 </script>

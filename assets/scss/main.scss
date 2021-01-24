@@ -13,6 +13,10 @@ $twitter-invert: findColorInvert($twitter);
 $custom-colors: null !default;
 $custom-shades: null !default;
 
+$input-radius: 2px;
+$input-background-color: #fff;
+$input-disabled-background-color: #fff;
+$input-arrow: $primary;
 // Setup $colors to use as bulma classes (e.g. 'is-twitter')
 $colors: mergeColorMaps(
 

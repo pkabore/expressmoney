@@ -63,7 +63,7 @@ router.post('/', ensureAuthentication, (req, res, next) => {
 			account.idUri = uris[0];
 			account.wcardUri = uris[1];
 			account.codcUri = uris[2];
-			account.isAccountValidated = 'pending';
+			account.isAccountValidated = 'En attente';
 			uris = [];
 
 			account.save((err, result) => {

@@ -3,12 +3,9 @@
   <section class="section">
   <div class="columns is-centered mt-4">
     <div class="column is-one-third-desktop is-half-tablet">
-      <form @submit.prevent="handleRegistration" method="POST">
+      <form autocomplete="off" @submit.prevent="handleRegistration" method="POST">
         <h2 class="title has-text-centered has-text-primary">
-          <font-awesome-icon
-            class="is-small"
-            :icon="['fas', 'user-circle']"
-          />&nbsp; S'inscrire
+          <b-icon size="is-small" icon="account-circle"/>&nbsp; S'inscrire
         </h2>
         <p class="help is-danger has-text-centered mt-1">{{ error }}</p>
         <div class="columns my-0 is-mobile">
@@ -82,7 +79,7 @@
               placeholder="Confirmez mot de passe"
               name="confirmedPWD"
             />
-            <button class="mt-2 button is-primary is-fullwidth" type="submit">
+            <button :class="['mt-2 button is-fullwidth is-primary', {'is-loading': isLoading}]" type="submit">
               Créer un compte
             </button>
           </div>
@@ -101,6 +98,12 @@
 
 <script>
 export default {
+  head:{
+  title : "Création de compte",
+  meta: [
+    { hid: 'description', name: 'description', content: "Créer un compte pour effectuer vos demandes chez Express Money." }
+  ]
+},
   auth: false,
   data() {
     return {
@@ -111,15 +114,18 @@ export default {
         pwd: "",
         confirmedPWD: ""
       },
-      error: ""
+      error: "",
+      isLoading: false
     };
   },
   methods: {
     async handleRegistration() {
+      this.isLoading = true;
       try {
         this.$loading = true;
         if (this.account.pwd !== this.account.confirmedPWD) {
           this.error = "Mots de passe différents";
+          this.isLoading = false;
           return;
         }
         const csrf = await this.$axios.$get("/api/auth/csrf");
@@ -143,10 +149,12 @@ export default {
             this.$router.push('/operations');
           } catch (err) {
             this.error = err.message;
+            this.isLoading = false;
           }
         }
       } catch (err) {
         if (err.response) {
+          this.isLoading = false;
           if (
             err.response.data.err.includes("fname") ||
             err.response.data.err.includes("lname")

@@ -1,6 +1,8 @@
 <template>
 <section class="section">
-  <form class="mt-6" method="POST" @submit.prevent="submitHandler">
+  <h1 class="has-text-centered title">Informations professionnelles</h1>
+  <p class="help is-danger has-text-centered mb-0">{{ error }}</p>
+  <form autocomplete="off" class="mt-6" method="POST" @submit.prevent="submitHandler">
     <b-field>
       <b-upload v-model="dropFiles" multiple drag-drop>
         <section class="section">
@@ -9,7 +11,7 @@
               <b-icon icon="upload" size="is-large"> </b-icon>
             </p>
             <p class="my-0 py-1">
-              Veuillez charger les 3 fichiers suivants en format PDF ou Image:
+              Veuillez cliquer ici pour charger les 3 fichiers suivants (Format PDF ou Photo):
             </p>
             <p class="help has-text-left is-primary my-0">1. CNIB/Passeport</p>
             <p class="help has-text-left is-primary my-0">
@@ -18,7 +20,6 @@
             <p class="help has-text-left is-primary my-0">
               3. Attestation de prise de service
             </p>
-            <p class="help is-danger has-text-left mt-4 mb-0">{{ error }}</p>
           </div>
         </section>
       </b-upload>
@@ -55,15 +56,6 @@
             <option class="py-3" value="Po">Po</option>
           </select>
         </div>
-        <label class="help is-black" for="rib">Numéro RIB:</label>
-        <input
-          class="mt-0 input"
-          id="rib"
-          type="text"
-          required="required"
-          placeholder="Numéro RIB"
-          v-model="rib"
-        />
         <label class="help is-black" for="pass"
           >Entrez votre mot de passe:</label
         >
@@ -89,6 +81,12 @@
 
 <script>
 export default {
+  head:{
+  title : "Dossier",
+  meta: [
+    { hid: 'description', name: 'description', content: "Compléter vos informations professionnelles La dernière étape pour commencer à utiliser le platforme." }
+  ]
+},
   data() {
     return {
       dropFiles: [],
