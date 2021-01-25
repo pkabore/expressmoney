@@ -34,6 +34,42 @@
             <button :class="['button mt-2 is-fullwidth is-primary', {'is-loading': isLoading}]" type="submit">Envoyer la demande</button>
         </div>
     </form>
+    <div :class="['modal', {'is-active': modal}]">
+      <div class="modal-background"></div>
+      <div class="card">
+        <header class="card-header">
+          <p class="card-header-title has-text-centered">Confirmation</p>
+        </header>
+        <section class="card-content">
+          <ul class="is-hoverable">
+            <li class="columns m-0 p-0 is-mobile list-item mt-1">
+              <div class="column m-0 py-0 px-2 has-text-weight-bold">Nom du Receveur:</div>
+              <div class="column m-0 py-0 px-2">{{ request.rfname + ' ' + request.rlname }}</div>
+            </li>
+            <li class="columns m-0 p-0 is-mobile list-item mt-1">
+              <div class="column m-0 py-0 px-2 has-text-weight-bold">Numéro du Receveur:</div>
+              <div class="column m-0 py-0 px-2">{{ request.rnumber }}</div>
+            </li>
+            <li class="columns m-0 p-0 is-mobile list-item mt-1">
+              <div class="column m-0 py-0 px-2 has-text-weight-bold">Montant:</div>
+              <div class="column m-0 py-0 px-2">{{ request.amount }}</div>
+            </li>
+            <li class="columns m-0 p-0 is-mobile list-item mt-1">
+              <div class="column m-0 py-0 px-2 has-text-weight-bold">Frais d'envoi:</div>
+              <div class="column m-0 py-0 px-2">{{ request.amount * fee_rate}}</div>
+            </li>
+            <li class="columns m-0 p-0 is-mobile list-item mt-1">
+              <div class="column m-0 py-0 px-2 has-text-weight-bold">Devise:</div>
+              <div class="column m-0 py-0 px-2">FCFA</div>
+            </li>
+          </ul>
+        </section>
+        <footer class="card-footer">
+          <a href="#" class="card-footer-item has-text-danger" @click.prevent="closeModal()"><b-icon icon="close"></b-icon>&nbsp; Annuler</a>
+          <a href="#" class="card-footer-item" @click.prevent="submitFinalHandler()"><b-icon icon="check"></b-icon>&nbsp; Envoyer</a>
+        </footer>
+      </div>
+    </div>
 </section>
 </template>
 
@@ -47,7 +83,9 @@ export default {
     },
     data() {
         return {
+            modal: false,
             error: "",
+            fee_rate: 0.02,
             request: {
                 rfname: '',
                 rlname: '',
@@ -71,6 +109,11 @@ export default {
                 this.isLoading = false;
                 return;
             }
+            this.modal = true;
+        },
+        async submitFinalHandler(){
+            this.modal = false;
+            this.isLoading = false;
             try {
                 const csrf = await this.$axios.$get("/api/auth/csrf");
                 this.$axios.setHeader("XSRF-TOKEN", csrf.token);
@@ -80,6 +123,10 @@ export default {
                 this.isLoading = false;
                 this.error = err.response.data.message;
             }
+        },
+        closeModal(){
+            this.modal = false;
+            this.isLoading = false;
         }
     }
 };

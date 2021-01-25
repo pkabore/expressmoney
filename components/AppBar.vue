@@ -64,3 +64,10 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+  div.navbar-menu.is-active{
+    padding-top: 0px !important;
+    margin-top: 0px !important;
+  }
+</style>

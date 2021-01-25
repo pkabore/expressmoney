@@ -9,11 +9,14 @@ export default {
 				name: 'viewport',
 				content: 'width=device-width, initial-scale=1'
 			},
-			{ hid: 'description', name: 'description', content: '' }
+			{
+				hid: 'description',
+				name: 'description',
+				content: 'Express Money. Demander du crédit pendant vos temps difficiles'
+			}
 		],
 		link: [
-			{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-			{ rel: 'icon', type: 'image/x-icon', href: '/logo.ico' },
+			{ rel: 'icon', type: 'image/x-icon', href: '/favicon.png' },
 			{
 				rel: 'stylesheet',
 				href: `https://fonts.googleapis.com/css2?family=Baloo+2:wght@500&display=swap`

@@ -17,6 +17,8 @@ $input-radius: 2px;
 $input-background-color: #fff;
 $input-disabled-background-color: #fff;
 $input-arrow: $primary;
+$family-sans-serif: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
+	"Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 // Setup $colors to use as bulma classes (e.g. 'is-twitter')
 $colors: mergeColorMaps(
 

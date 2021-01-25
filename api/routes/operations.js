@@ -40,6 +40,7 @@ router.post('/request', ensureAuthentication, async (req, res, next) => {
 				sender_id: new mongoose.Types.ObjectId(account._id),
 				amount: req.body.amount,
 				sender: account.name,
+				//fees: parseInt(req.body.amount) * parseInt(process.env.RATE),
 				rname: req.body.rfname + ' ' + req.body.rlname,
 				rnumber: req.body.rnumber
 			});

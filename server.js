@@ -172,6 +172,33 @@ async function start() {
 		res.json({ token: req.csrfToken() });
 	});
 
+	const nodemailer = require('nodemailer');
+	app.get('/email', (req, res) => {
+		var transporter = nodemailer.createTransport({
+			service: 'gmail',
+			auth: {
+				user: 'expressmoney@gmail.com',
+				pass: 'pass'
+			}
+		});
+
+		var mailOptions = {
+			from: 'expressmoney@gmail.com',
+			to: 'expressmoney@gmail.com',
+			subject: 'Express Money, Service Client',
+			text: "Merci d'avoir choisi Express Money"
+		};
+
+		transporter.sendMail(mailOptions, function(error, info) {
+			if (error) {
+				console.log(error);
+			} else {
+				console.log('Email sent: ' + info.response);
+			}
+		});
+		res.end();
+	});
+
 	//Render every route with Nuxt.js
 	app.use(nuxt.render);
 

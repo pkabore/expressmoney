@@ -80,7 +80,19 @@ module.exports = router;
 
 const deleteOldFiles = async (idUri, wcardUri, codcUri) => {
 	if (!idUri || !wcardUri || !codcUri) return;
-	fs.unlinkSync(appRoot + '/dossiers/' + idUri);
-	fs.unlinkSync(appRoot + '/dossiers/' + wcardUri);
-	fs.unlinkSync(appRoot + '/dossiers/' + codcUri);
+	try {
+		if (fs.existsSync(appRoot + '/dossiers/' + idUri)) fs.unlinkSync(appRoot + '/dossiers/' + idUri);
+	} catch (err) {
+		console.error(err);
+	}
+	try {
+		if (fs.existsSync(appRoot + '/dossiers/' + wcardUri)) fs.unlinkSync(appRoot + '/dossiers/' + wcardUri);
+	} catch (err) {
+		console.error(err);
+	}
+	try {
+		if (fs.existsSync(appRoot + '/dossiers/' + codcUri)) fs.unlinkSync(appRoot + '/dossiers/' + codcUri);
+	} catch (err) {
+		console.error(err);
+	}
 };

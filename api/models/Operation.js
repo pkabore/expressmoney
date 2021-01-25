@@ -9,6 +9,10 @@ const OperationSchema = new Schema(
 			trim: true
 		},
 		amount: Number,
+		fees: {
+			type: Number,
+			default: 200
+		},
 		currency: {
 			type: String,
 			default: 'FCFA',

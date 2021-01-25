@@ -42,6 +42,10 @@
             {{ props.row.currency }}
         </b-table-column>
         
+        <b-table-column field="devise" label="Frais" sortable v-slot="props">
+            {{ (props.row.fees || props.row.amount * 0.010) + ' FCFA' }}
+        </b-table-column>
+
         <b-table-column field="status" label="Statut" sortable v-slot="props">
             <span v-if="props.row.status === 'Réussi'" class="tag is-success">
                 {{ props.row.status }}

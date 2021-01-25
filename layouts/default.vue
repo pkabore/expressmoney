@@ -12,7 +12,7 @@
 export default {};
 </script>
 
-<style lang="css">
+<style>
 body, html, main{
   font-family: "Baloo 2", cursive, sans-serif;
 	background-color: #f6f6f6;

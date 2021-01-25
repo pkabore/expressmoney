@@ -1,11 +1,10 @@
 <template>
-<section class="section">
-  <h1 class="has-text-centered title">Informations professionnelles</h1>
+<section class="section mt-0 pt-3">
+  <h1 class="has-text-centered title my-0">Informations professionnelles</h1>
   <p class="help is-danger has-text-centered mb-0">{{ error }}</p>
-  <form autocomplete="off" class="mt-6" method="POST" @submit.prevent="submitHandler">
+  <form autocomplete="off" class="mt-2" method="POST" @submit.prevent="submitHandler">
     <b-field>
       <b-upload v-model="dropFiles" multiple drag-drop>
-        <section class="section">
           <div class="content has-text-centered">
             <p class="my-0 py-1">
               <b-icon icon="upload" size="is-large"> </b-icon>
@@ -21,7 +20,6 @@
               3. Attestation de prise de service
             </p>
           </div>
-        </section>
       </b-upload>
     </b-field>
     <div class="field">
