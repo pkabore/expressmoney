@@ -35,15 +35,11 @@
         </b-table-column>
 
         <b-table-column field="amount" label="Montant" sortable v-slot="props">
-            {{ props.row.amount }}
-        </b-table-column>
-
-        <b-table-column field="devise" label="Devise" sortable v-slot="props">
-            {{ props.row.currency }}
+            {{ props.row.amount + ' FCFA'}}
         </b-table-column>
         
         <b-table-column field="devise" label="Frais" sortable v-slot="props">
-            {{ (props.row.fees || props.row.amount * 0.010) + ' FCFA' }}
+            {{ (props.row.fees) + ' FCFA' }}
         </b-table-column>
 
         <b-table-column field="status" label="Statut" sortable v-slot="props">

@@ -11,7 +11,7 @@ const OperationSchema = new Schema(
 		amount: Number,
 		fees: {
 			type: Number,
-			default: 200
+			default: 0
 		},
 		currency: {
 			type: String,

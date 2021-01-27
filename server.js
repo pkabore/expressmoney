@@ -43,7 +43,7 @@ async function start() {
 	});
 
 	passport.deserializeUser((_id, done) => {
-		Account.findById(_id).select('name tel isAccountValidated').exec((err, account) => {
+		Account.findById(_id).select('name tel email isAccountValidated').exec((err, account) => {
 			if (err) {
 				return done(err);
 			}
@@ -54,37 +54,40 @@ async function start() {
 	passport.use(
 		new LocalStrategy(
 			{
-				usernameField: 'tel',
+				usernameField: 'email',
 				passwordField: 'pwd'
 			},
-			async (tel, pwd, done) => {
-				Account.findOne({ tel: tel }).select('_id name isAccountValidated tel pwd').exec((err, account) => {
-					if (err) {
-						return done(err);
-					}
-					if (!account) {
-						return done(null, false, {
-							message: 'Mot de passe ou numéro de téléphone incorrect.'
-						});
-					}
-					bcrypt.compare(pwd, account.pwd, (bcrypt_err, bcrypt_res) => {
-						if (bcrypt_err) {
+			async (email, pwd, done) => {
+				Account.findOne({ $or: [ { email }, { tel: email } ] })
+					.select('_id name isAccountValidated tel email pwd')
+					.exec((err, account) => {
+						if (err) {
 							return done(err);
 						}
-						if (!bcrypt_res) {
+						if (!account) {
 							return done(null, false, {
-								message: 'Mot de passe ou numéro de téléphone incorrect.'
+								message: 'Mot de passe, numéro ou e-mail incorrect.'
 							});
 						}
-						const sessionAccount = {
-							_id: account._id,
-							name: account.name,
-							isAccountValidated: account.isAccountValidated,
-							tel: account.tel
-						};
-						return done(null, sessionAccount);
+						bcrypt.compare(pwd, account.pwd, (bcrypt_err, bcrypt_res) => {
+							if (bcrypt_err) {
+								return done(err);
+							}
+							if (!bcrypt_res) {
+								return done(null, false, {
+									message: 'Mot de passe, numéro ou e-mail incorrect.'
+								});
+							}
+							const sessionAccount = {
+								_id: account._id,
+								name: account.name,
+								tel: account.tel,
+								email: account.email,
+								isAccountValidated: account.isAccountValidated
+							};
+							return done(null, sessionAccount);
+						});
 					});
-				});
 			}
 		)
 	);
@@ -154,8 +157,7 @@ async function start() {
 	app.get(
 		'/dossiers/:id',
 		passport.authenticate('headerapikey', {
-			session: false,
-			failureRedirect: '/account/login'
+			session: false
 		}),
 		(req, res) => {
 			const path = __dirname + `/dossiers/${req.params.id}`;
@@ -170,33 +172,6 @@ async function start() {
 	/*------------------------------------------------------------------------*/
 	app.get('/api/auth/csrf', (req, res) => {
 		res.json({ token: req.csrfToken() });
-	});
-
-	const nodemailer = require('nodemailer');
-	app.get('/email', (req, res) => {
-		var transporter = nodemailer.createTransport({
-			service: 'gmail',
-			auth: {
-				user: 'expressmoney@gmail.com',
-				pass: 'pass'
-			}
-		});
-
-		var mailOptions = {
-			from: 'expressmoney@gmail.com',
-			to: 'expressmoney@gmail.com',
-			subject: 'Express Money, Service Client',
-			text: "Merci d'avoir choisi Express Money"
-		};
-
-		transporter.sendMail(mailOptions, function(error, info) {
-			if (error) {
-				console.log(error);
-			} else {
-				console.log('Email sent: ' + info.response);
-			}
-		});
-		res.end();
 	});
 
 	//Render every route with Nuxt.js

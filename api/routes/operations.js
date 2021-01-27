@@ -25,12 +25,13 @@ router.get('/', ensureAuthentication, async (req, res, next) => {
 router.post('/request', ensureAuthentication, async (req, res, next) => {
 	Account.findOne({ _id: req.user._id, isAccountValidated: 'Validé' }).select('pwd name').exec((err, account) => {
 		if (err) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+
 		bcrypt.compare(req.body.pwd, account.pwd, (bcrypt_err, bcrypt_res) => {
 			if (bcrypt_err) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
 			if (!bcrypt_res) return res.status(400).json({ message: 'Mot de passe incorrect' });
 			if (
-				parseInt(req.body.amount) < parseInt(process.env.SOMME_MIN) ||
-				parseInt(req.body.amount) > parseInt(process.env.SOMME_MAX)
+				parseFloat(req.body.amount) < parseFloat(process.env.SOMME_MIN) ||
+				parseFloat(req.body.amount) > parseFloat(process.env.SOMME_MAX)
 			)
 				return res.status(400).json({
 					message: `Veuillez choisir un montant compris entre ${process.env.SOMME_MIN} et ${process.env
@@ -40,7 +41,7 @@ router.post('/request', ensureAuthentication, async (req, res, next) => {
 				sender_id: new mongoose.Types.ObjectId(account._id),
 				amount: req.body.amount,
 				sender: account.name,
-				//fees: parseInt(req.body.amount) * parseInt(process.env.RATE),
+				fees: parseFloat(req.body.amount) * parseFloat(process.env.RATE),
 				rname: req.body.rfname + ' ' + req.body.rlname,
 				rnumber: req.body.rnumber
 			});

@@ -1,6 +1,5 @@
 <template>
 <div>
-  <section class="section">
   <div class="columns is-centered mt-4">
     <div class="column is-one-third-desktop is-half-tablet">
       <form autocomplete="off" @submit.prevent="handleRegistration" method="POST">
@@ -9,7 +8,7 @@
         </h2>
         <p class="help is-danger has-text-centered mt-1">{{ error }}</p>
         <div class="columns my-0 is-mobile">
-          <div class="column my-0 py-0">
+          <div class="column my-0 pr-0 py-0">
             <div class="field">
               <div class="control mx-1 my-0">
                 <label class="label help is-black" for="fname">Prénom:</label>
@@ -25,7 +24,7 @@
               </div>
             </div>
           </div>
-          <div class="column my-0 py-0">
+          <div class="column my-0 pl-0 py-0">
             <div class="field">
               <div class="control mx-1 my-0">
                 <label class="label help is-black" for="lname">Nom:</label>
@@ -53,8 +52,20 @@
               v-model="account.tel"
               type="tel"
               required="required"
-              placeholder="Numéro de téléphone"
+              placeholder="70 00 00 00"
               name="tel"
+            />
+            <label class="label help is-black" for="email"
+              >Addresse E-mail:</label
+            >
+            <input
+              class="input"
+              id="email"
+              v-model="account.email"
+              type="email"
+              required="required"
+              placeholder="exemple@example.com"
+              name="email"
             />
             <label class="label help is-black" for="pass"
               >Choisissez un mot de passe:</label
@@ -65,7 +76,7 @@
               v-model="account.pwd"
               type="password"
               required="required"
-              placeholder="Mot de passe"
+              placeholder="********"
               name="pwd"
             />
             <label class="label help is-black" for="passC"
@@ -76,7 +87,7 @@
               type="password"
               v-model="account.confirmedPWD"
               required="required"
-              placeholder="Confirmez mot de passe"
+              placeholder="********"
               name="confirmedPWD"
             />
             <button :class="['mt-2 button is-fullwidth is-primary', {'is-loading': isLoading}]" type="submit">
@@ -92,7 +103,6 @@
       </form>
     </div>
   </div>
-  </section>
   </div>
 </template>
 
@@ -111,6 +121,7 @@ export default {
         fname: "",
         lname: "",
         tel: "",
+        email: "",
         pwd: "",
         confirmedPWD: ""
       },
@@ -142,7 +153,7 @@ export default {
         if (response.message) {
           try {
             const credentials = {
-              tel: this.account.tel,
+              email: this.account.email,
               pwd: this.account.pwd
             };
             await this.$auth.loginWith("cookie", { data: credentials });

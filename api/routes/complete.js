@@ -48,7 +48,7 @@ router.post('/', ensureAuthentication, (req, res, next) => {
 		} else if (err) {
 			return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
 		}
-		Account.findOne({ tel: req.user.tel, isAccountValidated: { $ne: 'Confirmé' } }, async (err, account) => {
+		Account.findOne({ tel: req.user.tel, isAccountValidated: { $ne: 'Validé' } }, async (err, account) => {
 			if (err) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
 			if (!account) {
 				return res.redirect('/operations');

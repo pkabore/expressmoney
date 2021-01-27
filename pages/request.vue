@@ -26,7 +26,7 @@
         </div>
         <div class="field my-0">
             <label for="amount" class="label help py-0 my-0">Montant en FCFA:</label>
-            <input class="input" v-model="request.amount" min=0 max=50000 placeholder="10000" type="number" id="amount" name="amount">
+            <input class="input" v-model="request.amount" placeholder="10000" type="number" id="amount" name="amount">
         </div>
         <div class="field my-0">
             <label for="pwd" class="label help py-0 my-0">Confirmez votre mot de passe:</label>
@@ -52,15 +52,11 @@
             </li>
             <li class="columns m-0 p-0 is-mobile list-item mt-1">
               <div class="column m-0 py-0 px-2 has-text-weight-bold">Montant:</div>
-              <div class="column m-0 py-0 px-2">{{ request.amount }}</div>
+              <div class="column m-0 py-0 px-2">{{ request.amount }} FCFA</div>
             </li>
             <li class="columns m-0 p-0 is-mobile list-item mt-1">
               <div class="column m-0 py-0 px-2 has-text-weight-bold">Frais d'envoi:</div>
-              <div class="column m-0 py-0 px-2">{{ request.amount * fee_rate}}</div>
-            </li>
-            <li class="columns m-0 p-0 is-mobile list-item mt-1">
-              <div class="column m-0 py-0 px-2 has-text-weight-bold">Devise:</div>
-              <div class="column m-0 py-0 px-2">FCFA</div>
+              <div class="column m-0 py-0 px-2">{{ request.amount * fee_rate}} FCFA</div>
             </li>
           </ul>
         </section>
@@ -85,7 +81,7 @@ export default {
         return {
             modal: false,
             error: "",
-            fee_rate: 0.02,
+            fee_rate: 0.05,
             request: {
                 rfname: '',
                 rlname: '',
@@ -104,8 +100,8 @@ export default {
                 this.isLoading = false;
                 return;
             }
-            if (this.request.amount < 500){
-                this.error = "Veuillez choisir un montant supérieur.";
+            if (this.request.amount < 500 || this.request.amount > 50000){
+                this.error = "Veuillez choisir un montant entre 500 et 50 000.";
                 this.isLoading = false;
                 return;
             }

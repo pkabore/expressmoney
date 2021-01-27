@@ -43,9 +43,12 @@ strong {
 }
 
 .list-item {
-    padding: 7px 0px;
-    margin: 0;
-    border-bottom: 2px dotted #e0e0e0;
+  padding: 7px 0px;
+  margin: 0;
+  border-bottom: 2px dotted #e0e0e0;
 }
 
+.input:focus{
+  box-shadow: none;
+}
 </style>

@@ -1,8 +1,8 @@
 // Import Bulma's core
 @import "~bulma/sass/utilities/_all";
 
-// Set your colors
-$primary: #38b5fc;
+//Set your colors
+$primary: #2196f3;
 $primary-light: findLightColor($primary);
 $primary-dark: findDarkColor($primary);
 $primary-invert: findColorInvert($primary);
@@ -15,8 +15,8 @@ $custom-shades: null !default;
 
 $input-radius: 2px;
 $input-background-color: #fff;
-$input-disabled-background-color: #fff;
 $input-arrow: $primary;
+
 $family-sans-serif: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
 	"Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 // Setup $colors to use as bulma classes (e.g. 'is-twitter')

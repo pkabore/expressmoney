@@ -1,20 +1,19 @@
 <template>
   <div>
-    <section class="section">
     <div class="columns is-centered mt-6">
-      <div class="column is-half-tablet is-one-third-desktop">
+      <div class="column is-two-thirds-tablet is-half-desktop mt-6">
         <h2 class="has-text-centered title has-text-primary mb-3">
           <b-icon icon="lock" size="is-medium" />&nbsp; Se connecter
         </h2>
         <form autocomplete="off" @submit.prevent="handleLogin">
           <p class="help has-text-centered is-danger">{{ error }}</p>
-          <div class="field">
-            <label class="label help" for="tel">Numéro de téléphone</label>
-            <input v-model="tel" id="tel" class="input" type="tel" />
+          <div class="field my-0">
+            <label class="label help" for="email">Numéro de téléphone ou e-mail:</label>
+            <input v-model="email" id="email" class="input" type="text" placeholder="exemple@exemple.com" />
           </div>
-          <div class="field mt-0">
-            <label class="label help" for="pass">Mot de passe</label>
-            <input v-model="pwd" id="pass" class="input" type="password" />
+          <div class="field my-0">
+            <label class="label help" for="pass">Mot de passe:</label>
+            <input v-model="pwd" id="pass" class="input" type="password" placeholder="********" />
             <button :class="['button mt-2 is-fullwidth is-primary', {'is-loading': isLoading}]" type="submit">
               Se connecter
             </button>
@@ -28,7 +27,6 @@
         </form>
       </div>
     </div>
-    </section>
   </div>
 </template>
 
@@ -42,7 +40,7 @@ export default {
 },
   data() {
     return {
-      tel: "",
+      email: "",
       pwd: "",
       showPass: false,
       error: "",
@@ -56,7 +54,7 @@ export default {
         const csrf = await this.$axios.$get("/api/auth/csrf");
         this.$axios.setHeader("XSRF-TOKEN", csrf.token);
         await this.$auth.loginWith("cookie", {
-          data: { tel: this.tel, pwd: this.pwd }
+          data: { email: this.email, pwd: this.pwd }
         });
       } catch (err) {
         this.isLoading = false;

@@ -1,6 +1,6 @@
 <template>
-<section class="section mt-0 pt-3">
-  <h1 class="has-text-centered title my-0">Informations professionnelles</h1>
+<section class="section mt-3 pt-4">
+  <h1 class="has-text-centered title mt-3">Complétion de dossier</h1>
   <p class="help is-danger has-text-centered mb-0">{{ error }}</p>
   <form autocomplete="off" class="mt-2" method="POST" @submit.prevent="submitHandler">
     <b-field>
@@ -135,6 +135,9 @@ export default {
 
       try {
         await this.$axios.post("/api/complete", formData, config);
+        await this.$auth.loginWith("cookie", {
+          data: { email: this.email, pwd: this.pwd }
+        });
         await this.$auth.fetchUser()
         this.$router.push('/operations');
       } catch (error) {

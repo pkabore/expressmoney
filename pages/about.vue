@@ -5,7 +5,7 @@
       <div class="column is-four-fiths-desktop is-four-fiths-tablet">
         <div class="columns mt-4">
           <div class="column">
-              <h2 class="title has-text-info has-text-centered">
+              <h2 class="title has-text-primary has-text-centered">
                 <b-icon icon="help-circle" size="is-medium"/>
                 A propos de nous
               </h2>
@@ -18,7 +18,7 @@
               </p>
           </div>
           <div class="column">
-              <h2 class="title has-text-info has-text-centered">
+              <h2 class="title has-text-primary has-text-centered">
                 <b-icon icon="briefcase" size="is-medium"/>
                 Notre mission
               </h2>
@@ -36,7 +36,7 @@
     </div>
     <p class="has-text-centered mb-3">
       <NuxtLink to="/register" v-if="!this.$auth.loggedIn" class="button is-primary">
-        <b-icon icon="arrow-right" size="is-small"></b-icon>&nbsp;&nbsp; Créer un compte Express Money pour commencer
+        <b-icon icon="chevron-triple-right" size="is-small"></b-icon>&nbsp;&nbsp; Créer un compte Express Money pour commencer
       </NuxtLink>
     </p>
     </section>

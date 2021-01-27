@@ -12,8 +12,12 @@ const AccountSchema = new Schema(
 			type: String,
 			trim: true
 		},
+		email: {
+			unique: true,
+			type: String,
+			trim: true
+		},
 		pwd: String,
-		status: String,
 		idUri: String,
 		wcardUri: String,
 		codcUri: String,

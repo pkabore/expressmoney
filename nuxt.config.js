@@ -47,7 +47,7 @@ export default {
 
 	modules: [ '@nuxtjs/auth-next', '@nuxtjs/axios', 'nuxt-helmet', 'nuxt-buefy' ],
 
-	css: [ '~/assets/scss/main' ],
+	css: [ '~/assets/scss/main', '~/assets/css/style' ],
 
 	auth: {
 		watchLoggedIn: true,

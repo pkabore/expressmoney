@@ -2,11 +2,11 @@
   <header>
     <b-navbar centered class="is-primary">
       <template #brand>
-        <b-navbar-item tag="router-link" :to="{ path: '/' }">
-          <img
+        <b-navbar-item tag="nuxt-link" to="/">
+          <!-- <img
             src="../static/logo-white.svg"
             alt="Demander du crédit, c'est simple et rapide avec Express Money"
-          >
+          > -->
           Express Money
         </b-navbar-item>
       </template>
