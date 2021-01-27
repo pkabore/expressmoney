@@ -16,25 +16,26 @@ const ensureAuthentication = (req, res, next) => {
 /*-------------------------account routes------------------------------*/
 router.get('/account', ensureAuthentication, (req, res) => {
 	Account.findOne({ email: req.user.email }).select('-pwd -_id').exec((err, account) => {
-		if (err) {
-			return res.status(500).end();
-		}
+		if (err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
 		return res.json(account);
+	});
+});
+
+router.post('/delete', ensureAuthentication, (req, res) => {
+	Account.findOne({ email: req.user.email }, async (err, account) => {
+		if (err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+		account.isAccountValidated = 'Suppression';
+		await account.save();
+		return res.json({ message: 'ok' });
 	});
 });
 
 router.post('/login', (req, res, next) => {
 	passport.authenticate('local', (err, user, info) => {
-		if (err) {
-			return next(err);
-		}
-		if (!user) {
-			return res.status(400).json(info);
-		}
+		if (err) return next(err);
+		if (!user) return res.status(400).json(info);
 		req.logIn(user, (err) => {
-			if (err) {
-				return next(err);
-			}
+			if (err) return next(err);
 			return res.status(200).end();
 		});
 	})(req, res, next);

@@ -35,6 +35,9 @@
                 <b-tag v-if="account.isAccountValidated === ''" type="is-info">
                   Visiteur
                 </b-tag>
+                <b-tag v-if="account.isAccountValidated === 'Suppression'" type="is-danger">
+                  Suppression
+                </b-tag>
               </div>
             </li>
             <li class="columns m-0 p-0 is-mobile list-item mt-4">
@@ -66,15 +69,32 @@
               <div class="column m-0 p-0 is-6">{{ new Date(account.createdAt).toLocaleString('fr-FR') }}</div>
             </li>
             <li class="columns m-0 p-0 is-mobile mt-1">
-              <div class="column m-t py-0 px-2 has-text-weight-bold">Dernière mise à Jour:</div>
+              <div class="column m-t py-0 px-2 has-text-weight-bold">Dernière mise à jour:</div>
               <div class="column m-0 p-0 is-6">{{ new Date(account.updatedAt).toLocaleString('fr-FR') }}</div>
             </li>
           </ul>
-          <b-message v-if="account.isAccountValidated !== 'Validé'" type="is-warning"><NuxtLink to="/complete">Pendant que votre compte n'est pas encore approuvé vous pouvez mettre à jour votre dossier si nécessaire.</NuxtLink></b-message>
+          <b-message v-if="account.isAccountValidated !== 'Validé' && account.isAccountValidated !== 'Suppression'" type="is-warning"><NuxtLink to="/complete">Pendant que votre compte n'est pas encore approuvé vous pouvez mettre à jour votre dossier si nécessaire.</NuxtLink></b-message>
           <hr class="divider">
-          <button class="mt-4 button is-fullwidth is-danger">
+          <button v-if="account.isAccountValidated !== 'Suppression'" @click="openModal()" class="mt-4 button is-fullwidth is-danger">
             <b-icon icon="delete" class="icon is-small" size="is-small" ></b-icon>&nbsp;&nbsp;
-            Supprimer mon compte</button>
+            Supprimer mon compte
+          </button>
+          <b-notification v-if="account.isAccountValidated === 'Suppression'" type="is-warning is-light">Demande de suppression de compte en cours.</b-notification>
+      </div>
+    </div>
+    <div :class="['modal', {'is-active': modal}]">
+      <div class="modal-background"></div>
+      <div class="card">
+        <header class="card-header">
+          <p class="card-header-title has-text-centered">Confirmation</p>
+        </header>
+        <section class="card-content">
+          <p class="has-text-center has-text-danger">Êtes-vous sûr de vouloir supprimer votre compte ?<br>Attention: Cette action est irréversible!</p>
+        </section>
+        <footer class="card-footer">
+          <a href="#" class="card-footer-item has-text-danger" @click.prevent="closeModal()"><b-icon icon="close"></b-icon>&nbsp; Annuler</a>
+          <a href="#" class="card-footer-item" @click.prevent="requestAccountDeletion()"><b-icon icon="check"></b-icon>&nbsp; Envoyer</a>
+        </footer>
       </div>
     </div>
   </section>
@@ -88,8 +108,30 @@ export default {
       { hid: 'description', name: 'description', content: "Express Money - Consultez vos informations personnelles." }
     ]
   },
-  async fetch(){
-
+  data(){
+    return {
+      modal: false
+    }
+  },
+  methods: {
+    async requestAccountDeletion(){
+      this.modal = false;
+      try {
+        const csrf = await this.$axios.$get("/api/auth/csrf");
+        this.$axios.setHeader("XSRF-TOKEN", csrf.token);
+        const res = await this.$axios.$post("/api/auth/delete");
+        if (res.message)
+          await this.$auth.fetchUser();
+      } catch (err) {
+        this.error = err.response.data.message;
+      }
+    },
+    closeModal(){
+      this.modal = false;
+    },
+    openModal(){
+      this.modal = true;
+    }
   },
   computed: {
     isAuthenticated() {

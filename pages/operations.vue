@@ -106,8 +106,10 @@ data() {
       }
     },
     async fetch() {
+      if(this.$auth.user.isAccountValidated === 'Suppression')
+        return;
       try {
-        const response = await this.$axios.get(`/api/operations`);
+        const response = await this.$axios.$get(`/api/operations`);
         let total = 0;
         this.operations = response.data.map((operation, id) => {
           operation.id = id + 1;
