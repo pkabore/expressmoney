@@ -73,13 +73,18 @@
               <div class="column m-0 p-0 is-6">{{ new Date(account.updatedAt).toLocaleString('fr-FR') }}</div>
             </li>
           </ul>
-          <b-message v-if="account.isAccountValidated !== 'Validé' && account.isAccountValidated !== 'Suppression'" type="is-warning"><NuxtLink to="/complete">Pendant que votre compte n'est pas encore approuvé vous pouvez mettre à jour votre dossier si nécessaire.</NuxtLink></b-message>
-          <hr class="divider">
-          <button v-if="account.isAccountValidated !== 'Suppression'" @click="openModal()" class="mt-4 button is-fullwidth is-danger">
-            <b-icon icon="delete" class="icon is-small" size="is-small" ></b-icon>&nbsp;&nbsp;
-            Supprimer mon compte
-          </button>
-          <b-notification v-if="account.isAccountValidated === 'Suppression'" type="is-warning is-light">Demande de suppression de compte en cours.</b-notification>
+          <b-message class="mt-3" v-if="account.isAccountValidated !== 'Validé' && account.isAccountValidated !== 'Suppression'" type="is-warning">
+            <NuxtLink to="/complete">
+              Pendant que votre compte n'est pas encore approuvé vous pouvez mettre à jour votre dossier si nécessaire.
+            </NuxtLink>
+          </b-message>
+          <b-message v-if="account.isAccountValidated !== 'En attente' && account.isAccountValidated !== 'Suppression'" class="mt-6 has-text-centered" type="is-danger">
+            <a @click.prevent="openModal()" href="#" class="has-text-centered">
+              <b-icon icon="delete" class="icon is-small" size="is-small" ></b-icon>&nbsp;&nbsp;
+              Supprimer mon compte
+            </a>
+          </b-message>
+          <b-notification v-if="account.isAccountValidated === 'Suppression'" class="mt-4 has-text-centered" type="is-warning is-light">Demande de suppression de compte en cours.</b-notification>
       </div>
     </div>
     <div :class="['modal', {'is-active': modal}]">

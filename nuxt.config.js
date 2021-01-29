@@ -31,14 +31,6 @@ export default {
 		height: '2px'
 	},
 
-	// pageTransition: {
-	//   name: 'page',
-	//   mode: 'out-in',
-	//   // beforeEnter (el) {
-	//   //   console.log('Before enter...');
-	//   // }
-	// },
-
 	components: true,
 
 	buildModules: [],
@@ -80,7 +72,7 @@ export default {
 	},
 
 	axios: {
-		baseURL: 'http://localhost:3000'
+		baseURL: 'http://localhost:4000'
 	},
 
 	publicRuntimeConfig: {

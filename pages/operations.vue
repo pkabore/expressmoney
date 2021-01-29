@@ -10,7 +10,10 @@
           </NuxtLink>
         </p>
     <div class="columns" v-if="account.isAccountValidated === 'Validé'">
-      <div class="column">
+      <div class="column" v-if='isLoading'>
+        <h2 class="subtitle has-text-centered">Chargement en cours ...</h2>
+      </div>
+      <div class="column" v-if="!isLoading" >
         <b-table
         :data="operations"
         striped
@@ -106,17 +109,14 @@ data() {
       }
     },
     async fetch() {
-      if(this.$auth.user.isAccountValidated === 'Suppression')
+      if(this.account.isAccountValidated === 'Suppression')
         return;
       try {
         const response = await this.$axios.$get(`/api/operations`);
-        let total = 0;
-        this.operations = response.data.map((operation, id) => {
+        this.operations = response.map((operation, id) => {
           operation.id = id + 1;
-          ++total;
           return operation;
         });
-        this.total = total;
         this.isLoading = false; 
       } catch (error) {
         console.log(error);

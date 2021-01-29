@@ -135,9 +135,6 @@ export default {
 
       try {
         await this.$axios.post("/api/complete", formData, config);
-        await this.$auth.loginWith("cookie", {
-          data: { email: this.email, pwd: this.pwd }
-        });
         await this.$auth.fetchUser()
         this.$router.push('/operations');
       } catch (error) {

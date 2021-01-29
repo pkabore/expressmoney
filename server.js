@@ -155,7 +155,7 @@ async function start() {
 	});
 
 	app.get(
-		'/dossiers/:id',
+		'/remote-access/dossiers/:id',
 		passport.authenticate('headerapikey', {
 			session: false
 		}),
