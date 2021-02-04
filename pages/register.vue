@@ -1,119 +1,122 @@
 <template>
-<div>
-  <div class="columns is-centered mt-4">
-    <div class="column is-one-third-desktop is-half-tablet">
-      <form autocomplete="off" @submit.prevent="handleRegistration" method="POST">
-        <h2 class="title has-text-centered has-text-primary">
-          <b-icon size="is-small" icon="account-circle"/>&nbsp; S'inscrire
-        </h2>
-        <p class="help is-danger has-text-centered mt-1">{{ error }}</p>
-        <div class="columns my-0 is-mobile">
-          <div class="column my-0 pr-0 py-0">
-            <div class="field">
-              <div class="control mx-1 my-0">
-                <label class="label help is-black" for="fname">Prénom:</label>
-                <input
-                  class="input"
-                  id="fname"
-                  type="text"
-                  v-model="account.fname"
-                  required="required"
-                  placeholder="Prénom"
-                  name="fname"
-                />
+  <div>
+    <div class="columns is-centered mt-4">
+      <div class="column is-one-third-desktop is-half-tablet">
+        <b-notification
+          v-if="recordSavedNotification"
+          type="is-light is-success"
+          has-icon
+          icon="check"
+          aria-close-label="Close notification"
+        >Veuillez consulter votre email pour confirmer votre compte.</b-notification>
+        <form autocomplete="off" @submit.prevent="handleRegistration" method="POST">
+          <h1 class="title has-text-centered has-text-primary">
+            <b-icon icon="user" />&nbsp; S'inscrire
+          </h1>
+          <p class="help is-danger has-text-centered mt-1">{{ error }}</p>
+          <div class="columns my-0 is-mobile">
+            <div class="column my-0 pr-0 py-0">
+              <div class="field">
+                <div class="control mx-1 my-0">
+                  <label class="label help is-black" for="fname">Prénom:</label>
+                  <input
+                    class="input"
+                    id="fname"
+                    type="text"
+                    v-model="account.fname"
+                    required="required"
+                    placeholder="Prénom"
+                    name="fname"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="column my-0 pl-0 py-0">
+              <div class="field">
+                <div class="control mx-1 my-0">
+                  <label class="label help is-black" for="lname">Nom:</label>
+                  <input
+                    class="input"
+                    id="lname"
+                    type="text"
+                    v-model="account.lname"
+                    required="required"
+                    placeholder="Nom"
+                    name="lname"
+                  />
+                </div>
               </div>
             </div>
           </div>
-          <div class="column my-0 pl-0 py-0">
-            <div class="field">
-              <div class="control mx-1 my-0">
-                <label class="label help is-black" for="lname">Nom:</label>
-                <input
-                  class="input"
-                  id="lname"
-                  type="text"
-                  v-model="account.lname"
-                  required="required"
-                  placeholder="Nom"
-                  name="lname"
-                />
-              </div>
+          <div class="field my-0">
+            <div class="control mx-1">
+              <label class="label help is-black" for="tel">N° de téléphone:</label>
+              <input
+                class="input"
+                id="tel"
+                v-model="account.tel"
+                type="tel"
+                required="required"
+                placeholder="70 00 00 00"
+                name="tel"
+              />
+              <label class="label help is-black" for="email">Addresse E-mail:</label>
+              <input
+                class="input"
+                id="email"
+                v-model="account.email"
+                type="email"
+                required="required"
+                placeholder="exemple@example.com"
+                name="email"
+              />
+              <label class="label help is-black" for="pass">Choisissez un mot de passe:</label>
+              <input
+                class="input"
+                id="pass"
+                v-model="account.pwd"
+                type="password"
+                required="required"
+                placeholder="********"
+                name="pwd"
+              />
+              <label class="label help is-black" for="passC">Confirmez mot de passe:</label>
+              <input
+                class="input"
+                type="password"
+                v-model="account.confirmedPWD"
+                required="required"
+                placeholder="********"
+                name="confirmedPWD"
+              />
+              <button
+                :class="['mt-2 button is-fullwidth is-primary is-radiusless', {'is-loading': isLoading}]"
+                type="submit"
+              >Créer un compte</button>
             </div>
           </div>
-        </div>
-        <div class="field my-0">
-          <div class="control mx-1">
-            <label class="label help is-black" for="tel"
-              >N° de téléphone:</label
-            >
-            <input
-              class="input"
-              id="tel"
-              v-model="account.tel"
-              type="tel"
-              required="required"
-              placeholder="70 00 00 00"
-              name="tel"
-            />
-            <label class="label help is-black" for="email"
-              >Addresse E-mail:</label
-            >
-            <input
-              class="input"
-              id="email"
-              v-model="account.email"
-              type="email"
-              required="required"
-              placeholder="exemple@example.com"
-              name="email"
-            />
-            <label class="label help is-black" for="pass"
-              >Choisissez un mot de passe:</label
-            >
-            <input
-              class="input"
-              id="pass"
-              v-model="account.pwd"
-              type="password"
-              required="required"
-              placeholder="********"
-              name="pwd"
-            />
-            <label class="label help is-black" for="passC"
-              >Confirmez mot de passe:</label
-            >
-            <input
-              class="input"
-              type="password"
-              v-model="account.confirmedPWD"
-              required="required"
-              placeholder="********"
-              name="confirmedPWD"
-            />
-            <button :class="['mt-2 button is-fullwidth is-primary', {'is-loading': isLoading}]" type="submit">
-              Créer un compte
-            </button>
-          </div>
-        </div>
-        <p class="has-text-centered help is-info">
-          <NuxtLink to="/login"
-            >Vous avez déjà un compte? Cliquez ici pour vous connecter</NuxtLink
-          >
-        </p>
-      </form>
+          <p class="has-text-centered help is-info">
+            <NuxtLink to="/login">Vous avez déjà un compte? Cliquez ici pour vous connecter</NuxtLink>
+          </p>
+        </form>
+      </div>
     </div>
-  </div>
   </div>
 </template>
 
 <script>
 export default {
-  head:{
-  title : "Création de compte",
-  meta: [
-    { hid: 'description', name: 'description', content: "Créer un compte pour effectuer vos demandes chez Express Money." }
-  ]
-},
+  head: {
+    title: "Création de compte",
+    meta: [
+      {
+        hid: "description",
+        name: "description",
+        content:
+          "Créer un compte pour effectuer vos demandes chez Express Money.",
+      },
+    ],
+  },
   auth: false,
   data() {
     return {
@@ -123,10 +126,11 @@ export default {
         tel: "",
         email: "",
         pwd: "",
-        confirmedPWD: ""
+        confirmedPWD: "",
       },
       error: "",
-      isLoading: false
+      recordSavedNotification: false,
+      isLoading: false,
     };
   },
   methods: {
@@ -142,8 +146,8 @@ export default {
         const csrf = await this.$axios.$get("/api/auth/csrf");
         const config = {
           headers: {
-            "XSRF-TOKEN": csrf.token
-          }
+            "XSRF-TOKEN": csrf.token,
+          },
         };
         const response = await this.$axios.$post(
           "/api/auth/register",
@@ -151,17 +155,7 @@ export default {
           config
         );
         if (response.message) {
-          try {
-            const credentials = {
-              email: this.account.email,
-              pwd: this.account.pwd
-            };
-            await this.$auth.loginWith("cookie", { data: credentials });
-            this.$router.push('/operations');
-          } catch (err) {
-            this.error = err.message;
-            this.isLoading = false;
-          }
+          this.recordSavedNotification = true;
         }
       } catch (err) {
         if (err.response) {
@@ -177,7 +171,7 @@ export default {
             this.error = err.response.data.err;
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
