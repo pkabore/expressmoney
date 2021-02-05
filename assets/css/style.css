@@ -30,3 +30,13 @@ main {
 .navbar-menu{
   box-shadow: none;
 }
+
+.card.larger{
+  width: 60%;
+}
+
+@media(max-width: 768px){
+  .card.larger{
+    width: 100%;
+  }
+}

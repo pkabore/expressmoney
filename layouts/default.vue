@@ -1,5 +1,5 @@
 <template>
-  <div class="has-background-light">
+  <div class>
     <AppBar />
     <main>
       <Nuxt />

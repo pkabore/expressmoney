@@ -1,6 +1,6 @@
 <template>
   <div class="columns is-centered mt-6">
-    <div class="column is-two-thirds-tablet is-half-desktop mt-6">
+    <div class="column is-two-thirds-tablet is-half-desktop box mt-6">
       <h2 class="has-text-centered title has-text-primary mb-3">
         <b-icon pack="fas" icon="sign-in-alt" size="is-medium" />&nbsp; Se connecter
       </h2>

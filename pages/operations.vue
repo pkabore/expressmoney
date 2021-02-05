@@ -1,145 +1,155 @@
 <template>
-  <div>
-    <section class="section">
-      <h1 class="title has-text-centered is-size-6-mobile">Mes opérations</h1>
-      <p class="has-text-centered mb-3" v-if="account.isAccountValidated === 'Validé'">
-        <b-button
-          tag="nuxt-link"
-          to="/request"
-          type="is-success"
-          class="is-block is-radiusless"
-        >Cliquez ici pour une demande de crédit</b-button>
-      </p>
-      <div class="columns" v-if="account.isAccountValidated === 'Validé'">
-        <div class="column mx-0" v-if="isLoading">
-          <h2 class="subtitle has-text-centered">Chargement en cours ...</h2>
-        </div>
-        <div class="column" v-if="!isLoading">
-          <b-table
-            :data="operations"
-            striped
-            narrowed
-            hoverable
-            paginated
-            :per-page="perPage"
-            pagination-rounded
-            default-sort="createdAt"
-            default-sort-direction="desc"
-            :loading="isLoading"
-          >
-            <b-table-column
-              field="id"
-              label="ID"
-              width="40"
-              sortable
-              numeric
-              v-slot="props"
-            >{{ props.row.id }}</b-table-column>
-
-            <b-table-column
-              field="rname"
-              label="Nom du Receveur"
-              sortable
-              v-slot="props"
-            >{{ props.row.rname }}</b-table-column>
-
-            <b-table-column
-              field="rnumber"
-              label="Numéro du Receveur"
-              sortable
-              v-slot="props"
-            >{{ props.row.rnumber }}</b-table-column>
-
-            <b-table-column
-              field="amount"
-              label="Montant"
-              sortable
-              v-slot="props"
-            >{{ props.row.amount + ' FCFA'}}</b-table-column>
-
-            <b-table-column
-              field="devise"
-              label="Frais"
-              sortable
-              v-slot="props"
-            >{{ (props.row.fees) + ' FCFA' }}</b-table-column>
-
-            <b-table-column field="status" label="Statut" sortable v-slot="props">
-              <span
-                v-if="props.row.status === 'Réussi'"
-                class="tag is-success"
-              >{{ props.row.status }}</span>
-              <span
-                v-if="props.row.status === 'En cours'"
-                class="tag is-info"
-              >{{ props.row.status }}</span>
-              <span
-                v-if="props.row.status === 'Échoué'"
-                class="tag is-danger"
-              >{{ props.row.status }}</span>
-            </b-table-column>
-            <b-table-column field="actions" label="Actions" sortable v-slot="props">
-              <div v-if="props.row.status === 'En cours'">
-                <button class="button is-small is-primary" @click.prevent="openModal(props.row.id)">
-                  <b-icon icon="pen" />&nbsp;&nbsp;
-                  Editer
-                </button>
-              </div>
-            </b-table-column>
-            <b-table-column
-              field="createdAt"
-              label="Date"
-              sortable
-              centered
-              v-slot="props"
-            >{{ new Date(props.row.createdAt).toLocaleString('fr-FR') }}</b-table-column>
-          </b-table>
-        </div>
+  <section class="section">
+    <h1 class="title has-text-centered is-size-6-mobile">Mes opérations</h1>
+    <p class="has-text-centered mb-3" v-if="account.isAccountValidated === 'Validé'">
+      <b-button
+        tag="nuxt-link"
+        to="/request"
+        type="is-success"
+        class="is-block is-radiusless"
+      >Cliquez ici pour une demande de crédit</b-button>
+    </p>
+    <div class="columns" v-if="account.isAccountValidated === 'Validé'">
+      <div class="column mx-0" v-if="isLoading">
+        <h2 class="subtitle has-text-centered">Chargement en cours ...</h2>
       </div>
-      <div v-if="account.isAccountValidated === ''" class="columns is-centered mt-6 pt-4">
-        <div class="column is-half-desktop is-10-tablet">
-          <div class="notification is-success is-light">
-            <h2 class="subtitle has-text-centered">
-              Félicitations
-              <b-icon size="is-small" icon="check-circle" />
-            </h2>
-            <p>
-              Merci d'avoir créé votre compte chez Express Money.
-              <br />Pour effectuer une demande de crédit, veuillez completer les informations nécessaires.
-              <br />Express Money vous remercie pour votre confiance.
-            </p>
-          </div>
-          <p class="has-text-centered">
-            <NuxtLink
-              to="/complete"
-              class="is-info is-block is-radiusless button"
-            >Compléter mes informations</NuxtLink>
+      <div class="column" v-if="!isLoading">
+        <b-table
+          :data="operations"
+          striped
+          narrowed
+          hoverable
+          paginated
+          :per-page="perPage"
+          pagination-rounded
+          default-sort="createdAt"
+          default-sort-direction="desc"
+          :loading="isLoading"
+        >
+          <b-table-column
+            field="id"
+            label="ID"
+            width="40"
+            sortable
+            numeric
+            v-slot="props"
+          >{{ props.row.id }}</b-table-column>
+
+          <b-table-column
+            field="rname"
+            label="Nom du Receveur"
+            sortable
+            v-slot="props"
+          >{{ props.row.rname }}</b-table-column>
+
+          <b-table-column
+            field="rnumber"
+            label="Numéro du Receveur"
+            sortable
+            v-slot="props"
+          >{{ props.row.rnumber }}</b-table-column>
+
+          <b-table-column
+            field="amount"
+            label="Montant"
+            sortable
+            v-slot="props"
+          >{{ props.row.amount + ' FCFA'}}</b-table-column>
+
+          <b-table-column
+            field="devise"
+            label="Frais"
+            sortable
+            v-slot="props"
+          >{{ (props.row.fees) + ' FCFA' }}</b-table-column>
+
+          <b-table-column field="status" label="Statut" sortable v-slot="props">
+            <span
+              v-if="props.row.status === 'Réussi'"
+              class="tag is-light is-success"
+            >{{ props.row.status }}</span>
+            <span
+              v-if="props.row.status === 'En cours'"
+              class="tag is-light is-info"
+            >{{ props.row.status }}</span>
+            <span
+              v-if="props.row.status === 'Décliné'"
+              class="tag is-light is-danger"
+            >{{ props.row.status }}</span>
+            <span v-if="props.row.status === 'Payé'" class="tag is-success">{{ props.row.status }}</span>
+          </b-table-column>
+          <b-table-column field="actions" label="Editer" sortable v-slot="props">
+            <div v-if="props.row.status === 'En cours'">
+              <button class="button is-small is-primary" @click.prevent="openModal(props.row.id)">
+                <b-icon icon="pen" />&nbsp;&nbsp;
+                Editer
+              </button>
+            </div>
+          </b-table-column>
+          <b-table-column field="actions" label="Annuler" sortable v-slot="props">
+            <div v-if="props.row.status === 'En cours'">
+              <button
+                class="button is-small is-danger"
+                @click.prevent="openDeletionModal(props.row.id)"
+              >
+                <b-icon icon="trash" />&nbsp;&nbsp;
+                Annuler
+              </button>
+            </div>
+          </b-table-column>
+          <b-table-column
+            field="createdAt"
+            label="Date"
+            sortable
+            centered
+            v-slot="props"
+          >{{ new Date(props.row.createdAt).toLocaleString('fr-FR') }}</b-table-column>
+        </b-table>
+      </div>
+    </div>
+    <div v-if="account.isAccountValidated === ''" class="columns is-centered mt-6 pt-4">
+      <div class="column is-half-desktop is-10-tablet">
+        <div class="notification is-success is-light">
+          <h2 class="subtitle has-text-centered">
+            Félicitations
+            <b-icon size="is-small" icon="check-circle" />
+          </h2>
+          <p>
+            Merci d'avoir créé votre compte chez Express Money.
+            <br />Pour effectuer une demande de crédit, veuillez completer les informations nécessaires.
+            <br />Express Money vous remercie pour votre confiance.
           </p>
         </div>
+        <p class="has-text-centered">
+          <NuxtLink
+            to="/complete"
+            class="is-info is-block is-radiusless button"
+          >Compléter mes informations</NuxtLink>
+        </p>
       </div>
-      <div v-if="account.isAccountValidated === 'En attente'" class="columns is-centered mt-6 pt-4">
-        <div class="column is-half-desktop is-10-tablet">
-          <div class="notification is-info is-light">
-            <h2 class="subtitle has-text-centered">
-              <b-icon size="is-small" icon="spinner" />&nbsp; Votre compte est en cours de vérification
-            </h2>
-            <p>
-              La durée habituelle de vérification peut aller jusqu'à 20min.
-              <br />Une fois votre compte vérifié cette page sera mise à jour.
-              <br />Express Money vous remercie pour votre confiance.
-            </p>
-          </div>
-          <b-message type="is-warning">
-            <NuxtLink
-              to="/complete"
-            >Pendant que votre compte n'est pas encore approuvé vous pouvez mettre à jour votre dossier si nécessaire.</NuxtLink>
-          </b-message>
+    </div>
+    <div v-if="account.isAccountValidated === 'En attente'" class="columns is-centered mt-6 pt-4">
+      <div class="column is-half-desktop is-10-tablet">
+        <div class="notification is-info is-light">
+          <h2 class="subtitle has-text-centered">
+            <b-icon size="is-small" icon="spinner" />&nbsp; Votre compte est en cours de vérification
+          </h2>
+          <p>
+            La durée habituelle de vérification peut aller jusqu'à 20min.
+            <br />Une fois votre compte vérifié cette page sera mise à jour.
+            <br />Express Money vous remercie pour votre confiance.
+          </p>
         </div>
+        <b-message type="is-warning">
+          <NuxtLink
+            to="/complete"
+          >Pendant que votre compte n'est pas encore approuvé vous pouvez mettre à jour votre dossier si nécessaire.</NuxtLink>
+        </b-message>
       </div>
-    </section>
-    <div :class="['modal', {'is-active': modal}]">
+    </div>
+    <div :class="['modal', {'is-active': updateModal}]">
       <div class="modal-background"></div>
-      <div class="card is-radiusless">
+      <div class="card larger is-radiusless">
         <header class="card-header">
           <p class="card-header-title has-text-centered">Editer la demande</p>
         </header>
@@ -222,7 +232,11 @@
           </form>
         </section>
         <footer class="card-footer">
-          <a href="#" class="card-footer-item has-text-danger" @click.prevent="modal = !modal">
+          <a
+            href="#"
+            class="card-footer-item has-text-danger"
+            @click.prevent="updateModal = !updateModal"
+          >
             <b-icon icon="times"></b-icon>&nbsp; Annuler
           </a>
           <a
@@ -235,7 +249,82 @@
         </footer>
       </div>
     </div>
-  </div>
+    <div :class="['modal', {'is-active': deletionModal}]">
+      <div class="modal-background"></div>
+      <div class="card larger is-radiusless">
+        <header class="card-header">
+          <p
+            class="card-header-title has-text-centered has-text-danger"
+          >Attention! Voulez-vous supprimer cette opération ?</p>
+        </header>
+        <section class="card-content">
+          <p class="class help is-danger has-text-centered">{{ error }}</p>
+          <ul class="is-hoverable">
+            <li class="columns m-0 p-0 is-mobile list-item mt-1">
+              <div class="column m-0 py-0 px-2 has-text-weight-bold">Nom du Receveur:</div>
+              <div class="column m-0 py-0 px-2">{{ updateOperation.rname }}</div>
+            </li>
+            <li class="columns m-0 p-0 is-mobile list-item mt-1">
+              <div class="column m-0 py-0 px-2 has-text-weight-bold">Numéro du Receveur:</div>
+              <div class="column m-0 py-0 px-2">{{ updateOperation.rnumber }}</div>
+            </li>
+            <li class="columns m-0 p-0 is-mobile list-item mt-1">
+              <div class="column m-0 py-0 px-2 has-text-weight-bold">Montant:</div>
+              <div class="column m-0 py-0 px-2">{{ updateOperation.amount }} FCFA</div>
+            </li>
+            <li class="columns m-0 p-0 is-mobile mt-1">
+              <div class="column m-0 py-0 px-2 has-text-weight-bold">Status:</div>
+              <div class="column m-0 py-0 px-2">
+                <b-tag
+                  v-if="updateOperation.status === 'En cours'"
+                  type="is-primary"
+                >{{ updateOperation.status }}</b-tag>
+                <b-tag
+                  v-else-if="updateOperation.status === 'Réussi'"
+                  type="is-success"
+                >{{ updateOperation.status }}</b-tag>
+                <b-tag
+                  v-else-if="updateOperation.status === 'Décliné'"
+                  type="is-primary"
+                >{{ updateOperation.status }}</b-tag>
+                <b-tag v-else>{{ updateOperation.status }}</b-tag>
+              </div>
+            </li>
+            <li class="columns m-0 p-0 is-mobile list-item mt-4">
+              <div class="column m-0 py-0 px-2 has-text-weight-bold">Date de création:</div>
+              <div
+                class="column m-0 py-0 px-2"
+              >{{ new Date(updateOperation.createdAt).toLocaleString('fr-FR') }}</div>
+            </li>
+            <li class="columns m-0 p-0 is-mobile mt-1">
+              <div class="column m-t py-0 px-2 has-text-weight-bold">Dernière mise à Jour:</div>
+              <div
+                class="column m-t mb-4 py-0 px-2"
+              >{{ new Date(updateOperation.updatedAt).toLocaleString('fr-FR') }}</div>
+            </li>
+          </ul>
+          <div class="field">
+            <div class="control">
+              <p class="label help" for="pass">Veuillez confirmer votre mot de passe:</p>
+              <input class="input" id="pass" type="password" v-model="updateOperation.pwd" />
+            </div>
+          </div>
+        </section>
+        <footer class="card-footer">
+          <a
+            href="#"
+            class="card-footer-item has-text-primary"
+            @click.prevent="deletionModal = !deletionModal"
+          >
+            <b-icon icon="times"></b-icon>&nbsp; Abandonner
+          </a>
+          <a href="#" class="card-footer-item has-text-danger" @click.prevent="cancelOperation()">
+            <b-icon icon="trash"></b-icon>&nbsp; Supprimer
+          </a>
+        </footer>
+      </div>
+    </div>
+  </section>
 </template>
 
 <script>
@@ -252,7 +341,8 @@ export default {
   },
   data() {
     return {
-      modal: false,
+      updateModal: false,
+      deletionModal: false,
       operations: [],
       updateOperation: {},
       perPage: 5,
@@ -275,10 +365,11 @@ export default {
   },
   methods: {
     openModal(id) {
+      this.error = "";
       id = parseInt(id) - 1;
       if (id < 0 || id >= this.operations.length) return;
       const updateOperation = this.operations[id];
-      const rlname = updateOperation.rname.split(" ")[1];
+      const rlname = updateOperation.rname.split(" ").slice(1).join(" ");
       const rfname = updateOperation.rname.split(" ")[0];
       const rnumber = updateOperation.rnumber;
       const amount = updateOperation.amount;
@@ -292,18 +383,50 @@ export default {
         amount,
         pwd,
       };
-      this.modal = true;
+      this.updateModal = true;
+    },
+    openDeletionModal(id) {
+      this.error = "";
+      id = parseInt(id) - 1;
+      if (id < 0 || id >= this.operations.length) return;
+      this.updateOperation = this.operations[id];
+      this.updateOperation.pwd = "";
+      this.deletionModal = true;
     },
     async updateOperationHandler() {
+      if (this.updateOperation.pwd === "") {
+        this.error = "Veuillez confirmer votre mot de passe!";
+        return;
+      }
       try {
         const csrf = await this.$axios.$get("/api/auth/csrf");
         this.$axios.setHeader("XSRF-TOKEN", csrf.token);
         const response = await this.$axios.$put(
           "/api/operations/" + this.updateOperation._id,
-          { data: this.account }
+          this.updateOperation
         );
         if (response.message) {
-          this.modal = false;
+          this.updateModal = false;
+          this.$fetch();
+        }
+      } catch (err) {
+        this.error = err.response.data.message;
+      }
+    },
+    async cancelOperation() {
+      if (this.updateOperation.pwd === "") {
+        this.error = "Veuillez confirmer votre mot de passe!";
+        return;
+      }
+      try {
+        const csrf = await this.$axios.$get("/api/auth/csrf");
+        this.$axios.setHeader("XSRF-TOKEN", csrf.token);
+        const response = await this.$axios.$post(
+          "/api/operations/delete/" + this.updateOperation._id,
+          { pwd: this.updateOperation.pwd }
+        );
+        if (response.message) {
+          this.deletionModal = false;
           this.$fetch();
         }
       } catch (err) {

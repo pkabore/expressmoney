@@ -1,6 +1,6 @@
 <template>
-  <section class="section mx-0 px-2">
-    <h1 class="title has-text-centered">Demande de crédit</h1>
+  <div class="mt-6">
+    <h1 class="mt-6 title has-text-centered">Demande de crédit</h1>
     <div class="columns is-centered">
       <div class="column is-10-desktop is-11-tablet">
         <form autocomplete="off" class="box mt-4" method="POST" @submit.prevent="submitHandler">
@@ -45,7 +45,7 @@
                   v-model="request.amount"
                   placeholder="10000"
                   type="number"
-                  step="500"
+                  step="0.0001"
                   id="amount"
                   name="amount"
                 />
@@ -61,51 +61,51 @@
                   :class="['button mt-2 is-radiusless is-fullwidth is-primary', {'is-loading': isLoading}]"
                   type="submit"
                 >
-                  <b-icon icon="paper-plane"></b-icon>&nbsp; Envoyer la demande
+                  <b-icon icon="greater-than"></b-icon>&nbsp; Envoyer la demande
                 </button>
               </div>
             </div>
           </div>
         </form>
-        <div :class="['modal', {'is-active': modal}]">
-          <div class="modal-background"></div>
-          <div class="card">
-            <header class="card-header">
-              <p class="card-header-title has-text-centered">Confirmation</p>
-            </header>
-            <section class="card-content">
-              <ul class="is-hoverable">
-                <li class="columns m-0 p-0 is-mobile list-item mt-1">
-                  <div class="column m-0 py-0 px-2 has-text-weight-bold">Nom du Receveur:</div>
-                  <div class="column m-0 py-0 px-2">{{ request.rfname + ' ' + request.rlname }}</div>
-                </li>
-                <li class="columns m-0 p-0 is-mobile list-item mt-1">
-                  <div class="column m-0 py-0 px-2 has-text-weight-bold">Numéro du Receveur:</div>
-                  <div class="column m-0 py-0 px-2">{{ request.rnumber }}</div>
-                </li>
-                <li class="columns m-0 p-0 is-mobile list-item mt-1">
-                  <div class="column m-0 py-0 px-2 has-text-weight-bold">Montant:</div>
-                  <div class="column m-0 py-0 px-2">{{ request.amount }} FCFA</div>
-                </li>
-                <li class="columns m-0 p-0 is-mobile list-item mt-1">
-                  <div class="column m-0 py-0 px-2 has-text-weight-bold">Frais d'envoi:</div>
-                  <div class="column m-0 py-0 px-2">{{ request.amount * fee_rate}} FCFA</div>
-                </li>
-              </ul>
-            </section>
-            <footer class="card-footer">
-              <a href="#" class="card-footer-item has-text-danger" @click.prevent="closeModal()">
-                <b-icon icon="times"></b-icon>&nbsp; Annuler
-              </a>
-              <a href="#" class="card-footer-item" @click.prevent="submitFinalHandler()">
-                <b-icon icon="check"></b-icon>&nbsp; Envoyer
-              </a>
-            </footer>
-          </div>
-        </div>
       </div>
     </div>
-  </section>
+    <div :class="['modal', {'is-active': modal}]">
+      <div class="modal-background"></div>
+      <div class="card is-radiusless larger">
+        <header class="card-header">
+          <p class="card-header-title has-text-centered">Confirmation</p>
+        </header>
+        <section class="card-content">
+          <ul class="is-hoverable">
+            <li class="columns m-0 p-0 is-mobile list-item mt-1">
+              <div class="column m-0 py-0 px-2 has-text-weight-bold">Nom du Receveur:</div>
+              <div class="column m-0 py-0 px-2">{{ request.rfname + ' ' + request.rlname }}</div>
+            </li>
+            <li class="columns m-0 p-0 is-mobile list-item mt-1">
+              <div class="column m-0 py-0 px-2 has-text-weight-bold">Numéro du Receveur:</div>
+              <div class="column m-0 py-0 px-2">{{ request.rnumber }}</div>
+            </li>
+            <li class="columns m-0 p-0 is-mobile list-item mt-1">
+              <div class="column m-0 py-0 px-2 has-text-weight-bold">Montant:</div>
+              <div class="column m-0 py-0 px-2">{{ request.amount }} FCFA</div>
+            </li>
+            <li class="columns m-0 p-0 is-mobile list-item mt-1">
+              <div class="column m-0 py-0 px-2 has-text-weight-bold">Frais d'envoi:</div>
+              <div class="column m-0 py-0 px-2">{{ request.amount * fee_rate}} FCFA</div>
+            </li>
+          </ul>
+        </section>
+        <footer class="card-footer">
+          <a href="#" class="card-footer-item has-text-danger" @click.prevent="closeModal()">
+            <b-icon icon="times"></b-icon>&nbsp; Annuler
+          </a>
+          <a href="#" class="card-footer-item" @click.prevent="submitFinalHandler()">
+            <b-icon icon="check"></b-icon>&nbsp; Envoyer
+          </a>
+        </footer>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>

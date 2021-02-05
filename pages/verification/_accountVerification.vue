@@ -16,9 +16,11 @@ export default {
       this.$router.push("/operations");
       return;
     }
-    await this.$axios.$post(
-      "/api/auth/verification" + this.$route.path.split("/")[2]
+    await this.$axios.$get(
+      "/api/auth/verification/" + this.$route.path.split("/")[2]
     );
+    await this.$auth.fetchUser();
+    this.$router.push("/operations");
   },
 };
 </script>

@@ -43,7 +43,7 @@ async function start() {
 	});
 
 	passport.deserializeUser((_id, done) => {
-		Account.findById(_id).select('name tel email isAccountValidated').exec((err, account) => {
+		Account.findById(_id).select('name tel email confirmation isAccountValidated').exec((err, account) => {
 			if (err) {
 				return done(err);
 			}
@@ -58,9 +58,7 @@ async function start() {
 				passwordField: 'pwd'
 			},
 			async (email, pwd, done) => {
-				Account.findOne({ $or: [ { email }, { tel: email } ] })
-					.select('_id name isAccountValidated confirmation tel email pwd')
-					.exec((err, account) => {
+				Account.findOne({ $or: [ { email }, { tel: email } ] }, (err, account) => {
 						if (err) {
 							return done(err);
 						}
@@ -83,6 +81,7 @@ async function start() {
 								name: account.name,
 								tel: account.tel,
 								email: account.email,
+								confirmation: account.confirmation,
 								isAccountValidated: account.isAccountValidated
 							};
 							return done(null, sessionAccount);

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="columns is-centered mt-4">
-      <div class="column is-8-desktop is-10-tablet">
+    <div class="columns mt-6 is-centered">
+      <div class="column is-8-desktop box is-10-tablet mt-6">
         <form autocomplete="off" @submit.prevent="handleRegistration" method="POST">
           <h1 class="title has-text-centered has-text-primary">
             <b-icon icon="user" />&nbsp; S'inscrire
@@ -169,10 +169,10 @@ export default {
         });
         if (response.message) {
           this.isLoading = false;
-          const csrf = await this.$axios.$get("/api/auth/csrf");
-          this.$axios.setHeader("XSRF-TOKEN", csrf.token);
+          const csrfToken = await this.$axios.$get("/api/auth/csrf");
+          this.$axios.setHeader("XSRF-TOKEN", csrfToken.token);
           await this.$auth.loginWith("cookie", {
-            data: { email: this.email, pwd: this.pwd },
+            data: { email: this.account.email, pwd: this.account.pwd },
           });
           this.$buefy.toast.open({
             message:
@@ -185,14 +185,14 @@ export default {
         if (err.response) {
           this.isLoading = false;
           if (
-            err.response.data.err.includes("fname") ||
-            err.response.data.err.includes("lname")
+            err.response.data.message.includes("fname") ||
+            err.response.data.message.includes("lname")
           )
             this.error = "Veuillez renseigner un Nom et Prénom valide";
-          if (err.response.data.err.includes("pwd"))
+          if (err.response.data.message.includes("pwd"))
             this.error = "Veuillez renseignez un mot de passe correct";
-          if (err.response.data.err.includes("Numéro"))
-            this.error = err.response.data.err;
+          if (err.response.data.message.includes("Numéro"))
+            this.error = err.response.data.message;
           console.log(err);
         }
       }

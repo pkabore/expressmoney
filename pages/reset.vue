@@ -1,7 +1,7 @@
 <template>
   <section class="section">
-    <div class="columns is-centered">
-      <div class="column is-two-thirds-tablet is-half-desktop">
+    <div class="columns is-centered mt-6">
+      <div class="column is-two-thirds-tablet is-half-desktop box">
         <h2 class="has-text-centered title has-text-primary mb-3">Mot de passe oublié</h2>
         <p class="help has-text-centered is-danger">{{ error }}</p>
         <b-notification

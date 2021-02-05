@@ -71,11 +71,11 @@ router.post('/register', (req, res, next) => {
 	const email = req.body.data.email;
 	Account.findOne({ $or: [ { tel }, { email } ] }, (err, doc) => {
 		if (err) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
-		if (doc) return res.status(400).json({ err: 'Numéro ou e-mail déjà utilisé. Veuillez vous connecter.' });
+		if (doc) return res.status(400).json({ message: 'Numéro ou e-mail déjà utilisé. Veuillez vous connecter.' });
 		const fieldsValidationResult = validateAccountInformations(req.body.data);
 		if (fieldsValidationResult) return res.status(400).json({ message: fieldsValidationResult });
 		if (req.body.data.pwd !== req.body.data.confirmedPWD)
-			return res.status(400).json({ err: 'Mots de passe différents' });
+			return res.status(400).json({ message: 'Mots de passe différents' });
 		bcrypt.hash(req.body.data.pwd, parseInt(process.env.BCRYPT_WORK_FACTOR), async (bcrypt_err, hashedPassword) => {
 			if (bcrypt_err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
 			let verificationToken = '';
@@ -101,7 +101,7 @@ router.post('/register', (req, res, next) => {
 			account.save((mongoose_err, result) => {
 				if (mongoose_err)
 					return res.status(500).json({
-						err: 'Erreur survenue. Veuillez reéssayer.'
+						message: 'Erreur survenue. Veuillez reéssayer.'
 					});
 				const mailOptions = {
 					from: process.env.USER_EMAIL,

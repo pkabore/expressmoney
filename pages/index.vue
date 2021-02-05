@@ -71,7 +71,7 @@
               to="/register"
               class="button is-outlined is-inverted is-primary is-radiusless"
             >
-              <b-icon icon="long-arrow-alt-right" size="is-small"></b-icon>&nbsp;&nbsp;
+              <b-icon icon="greater-than" size="is-small"></b-icon>&nbsp;&nbsp;
               Créer un compte pour commencer
             </NuxtLink>
           </p>
@@ -135,7 +135,7 @@
         </div>
         <p class="has-text-centered mt-5" v-if="!this.$auth.loggedIn">
           <NuxtLink to="/register" class="button is-primary is-radiusless">
-            <b-icon icon="long-arrow-alt-right" size="is-small"></b-icon>&nbsp;&nbsp; Créer un compte pour commencer
+            <b-icon icon="greater-than" size="is-small"></b-icon>&nbsp;&nbsp; Créer un compte pour commencer
           </NuxtLink>
         </p>
       </div>
