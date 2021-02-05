@@ -57,10 +57,7 @@
               <div class="field my-0">
                 <label for="pwd" class="label help py-0 my-0">Confirmez votre mot de passe:</label>
                 <input class="input" v-model="request.pwd" type="password" id="pwd" name="pwd" />
-                <button
-                  :class="['button mt-2 is-radiusless is-fullwidth is-primary', {'is-loading': isLoading}]"
-                  type="submit"
-                >
+                <button class="button mt-2 is-radiusless is-fullwidth is-primary" type="submit">
                   <b-icon icon="greater-than"></b-icon>&nbsp; Envoyer la demande
                 </button>
               </div>
@@ -105,6 +102,7 @@
         </footer>
       </div>
     </div>
+    <b-loading is-full-page v-model="isLoading" :can-cancel="false"></b-loading>
   </div>
 </template>
 
@@ -138,7 +136,6 @@ export default {
   },
   methods: {
     async submitHandler() {
-      this.isLoading = true;
       if (
         this.request.rfname === "" ||
         this.request.rlname === "" ||
@@ -158,7 +155,7 @@ export default {
     },
     async submitFinalHandler() {
       this.modal = false;
-      this.isLoading = false;
+      this.isLoading = true;
       try {
         const csrf = await this.$axios.$get("/api/auth/csrf");
         this.$axios.setHeader("XSRF-TOKEN", csrf.token);

@@ -20,7 +20,7 @@
           <label class="label help" for="pass">Mot de passe</label>
           <input v-model="pwd" id="pass" class="input" type="password" placeholder="********" />
           <button
-            :class="['button mt-2 is-fullwidth is-radiusless is-primary', {'is-loading': isLoading}]"
+            class="button mt-2 is-fullwidth is-radiusless is-primary"
             type="submit"
           >Se connecter</button>
         </div>
@@ -32,6 +32,7 @@
         </p>
       </form>
     </div>
+    <b-loading :is-full-page="isFullPage" v-model="isLoading" :can-cancel="false"></b-loading>
   </div>
 </template>
 

@@ -347,6 +347,7 @@ export default {
       updateOperation: {},
       perPage: 5,
       isLoading: true,
+      isLoadingFullPage:false,
       error: "",
     };
   },
