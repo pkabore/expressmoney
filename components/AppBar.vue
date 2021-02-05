@@ -15,7 +15,7 @@
           <b-icon icon="user"></b-icon>&nbsp;
           <span>{{ account.name }}</span>
         </b-navbar-item>
-        <a v-if="isAuthenticated" class="navbar-item" href="#" @click.prevent="handleLogout">
+        <a v-if="isAuthenticated" class="navbar-item" href="#" @click.prevent="modal = true">
           <b-icon icon="sign-out-alt" pack="fas"></b-icon>&nbsp;
           <span>Se déconnecter</span>
         </a>
@@ -29,6 +29,26 @@
         </b-navbar-item>
       </template>
     </b-navbar>
+    <div :class="['modal', {'is-active': modal}]">
+      <div class="modal-background"></div>
+      <div class="card">
+        <header class="card-header is-centered">
+          <p class="card-header-title has-text-centered">Confirmation</p>
+        </header>
+        <section class="card-content">
+          <h2 class="subtitle has-text-centered">Se déconnecter ?</h2>
+        </section>
+        <footer class="card-footer">
+          <a href="#" class="card-footer-item has-text-info" @click.prevent="modal = false">
+            <b-icon icon="close"></b-icon>&nbsp; Non
+          </a>
+          <a href="#" class="card-footer-item has-text-danger" @click.prevent="handleLogout()">
+            Oui, Se déconnecter &nbsp;
+            <b-icon icon="arrow-right"></b-icon>
+          </a>
+        </footer>
+      </div>
+    </div>
   </header>
 </template>
 
@@ -37,6 +57,7 @@ export default {
   data() {
     return {
       isHomePage: this.$route.path === "/",
+      modal: false,
     };
   },
   computed: {
@@ -49,6 +70,7 @@ export default {
   },
   methods: {
     async handleLogout() {
+      this.modal = false;
       const csrf = await this.$axios.$get("/api/auth/csrf");
       this.$axios.setHeader("XSRF-TOKEN", csrf.token);
       await this.$auth.logout("cookie");
