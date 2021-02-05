@@ -17,6 +17,7 @@ const AccountSchema = new Schema(
 			type: String,
 			trim: true
 		},
+		confirmation: String,
 		pwd: String,
 		idUri: String,
 		wcardUri: String,

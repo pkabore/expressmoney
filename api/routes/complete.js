@@ -40,7 +40,12 @@ let upload = multer({
 
 upload = upload.array('papers', 3);
 
-router.post('/', ensureAuthentication, (req, res, next) => {
+router.post('/', ensureAuthentication, (req, res) => {
+	if (req.user.confirmation !== "") {
+		return res.status(403).json({
+			message: "Votre compte n'a pas été vérifié. Veuillez cliquez sur le lien envoyé à votre adresse mail."
+		});
+	}
 	upload(req, res, (err) => {
 		if (err instanceof multer.MulterError) {
 			const filesErrorMessage = `Format supporté: PDF|JPEG|JPG, taille max: 4MB`;

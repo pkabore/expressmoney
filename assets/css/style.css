@@ -7,11 +7,6 @@ main {
 	max-width: 100%;
 }
 
-form {
-	max-width: 400px;
-	margin: 0 auto;
-}
-
 .list-item {
 	padding: 7px 0px;
 	margin: 0;

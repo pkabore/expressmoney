@@ -37,6 +37,7 @@
 
 <script>
 export default {
+  auth: "guest",
   head: {
     title: "Connection",
     meta: [

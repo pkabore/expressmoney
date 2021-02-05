@@ -33,7 +33,7 @@
           v-if="!this.$auth.loggedIn"
           class="button is-primary is-radiusless"
         >
-          <b-icon icon="chevron-triple-right" size="is-small"></b-icon>&nbsp;&nbsp; Créer un compte Express Money pour commencer
+          <b-icon icon="long-arrow-alt-right" size="is-small"></b-icon>&nbsp;&nbsp; Créer un compte Express Money pour commencer
         </NuxtLink>
       </p>
     </section>

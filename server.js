@@ -59,7 +59,7 @@ async function start() {
 			},
 			async (email, pwd, done) => {
 				Account.findOne({ $or: [ { email }, { tel: email } ] })
-					.select('_id name isAccountValidated tel email pwd')
+					.select('_id name isAccountValidated confirmation tel email pwd')
 					.exec((err, account) => {
 						if (err) {
 							return done(err);

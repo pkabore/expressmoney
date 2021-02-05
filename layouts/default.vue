@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="has-background-light">
     <AppBar />
     <main>
       <Nuxt />
@@ -11,12 +11,12 @@
 <script>
 export default {
   mounted() {
-    this.$buefy.toast.open({
-      duration: 5000,
-      message: `Greetings in Christ <b>!</b>`,
-      position: "is-top-right",
-      type: "is-success",
-    });
+    // this.$buefy.toast.open({
+    //   duration: 5000,
+    //   message: `Greetings in Christ <b>!</b>`,
+    //   position: "is-top-right",
+    //   type: "is-success",
+    // });
   },
 };
 </script>

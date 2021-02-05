@@ -1,14 +1,7 @@
 <template>
   <div>
     <div class="columns is-centered mt-4">
-      <div class="column is-one-third-desktop is-half-tablet">
-        <b-notification
-          v-if="recordSavedNotification"
-          type="is-light is-success"
-          has-icon
-          icon="check"
-          aria-close-label="Close notification"
-        >Veuillez consulter votre email pour confirmer votre compte.</b-notification>
+      <div class="column is-8-desktop is-10-tablet">
         <form autocomplete="off" @submit.prevent="handleRegistration" method="POST">
           <h1 class="title has-text-centered has-text-primary">
             <b-icon icon="user" />&nbsp; S'inscrire
@@ -48,53 +41,80 @@
               </div>
             </div>
           </div>
-          <div class="field my-0">
-            <div class="control mx-1">
-              <label class="label help is-black" for="tel">N° de téléphone:</label>
-              <input
-                class="input"
-                id="tel"
-                v-model="account.tel"
-                type="tel"
-                required="required"
-                placeholder="70 00 00 00"
-                name="tel"
-              />
-              <label class="label help is-black" for="email">Addresse E-mail:</label>
-              <input
-                class="input"
-                id="email"
-                v-model="account.email"
-                type="email"
-                required="required"
-                placeholder="exemple@example.com"
-                name="email"
-              />
-              <label class="label help is-black" for="pass">Choisissez un mot de passe:</label>
-              <input
-                class="input"
-                id="pass"
-                v-model="account.pwd"
-                type="password"
-                required="required"
-                placeholder="********"
-                name="pwd"
-              />
-              <label class="label help is-black" for="passC">Confirmez mot de passe:</label>
-              <input
-                class="input"
-                type="password"
-                v-model="account.confirmedPWD"
-                required="required"
-                placeholder="********"
-                name="confirmedPWD"
-              />
-              <button
-                :class="['mt-2 button is-fullwidth is-primary is-radiusless', {'is-loading': isLoading}]"
-                type="submit"
-              >Créer un compte</button>
+          <div class="columns my-0 is-mobile">
+            <div class="column my-0 pr-0 py-0">
+              <div class="field">
+                <div class="control mx-1 my-0">
+                  <label class="label help is-black" for="tel">N° de téléphone:</label>
+                  <input
+                    class="input"
+                    id="tel"
+                    v-model="account.tel"
+                    type="tel"
+                    required="required"
+                    placeholder="70 00 00 00"
+                    name="tel"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="column my-0 pl-0 py-0">
+              <div class="field">
+                <div class="control mx-1 my-0">
+                  <label class="label help is-black" for="email">Addresse E-mail:</label>
+                  <input
+                    class="input"
+                    id="email"
+                    v-model="account.email"
+                    type="email"
+                    required="required"
+                    placeholder="exemple@example.com"
+                    name="email"
+                  />
+                </div>
+              </div>
             </div>
           </div>
+
+          <div class="columns my-0 is-mobile">
+            <div class="column my-0 pr-0 py-0">
+              <div class="field">
+                <div class="control mx-1 my-0">
+                  <label class="label help is-black" for="pass">Créer un mot de passe:</label>
+                  <input
+                    class="input"
+                    id="pass"
+                    v-model="account.pwd"
+                    type="password"
+                    required="required"
+                    placeholder="********"
+                    name="pwd"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="column my-0 pl-0 py-0">
+              <div class="field">
+                <div class="control mx-1 my-0">
+                  <label class="label help is-black" for="passC">Confirmer mot de passe:</label>
+                  <input
+                    class="input"
+                    type="password"
+                    v-model="account.confirmedPWD"
+                    required="required"
+                    placeholder="********"
+                    name="confirmedPWD"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <button
+            :class="['mt-2 button is-fullwidth is-primary is-radiusless', {'is-loading': isLoading}]"
+            type="submit"
+          >Créer un compte</button>
           <p class="has-text-centered help is-info">
             <NuxtLink to="/login">Vous avez déjà un compte? Cliquez ici pour vous connecter</NuxtLink>
           </p>
@@ -117,7 +137,7 @@ export default {
       },
     ],
   },
-  auth: false,
+  auth: "guest",
   data() {
     return {
       account: {
@@ -129,7 +149,6 @@ export default {
         confirmedPWD: "",
       },
       error: "",
-      recordSavedNotification: false,
       isLoading: false,
     };
   },
@@ -144,18 +163,23 @@ export default {
           return;
         }
         const csrf = await this.$axios.$get("/api/auth/csrf");
-        const config = {
-          headers: {
-            "XSRF-TOKEN": csrf.token,
-          },
-        };
-        const response = await this.$axios.$post(
-          "/api/auth/register",
-          { data: this.account },
-          config
-        );
+        this.$axios.setHeader("XSRF-TOKEN", csrf.token);
+        const response = await this.$axios.$post("/api/auth/register", {
+          data: this.account,
+        });
         if (response.message) {
-          this.recordSavedNotification = true;
+          this.isLoading = false;
+          const csrf = await this.$axios.$get("/api/auth/csrf");
+          this.$axios.setHeader("XSRF-TOKEN", csrf.token);
+          await this.$auth.loginWith("cookie", {
+            data: { email: this.email, pwd: this.pwd },
+          });
+          this.$buefy.toast.open({
+            message:
+              "Veuillez consulter votre email pour confirmer votre compte.",
+            type: "is-success",
+            duration: 5000,
+          });
         }
       } catch (err) {
         if (err.response) {
@@ -169,6 +193,7 @@ export default {
             this.error = "Veuillez renseignez un mot de passe correct";
           if (err.response.data.err.includes("Numéro"))
             this.error = err.response.data.err;
+          console.log(err);
         }
       }
     },
