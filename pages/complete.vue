@@ -1,5 +1,8 @@
 <template>
-  <section class="section mt-3 pt-4">
+  <section
+    class="section mt-3 pt-4"
+    v-if="this.$auth.user.isAccountValidated !== 'Validé' && this.$auth.user.isAccountValidated !== 'Suppression'"
+  >
     <h1 class="has-text-centered title mt-3">Complétion de dossier</h1>
     <div class="columns is-centered">
       <div class="column is-6-desktop is-8-tablet">
@@ -91,6 +94,13 @@ export default {
       city: "",
       pwd: "",
     };
+  },
+  mounted() {
+    if (
+      this.$auth.user.isAccountValidated === "Validé" ||
+      this.$auth.user.isAccountValidated === "Suppression"
+    )
+      this.$router.push("/account");
   },
   methods: {
     deleteDropFile(index) {

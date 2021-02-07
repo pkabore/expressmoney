@@ -3,7 +3,7 @@
     <section class="section">
       <div class="columns is-centered">
         <div class="column is-6-desktop is-three-fiths-tablet">
-          <div class="block">
+          <div class="block box">
             <h2 class="title has-text-primary has-text-centered">A propos de nous</h2>
             <p class="has-text-centered">
               Express Money est une innovation de jeunes socio-entrepreneurs
@@ -14,7 +14,7 @@
               <em>des situations d’urgence.</em>
             </p>
           </div>
-          <div class="block">
+          <div class="block box">
             <h2 class="title has-text-primary has-text-centered">Notre mission</h2>
             <p class="has-text-centered">
               Le start up se veut pour ambition, de faciliter l’accès au fonds
@@ -25,17 +25,17 @@
               la validation de leurs comptes par sms ou mail.
             </p>
           </div>
+          <p class="has-text-centered mt-5" v-if="!this.$auth.loggedIn">
+            <NuxtLink
+              to="/register"
+              class="button is-outlined label is-primary is-block is-fullwidth box is-large"
+            >
+              <b-icon icon="user" />&nbsp;&nbsp;
+              Créer un compte pour commencer
+            </NuxtLink>
+          </p>
         </div>
       </div>
-      <p class="has-text-centered mb-3">
-        <NuxtLink
-          to="/register"
-          v-if="!this.$auth.loggedIn"
-          class="button is-primary is-radiusless"
-        >
-          <b-icon icon="long-arrow-alt-right" size="is-small"></b-icon>&nbsp;&nbsp; Créer un compte Express Money pour commencer
-        </NuxtLink>
-      </p>
     </section>
   </div>
 </template>

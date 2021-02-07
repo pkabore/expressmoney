@@ -15,22 +15,20 @@ const ensureAuthentication = (req, res, next) => {
 	res.status(401).end();
 };
 
-
-const nodemailer = require("nodemailer");
-let id = "";
+const nodemailer = require('nodemailer');
 let transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
-  auth: {
-    type: "OAuth2",
-    user: process.env.USER_EMAIL,
-    clientId: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
-    refreshToken: process.env.REFRESH_TOKEN,
-    accessToken: process.env.ACCESS_TOKEN,
-    expires: parseInt(process.env.EXPIRY_DURATION)
-  }
+	host: 'smtp.gmail.com',
+	port: 465,
+	secure: true,
+	auth: {
+		type: 'OAuth2',
+		user: process.env.USER_EMAIL,
+		clientId: process.env.CLIENT_ID,
+		clientSecret: process.env.CLIENT_SECRET,
+		refreshToken: process.env.REFRESH_TOKEN,
+		accessToken: process.env.ACCESS_TOKEN,
+		expires: parseInt(process.env.EXPIRY_DURATION)
+	}
 });
 
 /*-------------------------account routes------------------------------*/
@@ -85,18 +83,16 @@ router.post('/register', (req, res, next) => {
 				verificationToken = token.toString('base64') + new mongoose.Types.ObjectId();
 				verificationToken = querystring.escape(verificationToken);
 			} catch (error) {
-				return res
-                   .status(500)
-                   .json({ message: "Erreur survenue. Veuillez reéssayer." });
+				return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
 			}
 
 			const account = new Account({
-				name: req.body.data.fname + " " + req.body.data.lname,
+				name: req.body.data.fname + ' ' + req.body.data.lname,
 				tel: req.body.data.tel,
 				email: req.body.data.email,
-				isAccountValidated: "",
+				isAccountValidated: '',
 				pwd: hashedPassword,
-				confirmation: verificationToken
+				accountRegistrationCode: verificationToken
 			});
 			account.save((mongoose_err, result) => {
 				if (mongoose_err)
@@ -106,21 +102,20 @@ router.post('/register', (req, res, next) => {
 				const mailOptions = {
 					from: process.env.USER_EMAIL,
 					to: req.body.data.email,
-					subject: "Vérification de votre compte Express Money.",
+					subject: 'Vérification de votre compte Express Money.',
 					html: `<div>
 								<h1>Merci pour la création de votre compte chez Express Money</h1>
-								<p style="text-align: center;"><a href="${process.env.BASE_URL}/verification/${verificationToken}" style="background-color:#01213F; color:white; border-radius: 3px; padding: 20px 10px; text-decoration: none; font-size: 18px;">Cliquez ici pour vérifier votre compte</a></p>
+								<p style="text-align: center;"><a href="${process.env
+									.BASE_URL}/verification/${verificationToken}" style="background-color:#000; color:white; border-radius: 3px; padding: 20px 10px; text-decoration: none; font-size: 18px;">Cliquez ici pour vérifier votre compte</a></p>
 							</div>`
 				};
 				transporter.sendMail(mailOptions, async (err, info) => {
 					if (err) {
 						console.log(err);
 						await account.delete();
-						res
-						.status(500)
-						.json({ message: "Erreur survenue. Veuillez reéssayer." });
+						res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
 					} else {
-						res.json({ message: "ok" });
+						res.json({ message: 'ok' });
 					}
 				});
 			});
@@ -128,54 +123,62 @@ router.post('/register', (req, res, next) => {
 	});
 });
 
-router.get("/verification/:id", (req, res) => {
-    const id = querystring.escape(req.params.id);
-    Account.findOne({ confirmation: id }, async (err, account) => {
-      if (err || !account)
-        return res
-          .status(500)
-          .json({ message: "Erreur survenue. Veuillez reéssayer." });
-      account.confirmation = "";
+router.get('/verification/:id', (req, res) => {
+	const id = querystring.escape(req.params.id);
+	Account.findOne({ accountRegistrationCode: id }, async (err, account) => {
+		if (err || !account) return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+		account.accountRegistrationCode = '';
 
-	  try {
-		await account.save();
-		res.json({ message: "ok" });
-	  } catch (error) {
-		  res.status(500).json({ message: "Erreur survenue. Veuillez reéssayer." });
-	  }
-    });
-  });
-
-router.post('/resetemail', (req, res) => {
-	Account.findOne({ email: req.body.data.email }, (err, account) => {
-		if (err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reésayer.' });
-		if (!account)
-			return res.status(400).json({ message: 'Aucun compte associé à cet e-mail. Veuillez créer un compte.' });
-	});
-	id = new mongoose.Types.ObjectId();
-	const mailOptions = {
-		from: process.env.USER_EMAIL,
-		to: req.body.data.email,
-		subject: 'Express Money, Code de récupération de mot de passe.',
-		text: `Code: ${id}`
-	};
-
-	transporter.sendMail(mailOptions, function(err, info) {
-		if (err) {
-			console.log(err);
-			res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
-		} else {
+		try {
+			await account.save();
 			res.json({ message: 'ok' });
+		} catch (error) {
+			res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
 		}
 	});
 });
 
+router.post('/resetemail', (req, res) => {
+	Account.findOne({ email: req.body.data.email }, async (err, account) => {
+		if (err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reésayer.' });
+		if (!account)
+			return res.status(400).json({ message: 'Aucun compte associé à cet e-mail. Veuillez créer un compte.' });
+
+		const id = new mongoose.Types.ObjectId();
+		try {
+			account.passwordResetCode = id;
+			await account.save();
+		} catch (error) {
+			return res.status(500).json({ message: 'Erreur survenue. Veuillez reésayer.' });
+		}
+		const mailOptions = {
+			from: process.env.USER_EMAIL,
+			to: req.body.data.email,
+			subject: 'Express Money, Mot de passe oublié ',
+			text: `Code: ${id}`,
+			html: `<div>
+					<h1 style="text-align: center;">Code de récupération de mot de passe:</h1>
+					<p style="text-align: center; font-size: 20px;">${id}</p>
+				</div>`
+		};
+
+		transporter.sendMail(mailOptions, function(err, info) {
+			if (err) {
+				console.log(err);
+				res.status(500).json({ message: "Echec d'envoi de code à votre adresse email. Veuillez reéssayer." });
+			} else {
+				res.json({ message: 'ok' });
+			}
+		});
+	});
+});
+
 router.post('/resetcode', (req, res) => {
-	if (JSON.stringify(id) !== JSON.stringify(req.body.data.code.trim()))
-		return res.status(400).json({ message: 'Code incorrect.' });
-	res.json({ message: 'ok' });
-	id = new mongoose.Types.ObjectId();
-	id = new mongoose.Types.ObjectId();
+	Account.findOne({ email: req.body.data.email }, async (err, account) => {
+		if (JSON.stringify(id) !== JSON.stringify(req.body.data.code.trim()))
+			return res.status(400).json({ message: 'Code incorrect.' });
+		res.json({ message: 'ok' });
+	});
 });
 
 router.post('/resetpass', (req, res) => {
@@ -189,6 +192,23 @@ router.post('/resetpass', (req, res) => {
 		account.pwd = hashedPassword;
 		await account.save();
 		res.json({ message: 'ok' });
+	});
+});
+
+router.post('/email', (req, res) => {
+	const mailOptions = {
+		from: req.body.email,
+		to: process.env.USER_EMAIL,
+		subject: req.body.subject,
+		text: req.body.message
+	};
+	transporter.sendMail(mailOptions, async (err, info) => {
+		if (err) {
+			console.log(err);
+			res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+		} else {
+			res.json({ message: 'ok' });
+		}
 	});
 });
 

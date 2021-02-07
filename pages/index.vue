@@ -10,7 +10,7 @@
         </div>
       </div>
 
-      <div class="columns is-centered">
+      <div class="columns box is-centered">
         <div class="column is-third-desktop">
           <h2 class="subtitle">Vous êtes:</h2>
           <ul>
@@ -69,73 +69,65 @@
           <p class="has-text-centered mt-5" v-if="!this.$auth.loggedIn">
             <NuxtLink
               to="/register"
-              class="button is-outlined is-inverted is-primary is-radiusless"
+              class="button is-outlined label has-text-primary is-block is-large"
             >
-              <b-icon icon="greater-than" size="is-small"></b-icon>&nbsp;&nbsp;
-              Créer un compte pour commencer
+              <b-icon icon="user" />&nbsp;&nbsp;
+              Créer un compte
             </NuxtLink>
           </p>
         </div>
       </div>
     </section>
-    <section class="section">
+    <section class="section box">
       <h1 class="title has-text-primary has-text-centered mb-6">Avantages</h1>
       <div class="container">
-        <div class="columns is-centered v-divider py-0 my-0">
-          <div class="column my-0 py-0 mx-0">
-            <div class="box is-shadowless">
-              <h1 class="subtitle has-text-primary has-text-centered bold-text">
-                <b-icon icon="check" size="is-small"></b-icon>&nbsp; Rapidité
-              </h1>
-              <p class="has-text-centered">
-                <strong>Rapidité d’obtention du prêt en 5min</strong>
-              </p>
-            </div>
+        <div class="columns is-centered">
+          <div class="column my-0 py-0">
+            <h1 class="subtitle has-text-primary my-0 has-text-centered bold-text">
+              <b-icon icon="check" size="is-small"></b-icon>&nbsp; Rapidité
+            </h1>
+            <p class="has-text-centered">
+              <strong>Rapidité d’obtention du prêt en 5min</strong>
+            </p>
           </div>
-          <div class="column my-0 py-0 mx-0">
-            <div class="box is-shadowless">
-              <h1 class="subtitle has-text-primary has-text-centered bold-text">
-                <b-icon icon="check" size="is-small"></b-icon>&nbsp; Disponibilité
-              </h1>
-              <p class="has-text-centered">
-                <strong>Disponible 7j /7 et 24h/24</strong>
-              </p>
-            </div>
+          <div class="column my-0 py-0">
+            <h1 class="subtitle has-text-primary my-0 has-text-centered bold-text">
+              <b-icon icon="check" size="is-small"></b-icon>&nbsp; Disponibilité
+            </h1>
+            <p class="has-text-centered">
+              <strong>Disponible 7j /7 et 24h/24</strong>
+            </p>
           </div>
         </div>
-        <!-- <hr /> -->
-        <div class="columns is-centered v-divider py-0 my-0">
-          <div class="column my-0 py-0 mx-0">
-            <div class="box is-shadowless">
-              <h1 class="subtitle has-text-primary has-text-centered bold-text">
-                <b-icon icon="check" size="is-small"></b-icon>&nbsp; Taux
-              </h1>
-              <p class="has-text-centered">
-                Taux de remboursement insignifiant
-                <br />
-                <strong>
-                  Juste les frais de transfert à
-                  <span class="has-text-primary">5%</span>
-                </strong>
-              </p>
-            </div>
+        <div class="columns is-centered">
+          <div class="column my-0 py-0">
+            <h1 class="subtitle has-text-primary my-0 has-text-centered bold-text">
+              <b-icon icon="check" size="is-small"></b-icon>&nbsp; Taux
+            </h1>
+            <p class="has-text-centered">
+              Taux de remboursement insignifiant
+              <br />
+              <strong>
+                Juste les frais de transfert à
+                <span class="has-text-primary">5%</span>
+              </strong>
+            </p>
           </div>
-          <div class="column my-0 py-0 mx-0">
-            <div class="box is-shadowless">
-              <h1 class="subtitle has-text-primary has-text-centered bold-text">
-                <b-icon icon="check" size="is-small"></b-icon>&nbsp; Notre Service est en ligne
-              </h1>
-              <p class="has-text-centered">
-                Entièrement en ligne
-                <br />
-                <strong>Ne nécessite aucun déplacement</strong>
-              </p>
-            </div>
+          <div class="column my-0 py-0">
+            <h1 class="subtitle has-text-primary my-0 has-text-centered bold-text">
+              <b-icon icon="check" size="is-small"></b-icon>&nbsp; Notre Service est en ligne
+            </h1>
+            <p class="has-text-centered">
+              Entièrement en ligne
+              <br />
+              <strong>Ne nécessite aucun déplacement</strong>
+            </p>
           </div>
         </div>
         <p class="has-text-centered mt-5" v-if="!this.$auth.loggedIn">
-          <NuxtLink to="/register" class="button is-primary is-radiusless">
-            <b-icon icon="greater-than" size="is-small"></b-icon>&nbsp;&nbsp; Créer un compte pour commencer
+          <NuxtLink to="/register" class="button is-outlined label is-primary is-block is-large">
+            <b-icon icon="user" />&nbsp;&nbsp;
+            Créer un compte
           </NuxtLink>
         </p>
       </div>
@@ -165,34 +157,4 @@ export default {
 </script>
 
 <style lang="css" scoped>
-.v-divider {
-  position: relative;
-  overflow-x: hidden;
-}
-.v-divider.columns > .column:nth-child(n + 2):after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  background-color: rgb(226, 226, 226);
-}
-
-.v-divider.columns:nth-child(n + 2):after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  background-color: rgb(221, 221, 221);
-}
-
-@media (min-width: 768px) {
-  .v-divider.columns > .column:nth-child(n + 2):after {
-    width: 1px;
-    height: 100%;
-  }
-  .v-divider.columns:nth-child(n + 2):after {
-    width: 100%;
-    height: 1px;
-  }
-}
 </style>

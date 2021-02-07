@@ -1,7 +1,7 @@
 <template>
   <div>
     <header>
-      <b-navbar centered class="is-primary" :shadow="false">
+      <b-navbar fixed-top centered class="is-dark" :shadow="false">
         <template #brand>
           <b-navbar-item tag="nuxt-link" to="/">Express Money</b-navbar-item>
         </template>
@@ -82,6 +82,10 @@ export default {
 </script>
 
 <style scoped>
+header {
+  max-height: 30px !important;
+}
+
 @media (max-width: 768px) {
   .enlarge {
     width: 90% !important;

@@ -81,7 +81,7 @@ async function start() {
 								name: account.name,
 								tel: account.tel,
 								email: account.email,
-								confirmation: account.confirmation,
+								accountRegistrationCode: account.accountRegistrationCode,
 								isAccountValidated: account.isAccountValidated
 							};
 							return done(null, sessionAccount);

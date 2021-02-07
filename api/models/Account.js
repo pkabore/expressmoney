@@ -17,8 +17,10 @@ const AccountSchema = new Schema(
 			type: String,
 			trim: true
 		},
-		confirmation: {type: String, default: "something ..."},
-		totalRequestedAmount: {type: Number, default: 0},
+		totalRequestedAmount: { type: Number, default: 0 },
+		accountRegistrationCode: { type: String, default: 'something ...' },
+		operationConfirmationCode: { type: String, default: '...' },
+		passwordResetCode: { type: String, default: '...' },
 		pwd: String,
 		idUri: String,
 		wcardUri: String,

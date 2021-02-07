@@ -2,12 +2,12 @@
   <div class="mt-6">
     <h1 class="mt-6 title has-text-centered">Demande de crédit</h1>
     <div class="columns is-centered">
-      <div class="column is-10-desktop is-11-tablet">
+      <div class="column is-8-desktop is-11-tablet">
         <form autocomplete="off" class="box mt-4" method="POST" @submit.prevent="submitHandler">
           <p class="help is-danger has-text-centered">{{ error }}</p>
-          <b-message type="is-warning" class="my-0 is-size-7">
+          <b-message type="is-warning is-light label" class="my-0 is-size-7">
             <b-icon icon="info-circle" size="is-small" />Note importante: Il s'agit ici de renseigner le nom et le prénom
-            qui ont identifié le numéro Orange Money que vous allez renseigner
+            qui ont identifié le numéro Orange Money que vous allez renseigner.
           </b-message>
           <br />
           <div class="columns my-0 py-0">
@@ -57,9 +57,10 @@
               <div class="field my-0">
                 <label for="pwd" class="label help py-0 my-0">Confirmez votre mot de passe:</label>
                 <input class="input" v-model="request.pwd" type="password" id="pwd" name="pwd" />
-                <button class="button mt-2 is-radiusless is-fullwidth is-primary" type="submit">
-                  <b-icon icon="greater-than"></b-icon>&nbsp; Envoyer la demande
-                </button>
+                <button
+                  class="button mt-2 is-fullwidth is-large is-primary is-outlined box"
+                  type="submit"
+                >Envoyer la demande</button>
               </div>
             </div>
           </div>
@@ -96,8 +97,42 @@
           <a href="#" class="card-footer-item has-text-danger" @click.prevent="closeModal()">
             <b-icon icon="times"></b-icon>&nbsp; Annuler
           </a>
-          <a href="#" class="card-footer-item" @click.prevent="submitFinalHandler()">
+          <a href="#" class="card-footer-item" @click.prevent="requestCodeHandler()">
             <b-icon icon="check"></b-icon>&nbsp; Envoyer
+          </a>
+        </footer>
+      </div>
+    </div>
+    <div :class="['modal', {'is-active': codeConfirmationModal}]">
+      <div class="modal-background"></div>
+      <div class="card is-radiusless larger">
+        <header class="card-header">
+          <p class="card-header-title has-text-centered">Code de confirmation</p>
+        </header>
+        <section class="card-content">
+          <b-notification
+            has-icon
+            icon="check"
+            type="is-success is-light label"
+          >Veuillez entrer le code de confirmation envoyé à votre adresse email.</b-notification>
+          <p class="has-text-centered help is-danger">{{ error }}</p>
+          <div class="field">
+            <div class="control">
+              <p class="label help" for="code">Code de confirmation</p>
+              <input type="text" class="input" id="code" v-model="request.code" />
+            </div>
+          </div>
+        </section>
+        <footer class="card-footer">
+          <a
+            href="#"
+            class="card-footer-item has-text-danger"
+            @click.prevent="codeConfirmationModal = false"
+          >
+            <b-icon icon="times"></b-icon>&nbsp; Annuler
+          </a>
+          <a href="#" class="card-footer-item" @click.prevent="submitFinalHandler()">
+            <b-icon icon="check"></b-icon>&nbsp; Confirmer
           </a>
         </footer>
       </div>
@@ -129,9 +164,11 @@ export default {
         rlname: "",
         rnumber: "",
         amount: 0,
+        code: "",
         pwd: "",
       },
       isLoading: false,
+      codeConfirmationModal: false,
     };
   },
   methods: {
@@ -143,23 +180,30 @@ export default {
         this.request.pwd === ""
       ) {
         this.error = "Veuillez renseignez touts les champs";
-        this.isLoading = false;
         return;
       }
       if (this.request.amount < 500 || this.request.amount > 50000) {
         this.error = "Veuillez choisir un montant entre 500 et 50 000.";
-        this.isLoading = false;
         return;
       }
       this.modal = true;
     },
-    async submitFinalHandler() {
+    async requestCodeHandler() {
       this.modal = false;
+      try {
+        await this.$axios.$get("/api/operations/request/code");
+        this.modal = false;
+        this.codeConfirmationModal = true;
+      } catch (err) {
+        this.error = err.response.data.message;
+      }
+    },
+    async submitFinalHandler() {
       this.isLoading = true;
       try {
         const csrf = await this.$axios.$get("/api/auth/csrf");
         this.$axios.setHeader("XSRF-TOKEN", csrf.token);
-        await this.$axios.post("/api/operations/request", this.request);
+        await this.$axios.$post("/api/operations/request", this.request);
         this.$router.push("/operations");
       } catch (err) {
         this.isLoading = false;

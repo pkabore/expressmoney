@@ -1,22 +1,21 @@
 <template>
-  <div class>
+  <div class="is-flex is-flex-direction-column has-background-light">
     <AppBar />
     <main>
       <Nuxt />
     </main>
-    <!-- <AppFooter /> -->
+    <AppFooter class="is-self-align-flex-end" />
   </div>
 </template>
 
 <script>
 export default {
-  mounted() {
-    // this.$buefy.toast.open({
-    //   duration: 5000,
-    //   message: `Greetings in Christ <b>!</b>`,
-    //   position: "is-top-right",
-    //   type: "is-success",
-    // });
-  },
+  mounted() {},
 };
 </script>
+
+<style scoped>
+main {
+  min-height: 80vh;
+}
+</style>

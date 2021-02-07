@@ -1,127 +1,131 @@
 <template>
-  <div>
-    <div class="columns mt-6 is-centered">
-      <div class="column is-8-desktop box is-10-tablet mt-6">
-        <form autocomplete="off" @submit.prevent="handleRegistration" method="POST">
-          <h1 class="title has-text-centered has-text-primary">
-            <b-icon icon="user" />&nbsp; S'inscrire
-          </h1>
-          <p class="help is-danger has-text-centered mt-1">{{ error }}</p>
-          <div class="columns my-0 is-mobile">
-            <div class="column my-0 pr-0 py-0">
-              <div class="field">
-                <div class="control mx-1 my-0">
-                  <label class="label help is-black" for="fname">Prénom:</label>
-                  <input
-                    class="input"
-                    id="fname"
-                    type="text"
-                    v-model="account.fname"
-                    required="required"
-                    placeholder="Prénom"
-                    name="fname"
-                  />
+  <section class="hero is-fullheight">
+    <div class="hero-body">
+      <div class="container">
+        <div class="columns is-centered">
+          <div class="column is-6-desktop is-10-tablet box">
+            <h1 class="title has-text-centered mb-0">S'inscrire</h1>
+            <hr class="mt-0 has-background-dark" />
+            <form autocomplete="off" @submit.prevent="handleRegistration" method="POST">
+              <p class="help is-danger has-text-centered mt-1">{{ error }}</p>
+              <div class="columns my-0">
+                <div class="column my-0 py-0">
+                  <div class="field">
+                    <div class="control my-0">
+                      <label class="label help is-black" for="fname">Prénom:</label>
+                      <input
+                        class="input"
+                        id="fname"
+                        type="text"
+                        v-model="account.fname"
+                        required="required"
+                        placeholder="Prénom"
+                        name="fname"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="column my-0 py-0">
+                  <div class="field">
+                    <div class="control my-0">
+                      <label class="label help is-black" for="lname">Nom:</label>
+                      <input
+                        class="input"
+                        id="lname"
+                        type="text"
+                        v-model="account.lname"
+                        required="required"
+                        placeholder="Nom"
+                        name="lname"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="column my-0 pl-0 py-0">
-              <div class="field">
-                <div class="control mx-1 my-0">
-                  <label class="label help is-black" for="lname">Nom:</label>
-                  <input
-                    class="input"
-                    id="lname"
-                    type="text"
-                    v-model="account.lname"
-                    required="required"
-                    placeholder="Nom"
-                    name="lname"
-                  />
+              <div class="columns my-0">
+                <div class="column my-0 py-0">
+                  <div class="field">
+                    <div class="control my-0">
+                      <label class="label help is-black" for="tel">N° de téléphone:</label>
+                      <input
+                        class="input"
+                        id="tel"
+                        v-model="account.tel"
+                        type="tel"
+                        required="required"
+                        placeholder="70 00 00 00"
+                        name="tel"
+                      />
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
-          <div class="columns my-0 is-mobile">
-            <div class="column my-0 pr-0 py-0">
-              <div class="field">
-                <div class="control mx-1 my-0">
-                  <label class="label help is-black" for="tel">N° de téléphone:</label>
-                  <input
-                    class="input"
-                    id="tel"
-                    v-model="account.tel"
-                    type="tel"
-                    required="required"
-                    placeholder="70 00 00 00"
-                    name="tel"
-                  />
-                </div>
-              </div>
-            </div>
 
-            <div class="column my-0 pl-0 py-0">
-              <div class="field">
-                <div class="control mx-1 my-0">
-                  <label class="label help is-black" for="email">Addresse E-mail:</label>
-                  <input
-                    class="input"
-                    id="email"
-                    v-model="account.email"
-                    type="email"
-                    required="required"
-                    placeholder="exemple@example.com"
-                    name="email"
-                  />
+                <div class="column my-0 py-0">
+                  <div class="field">
+                    <div class="control my-0">
+                      <label class="label help is-black" for="email">Addresse E-mail:</label>
+                      <input
+                        class="input"
+                        id="email"
+                        v-model="account.email"
+                        type="email"
+                        required="required"
+                        placeholder="exemple@example.com"
+                        name="email"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <div class="columns my-0 is-mobile">
-            <div class="column my-0 pr-0 py-0">
-              <div class="field">
-                <div class="control mx-1 my-0">
-                  <label class="label help is-black" for="pass">Créer un mot de passe:</label>
-                  <input
-                    class="input"
-                    id="pass"
-                    v-model="account.pwd"
-                    type="password"
-                    required="required"
-                    placeholder="********"
-                    name="pwd"
-                  />
+              <div class="columns my-0">
+                <div class="column my-0 py-0">
+                  <div class="field">
+                    <div class="control my-0">
+                      <label class="label help is-black" for="pass">Créer un mot de passe:</label>
+                      <input
+                        class="input"
+                        id="pass"
+                        v-model="account.pwd"
+                        type="password"
+                        required="required"
+                        placeholder="********"
+                        name="pwd"
+                      />
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
 
-            <div class="column my-0 pl-0 py-0">
-              <div class="field">
-                <div class="control mx-1 my-0">
-                  <label class="label help is-black" for="passC">Confirmer mot de passe:</label>
-                  <input
-                    class="input"
-                    type="password"
-                    v-model="account.confirmedPWD"
-                    required="required"
-                    placeholder="********"
-                    name="confirmedPWD"
-                  />
+                <div class="column my-0 py-0">
+                  <div class="field">
+                    <div class="control my-0">
+                      <label class="label help is-black" for="passC">Confirmer mot de passe:</label>
+                      <input
+                        class="input"
+                        type="password"
+                        v-model="account.confirmedPWD"
+                        required="required"
+                        placeholder="********"
+                        name="confirmedPWD"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+              <button class="mt-2 button is-fullwidth is-large is-primary" type="submit">
+                <!-- <b-icon icon="user" />&nbsp;&nbsp; -->
+                Créer un compte
+              </button>
+              <p class="has-text-centered has-text-grey">
+                <NuxtLink to="/login">Se connecter</NuxtLink>
+              </p>
+            </form>
           </div>
-          <button
-            :class="['mt-2 button is-fullwidth is-primary is-radiusless', {'is-loading': isLoading}]"
-            type="submit"
-          >Créer un compte</button>
-          <p class="has-text-centered help is-info">
-            <NuxtLink to="/login">Vous avez déjà un compte? Cliquez ici pour vous connecter</NuxtLink>
-          </p>
-        </form>
+          <b-loading is-full-page v-model="isLoading" :can-cancel="false"></b-loading>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script>

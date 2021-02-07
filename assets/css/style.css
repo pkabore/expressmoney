@@ -7,6 +7,10 @@ main {
 	max-width: 100%;
 }
 
+*{
+  box-sizing: border-box !important;
+}
+
 .list-item {
 	padding: 7px 0px;
 	margin: 0;
@@ -39,4 +43,8 @@ main {
   .card.larger{
     width: 100%;
   }
+}
+
+.input, .textarea{
+  border-width: 2px;
 }

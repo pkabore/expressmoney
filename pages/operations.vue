@@ -2,12 +2,13 @@
   <section class="section">
     <h1 class="title has-text-centered is-size-6-mobile">Mes opérations</h1>
     <p class="has-text-centered mb-3" v-if="account.isAccountValidated === 'Validé'">
-      <b-button
-        tag="nuxt-link"
+      <NuxtLink
         to="/request"
-        type="is-success"
-        class="is-block is-radiusless"
-      >Cliquez ici pour une demande de crédit</b-button>
+        class="button is-outlined has-text-primary label is-block is-fullwidth box is-large action-button"
+      >
+        <b-icon icon="pen" />&nbsp;&nbsp;
+        Cliquez ici pour une demande de crédit
+      </NuxtLink>
     </p>
     <div class="columns" v-if="account.isAccountValidated === 'Validé'">
       <div class="column mx-0" v-if="isLoading">
@@ -78,11 +79,11 @@
             >{{ props.row.status }}</span>
             <span v-if="props.row.status === 'Payé'" class="tag is-success">{{ props.row.status }}</span>
           </b-table-column>
-          <b-table-column field="actions" label="Editer" sortable v-slot="props">
+          <b-table-column field="actions" label="Modifier" sortable v-slot="props">
             <div v-if="props.row.status === 'En cours'">
               <button class="button is-small is-primary" @click.prevent="openModal(props.row.id)">
                 <b-icon icon="pen" />&nbsp;&nbsp;
-                Editer
+                Modifier
               </button>
             </div>
           </b-table-column>
@@ -130,7 +131,7 @@
     </div>
     <div v-if="account.isAccountValidated === 'En attente'" class="columns is-centered mt-6 pt-4">
       <div class="column is-half-desktop is-10-tablet">
-        <div class="notification is-info is-light">
+        <div class="notification box is-info is-light">
           <h2 class="subtitle has-text-centered">
             <b-icon size="is-small" icon="spinner" />&nbsp; Votre compte est en cours de vérification
           </h2>
@@ -140,7 +141,7 @@
             <br />Express Money vous remercie pour votre confiance.
           </p>
         </div>
-        <b-message type="is-warning">
+        <b-message type="is-warning label">
           <NuxtLink
             to="/complete"
           >Pendant que votre compte n'est pas encore approuvé vous pouvez mettre à jour votre dossier si nécessaire.</NuxtLink>
@@ -156,9 +157,9 @@
         <section class="card-content">
           <form autocomplete="off" class="mt-4" method="POST" @submit.prevent="editRequest">
             <p class="help is-danger has-text-centered">{{ error }}</p>
-            <b-message type="is-warning" class="my-0 is-size-7">
-              <b-icon icon="info-circle" size="is-small" />Note importante: Il s'agit ici de renseigner le nom et le prénom
-              qui ont identifié le numéro Orange Money que vous allez renseigner
+            <b-message type="is-warning box" class="my-0 py-0">
+              <b-icon icon="info-circle" size="is-medium" />Note importante: Il s'agit ici de renseigner le nom et le prénom
+              qui ont identifié le numéro Orange Money que vous allez renseigner.
             </b-message>
             <br />
             <div class="columns my-0 py-0">
@@ -347,7 +348,7 @@ export default {
       updateOperation: {},
       perPage: 5,
       isLoading: true,
-      isLoadingFullPage:false,
+      isLoadingFullPage: false,
       error: "",
     };
   },
@@ -445,3 +446,6 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+</style>

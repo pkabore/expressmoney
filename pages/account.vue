@@ -1,7 +1,7 @@
 <template>
   <section class="section">
     <div class="columns is-centered py-1">
-      <div class="column my-0 py-0 is-two-thirds-tablet is-four-fiths-desktop">
+      <div class="column my-0 is-two-thirds-tablet is-four-fiths-desktop box">
         <h1 class="title has-text-centered mt-1">Compte</h1>
         <ul class="is-hoverable">
           <li class="columns m-0 p-0 is-mobile list-item">
@@ -88,16 +88,6 @@
             to="/complete"
           >Pendant que votre compte n'est pas encore approuvé vous pouvez mettre à jour votre dossier si nécessaire.</NuxtLink>
         </b-message>
-        <b-message
-          v-if="account.isAccountValidated !== 'En attente' && account.isAccountValidated !== 'Suppression'"
-          class="mt-1 has-text-centered"
-          type="is-danger"
-        >
-          <a @click.prevent="openModal()" href="#" class="has-text-centered text-decoration-none">
-            <b-icon icon="trash-alt" class="icon is-small" size="is-small"></b-icon>&nbsp;&nbsp;
-            Supprimer mon compte
-          </a>
-        </b-message>
         <b-notification
           v-if="account.isAccountValidated === 'Suppression'"
           class="mt-1 has-text-centered"
@@ -129,6 +119,24 @@
             <b-icon icon="trash-alt"></b-icon>&nbsp; Supprimer
           </a>
         </footer>
+      </div>
+    </div>
+    <div
+      class="columns is-centered py-1"
+      v-if="account.isAccountValidated !== 'En attente' && account.isAccountValidated !== 'Suppression'"
+    >
+      <div class="column my-0 is-two-thirds-tablet is-four-fiths-desktop box">
+        <h2 class="subtitle has-text-danger has-text-centered">Zone dangereuse</h2>
+        <p class="has-text-centered">
+          <b-button
+            class="mt-1 has-text-centered"
+            type="is-danger is-light"
+            @click.prevent="openModal()"
+          >
+            <b-icon icon="trash-alt" class="icon is-small" size="is-small"></b-icon>&nbsp;&nbsp;
+            Supprimer mon compte
+          </b-button>
+        </p>
       </div>
     </div>
   </section>
