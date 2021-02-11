@@ -27,8 +27,8 @@ export default {
 	plugins: [],
 
 	loading: {
-		color: 'success',
-		height: '2px'
+		color: 'white',
+		height: '3px'
 	},
 
 	components: true,
@@ -59,7 +59,7 @@ export default {
 		watchLoggedIn: true,
 		redirect: {
 			logout: '/login',
-			home: '/operations'
+			home: '/credit'
 		},
 		strategies: {
 			cookie: {

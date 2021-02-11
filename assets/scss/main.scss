@@ -2,7 +2,7 @@
 @import "~bulma/sass/utilities/_all";
 
 //Set your colors
-$primary: #38b5fc;
+$primary: #1976d2;
 $secondary: #6c757d;
 $success: #28a745;
 $info: #17a2b8;
@@ -16,19 +16,23 @@ $primary-invert: findColorInvert($primary);
 $twitter: #4099ff;
 $twitter-invert: findColorInvert($twitter);
 
+
 // Lists and maps
 $custom-colors: null !default;
 $custom-shades: null !default;
+$card-content-background-color: $light;
+$loading-background: rgba(0,0,0,0.5);
+$loading-background-legacy: rgba(0,0,0,0.5);
 
 $input-radius: 3px;
-$input-border-color: $primary-dark;
-$input-hover-border-color: $primary-dark;
-$input-background-color: #fff;
-$input-arrow: $primary;
+$input-border-color: $grey-darker;
+$input-hover-border-color: $grey-darker;
+// $input-background-color: #fff;
+// $input-arrow: $primary;
 
-$input-shadow: inset 0 1px 2px rgba($black, 0.1);
-
-$input-focus-box-shadow-color: rgba($primary, 0.25);
+// $input-shadow: inset 0 1px 1px rgba(0,0,0,0.5);
+// $input-focus-border-color: rgba(0,0,0,0.5);
+// $input-focus-box-shadow-color: rgba(0,0,0,0.5);
 
 $hr-height: 1px;
 $navbar-height: 3rem;

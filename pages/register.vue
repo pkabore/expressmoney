@@ -3,9 +3,8 @@
     <div class="hero-body">
       <div class="container">
         <div class="columns is-centered">
-          <div class="column is-6-desktop is-10-tablet box">
-            <h1 class="title has-text-centered mb-0">S'inscrire</h1>
-            <hr class="mt-0 has-background-dark" />
+          <div class="column is-6-desktop is-10-tablet">
+            <h1 class="title has-text-centered">Créer un compte</h1>
             <form autocomplete="off" @submit.prevent="handleRegistration" method="POST">
               <p class="help is-danger has-text-centered mt-1">{{ error }}</p>
               <div class="columns my-0">
@@ -112,7 +111,7 @@
                   </div>
                 </div>
               </div>
-              <button class="mt-2 button is-fullwidth is-large is-primary" type="submit">
+              <button class="mt-2 button is-fullwidth is-primary" type="submit">
                 <!-- <b-icon icon="user" />&nbsp;&nbsp; -->
                 Créer un compte
               </button>

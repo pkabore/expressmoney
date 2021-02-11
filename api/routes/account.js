@@ -4,9 +4,9 @@ const Joi = require('joi');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const mongoose = require('mongoose');
-const crypto = require('crypto');
-const querystring = require('querystring');
 const router = express.Router();
+const authenticator = require('otplib').authenticator;
+const mjml2html = require('mjml');
 
 const ensureAuthentication = (req, res, next) => {
 	if (req.isAuthenticated()) {
@@ -65,31 +65,23 @@ router.post('/logout', (req, res) => {
 });
 
 router.post('/register', (req, res, next) => {
-	const tel = req.body.data.tel;
-	const email = req.body.data.email;
+	const tel = req.body.tel;
+	const email = req.body.email;
 	Account.findOne({ $or: [ { tel }, { email } ] }, (err, doc) => {
 		if (err) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
 		if (doc) return res.status(400).json({ message: 'Numéro ou e-mail déjà utilisé. Veuillez vous connecter.' });
 		const fieldsValidationResult = validateAccountInformations(req.body.data);
 		if (fieldsValidationResult) return res.status(400).json({ message: fieldsValidationResult });
-		if (req.body.data.pwd !== req.body.data.confirmedPWD)
+		if (req.body.pwd !== req.body.confirmedPWD)
 			return res.status(400).json({ message: 'Mots de passe différents' });
-		bcrypt.hash(req.body.data.pwd, parseInt(process.env.BCRYPT_WORK_FACTOR), async (bcrypt_err, hashedPassword) => {
+		bcrypt.hash(req.body.pwd, parseInt(process.env.BCRYPT_WORK_FACTOR), async (bcrypt_err, hashedPassword) => {
 			if (bcrypt_err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
-			let verificationToken = '';
-
-			try {
-				const token = await crypto.randomBytes(100);
-				verificationToken = token.toString('base64') + new mongoose.Types.ObjectId();
-				verificationToken = querystring.escape(verificationToken);
-			} catch (error) {
-				return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
-			}
+			const verificationToken = new mongoose.Types.ObjectId() + new mongoose.Types.ObjectId();
 
 			const account = new Account({
-				name: req.body.data.fname + ' ' + req.body.data.lname,
-				tel: req.body.data.tel,
-				email: req.body.data.email,
+				name: req.body.fname + ' ' + req.body.lname,
+				tel: req.body.tel,
+				email: req.body.email,
 				isAccountValidated: '',
 				pwd: hashedPassword,
 				accountRegistrationCode: verificationToken
@@ -101,13 +93,9 @@ router.post('/register', (req, res, next) => {
 					});
 				const mailOptions = {
 					from: process.env.USER_EMAIL,
-					to: req.body.data.email,
+					to: req.body.email,
 					subject: 'Vérification de votre compte Express Money.',
-					html: `<div>
-								<h1>Merci pour la création de votre compte chez Express Money</h1>
-								<p style="text-align: center;"><a href="${process.env
-									.BASE_URL}/verification/${verificationToken}" style="background-color:#000; color:white; border-radius: 3px; padding: 20px 10px; text-decoration: none; font-size: 18px;">Cliquez ici pour vérifier votre compte</a></p>
-							</div>`
+					html: getEmailHtml('Cliquez', verificationToken)
 				};
 				transporter.sendMail(mailOptions, async (err, info) => {
 					if (err) {
@@ -124,14 +112,12 @@ router.post('/register', (req, res, next) => {
 });
 
 router.get('/verification/:id', (req, res) => {
-	const id = querystring.escape(req.params.id);
 	Account.findOne({ accountRegistrationCode: id }, async (err, account) => {
 		if (err || !account) return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
 		account.accountRegistrationCode = '';
-
 		try {
 			await account.save();
-			res.json({ message: 'ok' });
+			res.redirect('/credit');
 		} catch (error) {
 			res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
 		}
@@ -139,27 +125,25 @@ router.get('/verification/:id', (req, res) => {
 });
 
 router.post('/resetemail', (req, res) => {
-	Account.findOne({ email: req.body.data.email }, async (err, account) => {
+	Account.findOne({ email: req.body.email }, async (err, account) => {
 		if (err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reésayer.' });
 		if (!account)
 			return res.status(400).json({ message: 'Aucun compte associé à cet e-mail. Veuillez créer un compte.' });
 
-		const id = new mongoose.Types.ObjectId();
+		const secret = authenticator.generateSecret();
+		const token = authenticator.generate(secret);
 		try {
-			account.passwordResetCode = id;
+			account.passwordResetCode = token;
 			await account.save();
 		} catch (error) {
 			return res.status(500).json({ message: 'Erreur survenue. Veuillez reésayer.' });
 		}
 		const mailOptions = {
-			from: process.env.USER_EMAIL,
-			to: req.body.data.email,
+			from: '<no-reply>@expressmoney.com',
+			to: req.body.email,
 			subject: 'Express Money, Mot de passe oublié ',
-			text: `Code: ${id}`,
-			html: `<div>
-					<h1 style="text-align: center;">Code de récupération de mot de passe:</h1>
-					<p style="text-align: center; font-size: 20px;">${id}</p>
-				</div>`
+			text: `Code: ${token}`,
+			html: getEmailHtml('Code de récupération de mot de passe:', token)
 		};
 
 		transporter.sendMail(mailOptions, function(err, info) {
@@ -174,21 +158,21 @@ router.post('/resetemail', (req, res) => {
 });
 
 router.post('/resetcode', (req, res) => {
-	Account.findOne({ email: req.body.data.email }, async (err, account) => {
-		if (JSON.stringify(id) !== JSON.stringify(req.body.data.code.trim()))
+	Account.findOne({ email: req.body.email }, async (err, account) => {
+		if (err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reésayer.' });
+		if (JSON.stringify(account.passwordResetCode) !== JSON.stringify(req.body.code.trim()))
 			return res.status(400).json({ message: 'Code incorrect.' });
 		res.json({ message: 'ok' });
 	});
 });
 
 router.post('/resetpass', (req, res) => {
-	if (req.body.data.pwd !== req.body.data.confirmedPWD)
-		return res.status(400).json({ message: 'Mots de passe différents.' });
-	Account.findOne({ email: req.body.data.email }, async (err, account) => {
+	if (req.body.pwd !== req.body.confirmedPWD) return res.status(400).json({ message: 'Mots de passe différents.' });
+	Account.findOne({ email: req.body.email }, async (err, account) => {
 		if (err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reésayer.' });
 		if (!account)
 			return res.status(400).json({ message: 'Aucun compte associé à cet e-mail. Veuillez créer un compte.' });
-		const hashedPassword = await bcrypt.hash(req.body.data.pwd, parseInt(process.env.BCRYPT_WORK_FACTOR));
+		const hashedPassword = await bcrypt.hash(req.body.pwd, parseInt(process.env.BCRYPT_WORK_FACTOR));
 		account.pwd = hashedPassword;
 		await account.save();
 		res.json({ message: 'ok' });
@@ -196,6 +180,8 @@ router.post('/resetpass', (req, res) => {
 });
 
 router.post('/email', (req, res) => {
+	const messageValidation = validateEmailInformations(req.body);
+	if (messageValidation) return res.status(400).json({ message: messageValidation });
 	const mailOptions = {
 		from: req.body.email,
 		to: process.env.USER_EMAIL,
@@ -222,10 +208,49 @@ const accountValidationSchema = Joi.object({
 	_csrf: Joi.string()
 });
 
+const emailValidationSchema = Joi.object({
+	subject: Joi.string().required(),
+	message: Joi.string().required(),
+	email: Joi.string().email().required()
+});
+
 const validateAccountInformations = (infos) => {
 	const { error } = accountValidationSchema.validate(infos);
 	if (error) return error.details[0].message;
 	return null;
+};
+
+const validateEmailInformations = (infos) => {
+	const { error } = emailValidationSchema.validate(infos);
+	if (error) return error.details[0].message;
+	return null;
+};
+
+const getEmailHtml = (subject, code) => {
+	const link = `${process.env.BASE_URL}/verification/${code}`;
+	let message = `
+		<mjml>
+			<mj-head>
+				<mj-font name="Raleway"
+       href="https://fonts.googleapis.com/css?family=Raleway" />
+			</mj-head>
+			<mj-body>
+				<mj-section>
+					<mj-column>
+						<mj-text font-size="25px" align="center" color="#1976d2" font-weight="bold" font-family="Raleway, Arial, cursive">Express Money, Service Client</mj-text>
+						<mj-divider border-color="#1976d2"></mj-divider>`;
+	if (subject.includes('Cliquez'))
+		message += `<mj-button font-family="Raleway, Arial, cursive" font-size="20px" background-color="#1976d2" color="white" href=${link}>
+						Cliquez ici pour vérifier votre compte
+					</mj-button>`;
+	else
+		message += `<mj-text font-family="Raleway, Arial, cursive" font-size="20px" align="center" padding-top="35px">${subject} ${code}</mj-text>`;
+
+	message += `</mj-column>
+				</mj-section>
+			</mj-body>
+		</mjml>`;
+	return mjml2html(message).html;
 };
 
 module.exports = router;

@@ -3,7 +3,7 @@
     <div class="hero-body">
       <div class="container">
         <div class="columns is-centered">
-          <div class="column is-6-desktop is-8-tablet box">
+          <div class="column is-6-desktop is-8-tablet">
             <h3 class="title has-text-black has-text-centered mb-0">Connection</h3>
             <p
               class="has-text-black help has-text-centered mb-4"
@@ -11,7 +11,7 @@
             <form autocomplete="off" @submit.prevent="handleLogin">
               <p class="help has-text-centered is-danger">{{ error }}</p>
               <div class="field my-0">
-                <label class="label help" for="email">Numéro de téléphone / Email</label>
+                <label class="label help" for="email">Numéro de téléphone ou Email</label>
                 <input
                   v-model="email"
                   id="email"
@@ -23,10 +23,7 @@
               <div class="field my-0">
                 <label class="label help" for="pass">Mot de passe</label>
                 <input v-model="pwd" id="pass" class="input" type="password" placeholder="********" />
-                <button class="button mt-2 is-fullwidth is-primary" type="submit">
-                  Se connecter &nbsp;&nbsp;&nbsp;
-                  <b-icon pack="fas" icon="sign-in-alt" size="is-medium" />
-                </button>
+                <button class="button mt-2 is-fullwidth is-primary" type="submit">Se connecter</button>
               </div>
             </form>
             <p class="has-text-grey help has-text-centered">

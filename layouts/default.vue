@@ -1,10 +1,10 @@
 <template>
-  <div class="is-flex is-flex-direction-column has-background-light">
+  <div>
     <AppBar />
     <main>
       <Nuxt />
     </main>
-    <AppFooter class="is-self-align-flex-end" />
+    <AppFooter />
   </div>
 </template>
 
@@ -16,6 +16,6 @@ export default {
 
 <style scoped>
 main {
-  min-height: 80vh;
+  min-height: 100vh;
 }
 </style>

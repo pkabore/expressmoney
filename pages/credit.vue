@@ -1,111 +1,110 @@
 <template>
-  <section class="section">
-    <h1 class="title has-text-centered is-size-6-mobile">Mes opérations</h1>
-    <p class="has-text-centered mb-3" v-if="account.isAccountValidated === 'Validé'">
-      <NuxtLink
-        to="/request"
-        class="button is-outlined has-text-primary label is-block is-fullwidth box is-large action-button"
-      >
-        <b-icon icon="pen" />&nbsp;&nbsp;
-        Cliquez ici pour une demande de crédit
-      </NuxtLink>
-    </p>
-    <div class="columns" v-if="account.isAccountValidated === 'Validé'">
-      <div class="column mx-0" v-if="isLoading">
-        <h2 class="subtitle has-text-centered">Chargement en cours ...</h2>
-      </div>
-      <div class="column" v-if="!isLoading">
-        <b-table
-          :data="operations"
-          striped
-          narrowed
-          hoverable
-          paginated
-          :per-page="perPage"
-          pagination-rounded
-          default-sort="createdAt"
-          default-sort-direction="desc"
-          :loading="isLoading"
-        >
-          <b-table-column
-            field="id"
-            label="ID"
-            width="40"
-            sortable
-            numeric
-            v-slot="props"
-          >{{ props.row.id }}</b-table-column>
+  <div class="section">
+    <div class="columns is-centered" v-if="account.isAccountValidated === 'Validé'">
+      <div class="column">
+        <h1 class="title has-text-centered mt-2">Mes opérations</h1>
+        <p class="has-text-centered mb-3">
+          <b-button tag="nuxt-link" to="/request" type="primary" class="is-success label">
+            <b-icon icon="pen" />&nbsp;&nbsp;
+            Cliquez ici pour une demande de crédit
+          </b-button>
+        </p>
+        <div v-if="isLoading">
+          <h2 class="subtitle has-text-centered">Chargement en cours ...</h2>
+        </div>
+        <div v-if="!isLoading">
+          <b-table
+            :data="operations"
+            striped
+            narrowed
+            hoverable
+            paginated
+            :per-page="perPage"
+            pagination-rounded
+            default-sort="createdAt"
+            default-sort-direction="desc"
+            :loading="isLoading"
+          >
+            <b-table-column
+              field="id"
+              label="ID"
+              width="40"
+              sortable
+              numeric
+              v-slot="props"
+            >{{ props.row.id }}</b-table-column>
 
-          <b-table-column
-            field="rname"
-            label="Nom du Receveur"
-            sortable
-            v-slot="props"
-          >{{ props.row.rname }}</b-table-column>
+            <b-table-column
+              field="rname"
+              label="Nom du Receveur"
+              sortable
+              v-slot="props"
+            >{{ props.row.rname }}</b-table-column>
 
-          <b-table-column
-            field="rnumber"
-            label="Numéro du Receveur"
-            sortable
-            v-slot="props"
-          >{{ props.row.rnumber }}</b-table-column>
+            <b-table-column
+              field="rnumber"
+              label="Numéro du Receveur"
+              sortable
+              v-slot="props"
+            >{{ props.row.rnumber }}</b-table-column>
 
-          <b-table-column
-            field="amount"
-            label="Montant"
-            sortable
-            v-slot="props"
-          >{{ props.row.amount + ' FCFA'}}</b-table-column>
+            <b-table-column
+              field="amount"
+              label="Montant"
+              sortable
+              v-slot="props"
+            >{{ props.row.amount + ' FCFA'}}</b-table-column>
 
-          <b-table-column
-            field="devise"
-            label="Frais"
-            sortable
-            v-slot="props"
-          >{{ (props.row.fees) + ' FCFA' }}</b-table-column>
+            <b-table-column
+              field="devise"
+              label="Frais"
+              sortable
+              v-slot="props"
+            >{{ (props.row.fees) + ' FCFA' }}</b-table-column>
 
-          <b-table-column field="status" label="Statut" sortable v-slot="props">
-            <span
-              v-if="props.row.status === 'Réussi'"
-              class="tag is-light is-success"
-            >{{ props.row.status }}</span>
-            <span
-              v-if="props.row.status === 'En cours'"
-              class="tag is-light is-info"
-            >{{ props.row.status }}</span>
-            <span
-              v-if="props.row.status === 'Décliné'"
-              class="tag is-light is-danger"
-            >{{ props.row.status }}</span>
-            <span v-if="props.row.status === 'Payé'" class="tag is-success">{{ props.row.status }}</span>
-          </b-table-column>
-          <b-table-column field="actions" label="Modifier" sortable v-slot="props">
-            <div v-if="props.row.status === 'En cours'">
-              <button class="button is-small is-primary" @click.prevent="openModal(props.row.id)">
-                <b-icon icon="pen" />&nbsp;&nbsp;
-                Modifier
-              </button>
-            </div>
-          </b-table-column>
-          <b-table-column field="actions" label="Annuler" sortable v-slot="props">
-            <div v-if="props.row.status === 'En cours'">
-              <button
-                class="button is-small is-danger"
-                @click.prevent="openDeletionModal(props.row.id)"
-              >
-                <b-icon icon="trash" />&nbsp;&nbsp;
-                Annuler
-              </button>
-            </div>
-          </b-table-column>
-          <b-table-column
-            field="createdAt"
-            label="Date"
-            sortable
-            centered
-            v-slot="props"
-          >{{ new Date(props.row.createdAt).toLocaleString('fr-FR') }}</b-table-column>
-        </b-table>
+            <b-table-column field="status" label="Statut" sortable v-slot="props">
+              <span
+                v-if="props.row.status === 'Réussi'"
+                class="tag is-light is-success"
+              >{{ props.row.status }}</span>
+              <span
+                v-if="props.row.status === 'En cours'"
+                class="tag is-light is-info"
+              >{{ props.row.status }}</span>
+              <span
+                v-if="props.row.status === 'Décliné'"
+                class="tag is-light is-danger"
+              >{{ props.row.status }}</span>
+              <span v-if="props.row.status === 'Payé'" class="tag is-success">{{ props.row.status }}</span>
+            </b-table-column>
+            <b-table-column field="actions" label="Modifier" sortable v-slot="props">
+              <div v-if="props.row.status === 'En cours'">
+                <button class="button is-small is-primary" @click.prevent="openModal(props.row.id)">
+                  <b-icon icon="pen" />&nbsp;&nbsp;
+                  Modifier
+                </button>
+              </div>
+            </b-table-column>
+            <b-table-column field="actions" label="Annuler" sortable v-slot="props">
+              <div v-if="props.row.status === 'En cours'">
+                <button
+                  class="button is-small is-danger"
+                  @click.prevent="openDeletionModal(props.row.id)"
+                >
+                  <b-icon icon="trash" />&nbsp;&nbsp;
+                  Annuler
+                </button>
+              </div>
+            </b-table-column>
+            <b-table-column
+              field="createdAt"
+              label="Date"
+              sortable
+              centered
+              v-slot="props"
+            >{{ new Date(props.row.createdAt).toLocaleString('fr-FR') }}</b-table-column>
+          </b-table>
+        </div>
       </div>
     </div>
     <div v-if="account.isAccountValidated === ''" class="columns is-centered mt-6 pt-4">
@@ -121,6 +120,7 @@
             <br />Express Money vous remercie pour votre confiance.
           </p>
         </div>
+        <hr />
         <p class="has-text-centered">
           <NuxtLink
             to="/complete"
@@ -150,88 +150,84 @@
     </div>
     <div :class="['modal', {'is-active': updateModal}]">
       <div class="modal-background"></div>
-      <div class="card larger is-radiusless">
-        <header class="card-header">
-          <p class="card-header-title has-text-centered">Editer la demande</p>
-        </header>
-        <section class="card-content">
-          <form autocomplete="off" class="mt-4" method="POST" @submit.prevent="editRequest">
-            <p class="help is-danger has-text-centered">{{ error }}</p>
-            <b-message type="is-warning box" class="my-0 py-0">
-              <b-icon icon="info-circle" size="is-medium" />Note importante: Il s'agit ici de renseigner le nom et le prénom
-              qui ont identifié le numéro Orange Money que vous allez renseigner.
-            </b-message>
-            <br />
-            <div class="columns my-0 py-0">
-              <div class="column my-0 py-0">
-                <div class="field my-0">
-                  <label for="rfname" class="label help py-0 my-0">Prénom du Receveur:</label>
-                  <input
-                    class="input"
-                    v-model="updateOperation.rfname"
-                    type="text"
-                    id="rfname"
-                    name="rfname"
-                  />
-                </div>
-              </div>
-              <div class="column my-0 py-0">
-                <div class="field my-0">
-                  <label for="rlname" class="label help py-0 my-0">Nom du Receveur:</label>
-                  <input
-                    class="input"
-                    v-model="updateOperation.rlname"
-                    type="text"
-                    id="rlname"
-                    name="rlname"
-                  />
-                </div>
-              </div>
-              <div class="column my-0 py-0">
-                <div class="field my-0">
-                  <label for="rnumber" class="label help py-0 my-0">Numéro Orange Money du Receveur:</label>
-                  <input
-                    class="input"
-                    v-model="updateOperation.rnumber"
-                    type="tel"
-                    id="rnumber"
-                    name="rnumber"
-                  />
-                </div>
+      <div class="card larger is-radiusless p-2">
+        <h2 class="has-text-centered has-text-weight-bold subtitle mt-3">Editer la demande</h2>
+        <form autocomplete="off" class="mt-4" method="POST" @submit.prevent="editRequest">
+          <p class="help is-danger has-text-centered">{{ error }}</p>
+          <b-message type="is-warning help" size="is-small" class="my-0 py-0">
+            Note importante: Il s'agit ici de renseigner le nom et le prénom
+            qui ont identifié le numéro Orange Money que vous allez renseigner.
+          </b-message>
+          <br />
+          <div class="columns my-0 py-0">
+            <div class="column my-0 py-0">
+              <div class="field my-0">
+                <label for="rfname" class="label help py-0 my-0">Prénom du Receveur:</label>
+                <input
+                  class="input"
+                  v-model="updateOperation.rfname"
+                  type="text"
+                  id="rfname"
+                  name="rfname"
+                />
               </div>
             </div>
-            <div class="columns my-0 py-0">
-              <div class="column">
-                <div class="field my-0">
-                  <label for="amount" class="label help py-0 my-0">Montant en FCFA:</label>
-                  <input
-                    class="input"
-                    v-model="updateOperation.amount"
-                    placeholder="10000"
-                    type="number"
-                    step="500"
-                    id="amount"
-                    name="amount"
-                  />
-                </div>
+            <div class="column my-0 py-0">
+              <div class="field my-0">
+                <label for="rlname" class="label help py-0 my-0">Nom du Receveur:</label>
+                <input
+                  class="input"
+                  v-model="updateOperation.rlname"
+                  type="text"
+                  id="rlname"
+                  name="rlname"
+                />
               </div>
             </div>
-            <div class="columns">
-              <div class="column">
-                <div class="field my-0">
-                  <label for="pwd" class="label help py-0 my-0">Confirmez votre mot de passe:</label>
-                  <input
-                    class="input"
-                    v-model="updateOperation.pwd"
-                    type="password"
-                    id="pwd"
-                    name="pwd"
-                  />
-                </div>
+            <div class="column my-0 py-0">
+              <div class="field my-0">
+                <label for="rnumber" class="label help py-0 my-0">Numéro Orange Money du Receveur:</label>
+                <input
+                  class="input"
+                  v-model="updateOperation.rnumber"
+                  type="tel"
+                  id="rnumber"
+                  name="rnumber"
+                />
               </div>
             </div>
-          </form>
-        </section>
+          </div>
+          <div class="columns my-0 py-0">
+            <div class="column">
+              <div class="field my-0">
+                <label for="amount" class="label help py-0 my-0">Montant en FCFA:</label>
+                <input
+                  class="input"
+                  v-model="updateOperation.amount"
+                  placeholder="10000"
+                  type="number"
+                  step="500"
+                  id="amount"
+                  name="amount"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="columns">
+            <div class="column">
+              <div class="field my-0">
+                <label for="pwd" class="label help py-0 my-0">Confirmez votre mot de passe:</label>
+                <input
+                  class="input"
+                  v-model="updateOperation.pwd"
+                  type="password"
+                  id="pwd"
+                  name="pwd"
+                />
+              </div>
+            </div>
+          </div>
+        </form>
         <footer class="card-footer">
           <a
             href="#"
@@ -325,7 +321,7 @@
         </footer>
       </div>
     </div>
-  </section>
+  </div>
 </template>
 
 <script>

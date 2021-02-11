@@ -4,6 +4,8 @@ const Account = require('../models/Account.js');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
+const authenticator = require('otplib').authenticator;
+const mjml2html = require('mjml');
 
 const ensureAuthentication = (req, res, next) => {
 	if (req.isAuthenticated()) {
@@ -67,15 +69,12 @@ router.put('/:id', ensureAuthentication, async (req, res) => {
 				parseFloat(process.env.REQUEST_LIMIT_AMOUNT)
 			)
 				return res.status(400).json({
-					message: `Limite du montant mensuel atteint. Veuillez attendre le paiement de vos demandes précédentes avant de procéder à une nouvelle demande de crédit.`
+					message: `Limite du montant mensuel atteint. Veuillez choisir un montant inférieur ou attendez de payer touts vos frais avant de procéder.`
 				});
 			const oldLimit = operation.amount;
 			operation.amount = req.body.amount;
 			operation.sender = account.name;
-			operation.fees =
-				Math.trunc(
-					parseFloat(req.body.amount) * parseFloat(process.env.RATE) * parseInt(process.env.ROUNDING_POSITION)
-				) / parseInt(process.env.ROUNDING_POSITION);
+			operation.fees = new Number(parseFloat(req.body.amount) * parseFloat(process.env.RATE)).toFixed(3);
 			operation.rname = req.body.rfname + ' ' + req.body.rlname;
 			operation.rnumber = req.body.rnumber;
 
@@ -119,12 +118,18 @@ router.post('/delete/:id', ensureAuthentication, async (req, res) => {
 	});
 });
 
-router.get('/request/code', ensureAuthentication, async (req, res) => {
+router.post('/request/code', ensureAuthentication, async (req, res) => {
 	Account.findOne({ _id: req.user._id, isAccountValidated: 'Validé' }, async (err, account) => {
 		if (err || !account) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
 
-		const operationConfirmationCode = new mongoose.Types.ObjectId();
-		account.operationConfirmationCode = operationConfirmationCode;
+		if (parseFloat(req.body.amount) + account.totalRequestedAmount > parseFloat(process.env.REQUEST_LIMIT_AMOUNT))
+			return res.status(400).json({
+				message:
+					'Limite du montant mensuel atteint. Veuillez choisir un montant inférieur ou attendez de payer touts vos frais avant de procéder.'
+			});
+		const secret = authenticator.generateSecret();
+		const token = authenticator.generate(secret);
+		account.operationConfirmationCode = token;
 		try {
 			await account.save();
 		} catch (error) {
@@ -135,10 +140,7 @@ router.get('/request/code', ensureAuthentication, async (req, res) => {
 			from: process.env.USER_EMAIL,
 			to: req.user.email,
 			subject: 'Demande de crédit Express Money.',
-			html: `<div>
-								<h1 style="text-align: center;">Le code pour votre nouvelle opération:</h1>
-								<p style="text-align: center; font-size: 20px;">${operationConfirmationCode}</p>
-							</div>`
+			html: getEmailHtml('Code de confirmation pour votre demande de crédit:', token)
 		};
 		transporter.sendMail(mailOptions, async (err, info) => {
 			if (err) {
@@ -175,13 +177,13 @@ router.post('/request', ensureAuthentication, async (req, res) => {
 				parseFloat(process.env.REQUEST_LIMIT_AMOUNT)
 			)
 				return res.status(400).json({
-					message: `Limite du montant mensuel atteint. Veuillez attendre le paiement de vos demandes précédentes avant de procéder à une nouvelle demande de crédit.`
+					message: `Limite du montant mensuel atteint. Veuillez choisir un montant inférieur ou attendez de payer touts vos frais avant de procéder.`
 				});
 			const operation = new Operation({
 				sender_id: new mongoose.Types.ObjectId(account._id),
 				amount: req.body.amount,
 				sender: account.name,
-				fees: parseFloat(req.body.amount) * parseFloat(process.env.RATE),
+				fees: new Number(parseFloat(req.body.amount) * parseFloat(process.env.RATE)).toFixed(3),
 				rname: req.body.rfname + ' ' + req.body.rlname,
 				rnumber: req.body.rnumber
 			});
@@ -197,5 +199,32 @@ router.post('/request', ensureAuthentication, async (req, res) => {
 		});
 	});
 });
+
+const getEmailHtml = (subject, code) => {
+	const link = `${process.env.BASE_URL}/verification/${code}`;
+	let message = `
+		<mjml>
+			<mj-head>
+				<mj-font name="Raleway"
+       href="https://fonts.googleapis.com/css?family=Raleway" />
+			</mj-head>
+			<mj-body>
+				<mj-section>
+					<mj-column>
+						<mj-text font-size="25px" align="center" color="#1976d2" font-weight="bold" font-family="Raleway, Arial, cursive">Express Money, Service Client</mj-text>
+						<mj-divider border-color="#1976d2"></mj-divider>`;
+	if (subject.includes('Cliquez'))
+		message += `<mj-button font-family="Raleway, Arial, cursive" font-size="20px" background-color="#1976d2" color="white" href=${link}>
+						Cliquez ici pour vérifier votre compte
+					</mj-button>`;
+	else
+		message += `<mj-text font-family="Raleway, Arial, cursive" font-size="20px" align="center" padding-top="35px">${subject} ${code}</mj-text>`;
+
+	message += `</mj-column>
+				</mj-section>
+			</mj-body>
+		</mjml>`;
+	return mjml2html(message).html;
+};
 
 module.exports = router;

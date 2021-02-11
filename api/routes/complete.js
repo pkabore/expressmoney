@@ -41,7 +41,7 @@ let upload = multer({
 upload = upload.array('papers', 3);
 
 router.post('/', ensureAuthentication, (req, res) => {
-	if (req.user.accountRegistrationCode !== "") {
+	if (req.user.accountRegistrationCode !== '') {
 		return res.status(403).json({
 			message: "Votre compte n'a pas été vérifié. Veuillez cliquez sur le lien envoyé à votre adresse mail."
 		});

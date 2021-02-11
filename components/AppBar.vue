@@ -7,7 +7,7 @@
         </template>
         <template #start>
           <b-navbar-item tag="nuxt-link" to="/">Accueil</b-navbar-item>
-          <b-navbar-item tag="nuxt-link" to="/operations">Crédit</b-navbar-item>
+          <b-navbar-item tag="nuxt-link" to="/credit">Crédit</b-navbar-item>
           <b-navbar-item tag="nuxt-link" to="/contact">Contact</b-navbar-item>
           <b-navbar-item tag="nuxt-link" to="/about">A propos</b-navbar-item>
         </template>

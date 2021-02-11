@@ -1,9 +1,9 @@
 <template>
   <div class="container">
-    <div class="columns is-centered">
+    <div class="columns is-centered mt-5">
       <div class="column is-two-thirds-desktop is-four-fiths-tablet">
-        <section class="box mt-6">
-          <h1 class="title has-text-centered">Nous contacter</h1>
+        <section class="mt-6">
+          <h1 class="title mt-5 has-text-centered">Nous contacter</h1>
           <form action="POST" @submit.prevent="sendMail()">
             <p class="help has-text-centered is-danger">{{ error }}</p>
             <div class="field my-0">
@@ -29,9 +29,7 @@
             <div class="field my-0">
               <label class="label help" for="msg">Message:</label>
               <textarea v-model="email.message" id="msg" class="textarea"></textarea>
-              <button class="button mt-2 is-fullwidth is-info" type="submit">
-                <b-icon icon="envelope" />&nbsp;&nbsp; Envoyer le message
-              </button>
+              <button class="button mt-2 is-fullwidth is-primary" type="submit">Envoyer le message</button>
             </div>
           </form>
         </section>

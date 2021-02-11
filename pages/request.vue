@@ -3,8 +3,8 @@
     <h1 class="mt-6 title has-text-centered">Demande de crédit</h1>
     <div class="columns is-centered">
       <div class="column is-8-desktop is-11-tablet">
-        <form autocomplete="off" class="box mt-4" method="POST" @submit.prevent="submitHandler">
-          <p class="help is-danger has-text-centered">{{ error }}</p>
+        <form autocomplete="off" class="mt-4" method="POST" @submit.prevent="submitHandler">
+          <p class="has-text-danger has-text-centered">{{ error }}</p>
           <b-message type="is-warning is-light label" class="my-0 is-size-7">
             <b-icon icon="info-circle" size="is-small" />Note importante: Il s'agit ici de renseigner le nom et le prénom
             qui ont identifié le numéro Orange Money que vous allez renseigner.
@@ -58,7 +58,7 @@
                 <label for="pwd" class="label help py-0 my-0">Confirmez votre mot de passe:</label>
                 <input class="input" v-model="request.pwd" type="password" id="pwd" name="pwd" />
                 <button
-                  class="button mt-2 is-fullwidth is-large is-primary is-outlined box"
+                  class="button mt-2 is-fullwidth is-large is-primary box"
                   type="submit"
                 >Envoyer la demande</button>
               </div>
@@ -67,7 +67,7 @@
         </form>
       </div>
     </div>
-    <div :class="['modal', {'is-active': modal}]">
+    <div :class="['modal', {'is-active': confirmationModal}]">
       <div class="modal-background"></div>
       <div class="card is-radiusless larger">
         <header class="card-header">
@@ -106,16 +106,13 @@
     <div :class="['modal', {'is-active': codeConfirmationModal}]">
       <div class="modal-background"></div>
       <div class="card is-radiusless larger">
-        <header class="card-header">
-          <p class="card-header-title has-text-centered">Code de confirmation</p>
-        </header>
+        <h2 class="has-text-centered has-text-weight-bold">Code de confirmation</h2>
         <section class="card-content">
-          <b-notification
-            has-icon
-            icon="check"
-            type="is-success is-light label"
-          >Veuillez entrer le code de confirmation envoyé à votre adresse email.</b-notification>
-          <p class="has-text-centered help is-danger">{{ error }}</p>
+          <b-message
+            type="is-success is-light"
+            aria-close-label="Close notification"
+          >Veuillez entrer le code de confirmation envoyé à votre adresse email.</b-message>
+          <p class="has-text-centered label has-text-danger is-danger">{{ error }}</p>
           <div class="field">
             <div class="control">
               <p class="label help" for="code">Code de confirmation</p>
@@ -168,7 +165,10 @@ export default {
         pwd: "",
       },
       isLoading: false,
+      show: false,
+      confirmationModal: false,
       codeConfirmationModal: false,
+      codeSent: false,
     };
   },
   methods: {
@@ -186,13 +186,18 @@ export default {
         this.error = "Veuillez choisir un montant entre 500 et 50 000.";
         return;
       }
-      this.modal = true;
+      if (this.codeSent) this.codeConfirmationModal = true;
+      else this.confirmationModal = true;
     },
     async requestCodeHandler() {
-      this.modal = false;
+      this.confirmationModal = false;
       try {
-        await this.$axios.$get("/api/operations/request/code");
-        this.modal = false;
+        const csrf = await this.$axios.$get("/api/auth/csrf");
+        this.$axios.setHeader("XSRF-TOKEN", csrf.token);
+        await this.$axios.$post("/api/operations/request/code", {
+          amount: this.request.amount,
+        });
+        this.codeSent = true;
         this.codeConfirmationModal = true;
       } catch (err) {
         this.error = err.response.data.message;
@@ -204,9 +209,10 @@ export default {
         const csrf = await this.$axios.$get("/api/auth/csrf");
         this.$axios.setHeader("XSRF-TOKEN", csrf.token);
         await this.$axios.$post("/api/operations/request", this.request);
-        this.$router.push("/operations");
+        this.$router.push("/credit");
       } catch (err) {
         this.isLoading = false;
+        this.codeConfirmationModal = false;
         this.error = err.response.data.message;
       }
     },

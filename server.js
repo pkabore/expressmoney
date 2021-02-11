@@ -59,34 +59,34 @@ async function start() {
 			},
 			async (email, pwd, done) => {
 				Account.findOne({ $or: [ { email }, { tel: email } ] }, (err, account) => {
-						if (err) {
+					if (err) {
+						return done(err);
+					}
+					if (!account) {
+						return done(null, false, {
+							message: 'Mot de passe, numéro ou e-mail incorrect.'
+						});
+					}
+					bcrypt.compare(pwd, account.pwd, (bcrypt_err, bcrypt_res) => {
+						if (bcrypt_err) {
 							return done(err);
 						}
-						if (!account) {
+						if (!bcrypt_res) {
 							return done(null, false, {
 								message: 'Mot de passe, numéro ou e-mail incorrect.'
 							});
 						}
-						bcrypt.compare(pwd, account.pwd, (bcrypt_err, bcrypt_res) => {
-							if (bcrypt_err) {
-								return done(err);
-							}
-							if (!bcrypt_res) {
-								return done(null, false, {
-									message: 'Mot de passe, numéro ou e-mail incorrect.'
-								});
-							}
-							const sessionAccount = {
-								_id: account._id,
-								name: account.name,
-								tel: account.tel,
-								email: account.email,
-								accountRegistrationCode: account.accountRegistrationCode,
-								isAccountValidated: account.isAccountValidated
-							};
-							return done(null, sessionAccount);
-						});
+						const sessionAccount = {
+							_id: account._id,
+							name: account.name,
+							tel: account.tel,
+							email: account.email,
+							accountRegistrationCode: account.accountRegistrationCode,
+							isAccountValidated: account.isAccountValidated
+						};
+						return done(null, sessionAccount);
 					});
+				});
 			}
 		)
 	);
