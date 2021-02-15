@@ -27,7 +27,7 @@ export default {
 	plugins: [],
 
 	loading: {
-		color: 'white',
+		color: 'grey',
 		height: '3px'
 	},
 
@@ -37,7 +37,10 @@ export default {
 
 	telemetry: false,
 
-	modules: [ '@nuxtjs/auth-next', '@nuxtjs/axios', 'nuxt-helmet', 'nuxt-buefy', 'nuxt-fontawesome' ],
+	modules: [ '@nuxtjs/auth-next', '@nuxtjs/axios', 'nuxt-helmet', 'nuxt-buefy', 'nuxt-fontawesome', ['nuxt-gmaps', {
+    key: 'AIzaSyDaDfiEoPFyMUL4aVTwikAhWoLuYPsv5dA',
+    //libraries: ['places']
+  }] ],
 
 	buefy: {
 		materialDesignIcons: false,
@@ -128,6 +131,7 @@ export default {
 					name: '[path][name].[ext]'
 				}
 			});
+
 		}
 	},
 

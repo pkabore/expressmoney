@@ -1,37 +1,89 @@
 <template>
   <div class="container">
     <div class="columns is-centered mt-5">
-      <div class="column is-two-thirds-desktop is-four-fiths-tablet">
-        <section class="mt-6">
-          <h1 class="title mt-5 has-text-centered">Nous contacter</h1>
+      <div class="column is-6-desktop is-8-tablet">
+        <section class="is-fullheight">
+          <h1 class="title mt-5 has-text-centered">Nos contacts</h1>
+        <div class="content">
+          <ul class="list">
+            <li class="subtitle my-1">
+              <div class="columns">
+              <div class="is-3 column my-1 py-0">Adresse:</div>
+              <div class="is-9 column my-1 py-0 is-family-secondary">
+                <b-icon icon="map-marker-alt"></b-icon>
+              17 Esshokour 2 Khouribga</div>
+              </div>
+            </li>
+            <li class="subtitle my-1">
+              <div class="columns">
+              <div class="is-3 column my-1 py-0">Tél 1:</div>
+              <div class="is-9 column my-1 py-0 is-family-secondary">
+                <b-icon icon="phone-alt"></b-icon>
+              +226 70 00 00 00</div>
+            </div>
+            </li>
+            <li class="subtitle my-1">
+              <div class="columns">
+              <div class="is-3 column my-1 py-0">Tel 2:</div>
+              <div class="is-9 column my-1 py-0 is-family-secondary">
+                <b-icon icon="phone-alt"></b-icon>
+              +226 70 00 00 00</div>
+            </div>
+            </li>
+            <li class="subtitle my-1">
+              <div class="columns">
+              <div class="is-3 column my-1 py-0">Email:</div>
+              <div class="is-9 column my-1 py-0 is-family-secondary">
+                <b-icon icon="envelope"></b-icon>
+              expressmoney@mail.com</div>
+            </div>
+            </li>
+          </ul>
+        </div>
+      </section>
+      </div>
+    </div>
+    <hr>
+    <div class="columns is-centered">
+      <div class="column is-6-desktop is-8-tablet">
+        <section class="is-fullheight">
+          <h1 class="title mt-5 has-text-centered">Nous écrire</h1>
           <form action="POST" @submit.prevent="sendMail()">
             <p class="help has-text-centered is-danger">{{ error }}</p>
-            <div class="field my-0">
-              <label class="label help" for="sujbect">Sujet:</label>
+            <div class="field mt-1 mb-0">
               <input
                 id="sujbect"
                 v-model="email.subject"
                 class="input"
                 type="text"
-                placeholder="Express Money, Service client"
+                placeholder="Sujet"
               />
             </div>
-            <div class="field my-0">
-              <label class="label help" for="mail">Adresse email:</label>
+            <div class="field mt-1 mb-0">
               <input
                 v-model="email.email"
                 id="mail"
                 class="input"
                 type="email"
-                placeholder="Express Money, Service client"
+                placeholder="Votre adresse email"
               />
             </div>
-            <div class="field my-0">
-              <label class="label help" for="msg">Message:</label>
-              <textarea v-model="email.message" id="msg" class="textarea"></textarea>
-              <button class="button mt-2 is-fullwidth is-primary" type="submit">Envoyer le message</button>
+            <div class="field mt-1 mb-0">
+              <textarea v-model="email.message" placeholder="Message ..." id="msg" class="textarea"></textarea>
+              <p class="has-text-right">
+              <button class="button mt-2 is-outlined is-primary" type="submit">Envoyer le message</button>
+              </p>
             </div>
           </form>
+        </section>
+      </div>
+    </div>
+    <hr>
+    <div class="columns is-centered">
+      <div class="column is-6-desktop is-8-tablet">
+        <section class="is-fullheight">
+          <h1 class="title mt-5 has-text-centered">Sur la carte</h1>
+
         </section>
       </div>
     </div>
@@ -39,6 +91,7 @@
 </template>
 
 <script>
+
 export default {
   head: {
     title: "Contact",
@@ -60,9 +113,25 @@ export default {
         message: "",
       },
       error: "",
+      location: { lat: -25.344, lng: 131.036 }
     };
   },
+  mounted: () => {
+  },
   methods: {
+    initMap(){
+      const uluru = { lat: -25.344, lng: 131.036 };
+      // The map, centered at Uluru
+      const map = new google.maps.Map(this.$refs['map'], {
+        zoom: 4,
+        center: uluru,
+      });
+      // The marker, positioned at Uluru
+      const marker = new google.maps.Marker({
+        position: uluru,
+        map: map,
+      });
+    },
     async sendMail() {
       if (
         this.email.subject === "" ||

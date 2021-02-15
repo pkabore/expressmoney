@@ -13,9 +13,3 @@ export default {
   mounted() {},
 };
 </script>
-
-<style scoped>
-main {
-  min-height: 100vh;
-}
-</style>

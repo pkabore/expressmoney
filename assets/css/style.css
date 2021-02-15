@@ -1,47 +1,43 @@
 body,
 html,
 main {
-	font-family: "Baloo 2", cursive, sans-serif;
 	margin: 0;
 	padding: 0;
 	max-width: 100%;
 }
 
+/*.title, .button, .navbar-item, b-navbar-item{
+  font-family: 'Baloo 2', BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
+"Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", cursive, sans-serif;
+}*/
+
 .list-item {
 	padding: 7px 0px;
 	margin: 0;
-	border-bottom: 2px dashed #e0e0e0;
+	border-bottom: 2px dotted #e0e0e0;
 }
 
-:root {
-  --animate-duration: 1s;
-  --animate-delay: 1s;
-  --animate-repeat: 1;
+.navbar-item, b-navbar-item{
+  background-color: initial !important;
+  font-weight: bold;
 }
 
-.animate__animated {
-  -webkit-animation-duration: 1s;
-  animation-duration: 1s;
-  -webkit-animation-duration: var(--animate-duration);
-  animation-duration: var(--animate-duration);
-  -webkit-animation-fill-mode: both;
-  animation-fill-mode: both;
+.button{
+  font-weight: bold !important;
 }
 
-.navbar-menu{
-  box-shadow: none;
+a {
+  text-decoration: none !important;
 }
 
-.card.larger{
-  width: 60%;
+.is-fullheight{
+  height: 100% !important;
 }
 
-@media(max-width: 768px){
-  .card.larger{
-    width: 100%;
-  }
+ul{
+  list-style-type: none !important;
 }
 
-.input, .textarea{
-  border-width: 1px;
+main {
+  min-height: 100vh;
 }

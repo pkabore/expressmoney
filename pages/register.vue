@@ -12,12 +12,11 @@
                   <div class="field">
                     <div class="control my-0">
                       <label class="label help is-black" for="fname">Prénom:</label>
-                      <input
-                        class="input"
+                      <b-input
+                        icon="user"
                         id="fname"
-                        type="text"
                         v-model="account.fname"
-                        required="required"
+
                         placeholder="Prénom"
                         name="fname"
                       />
@@ -28,12 +27,11 @@
                   <div class="field">
                     <div class="control my-0">
                       <label class="label help is-black" for="lname">Nom:</label>
-                      <input
-                        class="input"
+                      <b-input
+                        icon="user"
                         id="lname"
-                        type="text"
                         v-model="account.lname"
-                        required="required"
+
                         placeholder="Nom"
                         name="lname"
                       />
@@ -45,16 +43,17 @@
                 <div class="column my-0 py-0">
                   <div class="field">
                     <div class="control my-0">
-                      <label class="label help is-black" for="tel">N° de téléphone:</label>
-                      <input
-                        class="input"
-                        id="tel"
+                      <label class="label help is-black" for="telInput">N° de téléphone:</label>
+                      <VueTelInput
+                        @input="phoneNumberValidation"
                         v-model="account.tel"
-                        type="tel"
-                        required="required"
-                        placeholder="70 00 00 00"
-                        name="tel"
-                      />
+                        mode="international"
+                        id="telInput"
+
+                        class="input telInput"
+                        inputClasses="input"
+                        placeholder="Numéro de téléphone"
+                      ></VueTelInput>
                     </div>
                   </div>
                 </div>
@@ -63,14 +62,13 @@
                   <div class="field">
                     <div class="control my-0">
                       <label class="label help is-black" for="email">Addresse E-mail:</label>
-                      <input
-                        class="input"
+                      <b-input
                         id="email"
                         v-model="account.email"
                         type="email"
-                        required="required"
-                        placeholder="exemple@example.com"
-                        name="email"
+
+                        placeholder="example@example.com"
+                        icon="at"
                       />
                     </div>
                   </div>
@@ -82,14 +80,14 @@
                   <div class="field">
                     <div class="control my-0">
                       <label class="label help is-black" for="pass">Créer un mot de passe:</label>
-                      <input
-                        class="input"
+                      <b-input
                         id="pass"
                         v-model="account.pwd"
                         type="password"
-                        required="required"
+                        password-reveal
+
                         placeholder="********"
-                        name="pwd"
+                        icon="lock"
                       />
                     </div>
                   </div>
@@ -99,25 +97,27 @@
                   <div class="field">
                     <div class="control my-0">
                       <label class="label help is-black" for="passC">Confirmer mot de passe:</label>
-                      <input
-                        class="input"
-                        type="password"
+                      <b-input
+                        id="passC"
                         v-model="account.confirmedPWD"
-                        required="required"
+                        type="password"
+                        password-reveal
+
                         placeholder="********"
-                        name="confirmedPWD"
+                        icon="lock"
                       />
                     </div>
                   </div>
                 </div>
               </div>
-              <button class="mt-2 button is-fullwidth is-primary" type="submit">
-                <!-- <b-icon icon="user" />&nbsp;&nbsp; -->
+              <button class="mt-2 button is-fullwidth is-outlined is-primary" type="submit">
                 Créer un compte
               </button>
-              <p class="has-text-centered has-text-grey">
-                <NuxtLink to="/login">Se connecter</NuxtLink>
-              </p>
+              <p class="has-text-grey help has-text-centered">
+              <NuxtLink to="/login">Se connecter</NuxtLink>&nbsp;·&nbsp;
+              <NuxtLink to="/reset">Mot de passe oublié?</NuxtLink>&nbsp;·&nbsp;
+              <NuxtLink to="/contact">Besoin d'aide?</NuxtLink>
+            </p>
             </form>
           </div>
           <b-loading is-full-page v-model="isLoading" :can-cancel="false"></b-loading>
@@ -128,7 +128,13 @@
 </template>
 
 <script>
+import 'vue-tel-input/dist/vue-tel-input.css';
+import { VueTelInput } from 'vue-tel-input'
+
 export default {
+  components: {
+    VueTelInput,
+  },
   head: {
     title: "Création de compte",
     meta: [
@@ -141,6 +147,18 @@ export default {
     ],
   },
   auth: "guest",
+  auth: "guest",
+  head: {
+    title: "Création de compte",
+    meta: [
+      {
+        hid: "description",
+        name: "description",
+        content:
+          "Créer un compte pour effectuer vos demandes chez Express Money.",
+      },
+    ],
+  },
   data() {
     return {
       account: {
@@ -151,13 +169,39 @@ export default {
         pwd: "",
         confirmedPWD: "",
       },
+      show: false,
       error: "",
       isLoading: false,
+      isEmailSent: false,
+      canProceed: true,
     };
   },
   methods: {
+    phoneNumberValidation(value, payload) {
+      if (!payload.valid) {
+        this.canProceed = false;
+        return;
+      } else
+        this.canProceed = true;
+    },
     async handleRegistration() {
+      if (this.canProceed === false){
+        this.error = "Numéro de téléphone incorrect.";
+        return;
+      }
       this.isLoading = true;
+      if (
+        this.account.fname === "" ||
+        this.account.lname === "" ||
+        this.account.tel === "" ||
+        this.account.email === "" ||
+        this.account.pwd === "" ||
+        this.account.confirmedPWD === ""
+      ) {
+        this.error = "Veuillez renseigner touts les champs";
+        this.isLoading = false;
+        return;
+      }
       try {
         this.$loading = true;
         if (this.account.pwd !== this.account.confirmedPWD) {
@@ -167,9 +211,10 @@ export default {
         }
         const csrf = await this.$axios.$get("/api/auth/csrf");
         this.$axios.setHeader("XSRF-TOKEN", csrf.token);
-        const response = await this.$axios.$post("/api/auth/register", {
-          data: this.account,
-        });
+        const response = await this.$axios.$post(
+          "/api/auth/register",
+          this.account
+        );
         if (response.message) {
           this.isLoading = false;
           const csrfToken = await this.$axios.$get("/api/auth/csrf");
@@ -177,12 +222,7 @@ export default {
           await this.$auth.loginWith("cookie", {
             data: { email: this.account.email, pwd: this.account.pwd },
           });
-          this.$buefy.toast.open({
-            message:
-              "Veuillez consulter votre email pour confirmer votre compte.",
-            type: "is-success",
-            duration: 5000,
-          });
+          this.isEmailSent = true;
         }
       } catch (err) {
         if (err.response) {
@@ -196,10 +236,14 @@ export default {
             this.error = "Veuillez renseignez un mot de passe correct";
           if (err.response.data.message.includes("Numéro"))
             this.error = err.response.data.message;
-          console.log(err);
+          else this.error = err.response.data.message;
         }
       }
     },
   },
 };
 </script>
+
+<style>
+
+</style>

@@ -41,14 +41,7 @@
               <div class="select is-fullwidth" id="city">
                 <select name="city" required v-model="city">
                   <option class="py-3" value>Ville</option>
-                  <option class="py-3" value="Ouagadougou">Ouagadougou</option>
-                  <option class="py-3" value="Bobo Dioulasso">Bobo Dioulasso</option>
-                  <option class="py-3" value="Banfora">Banfora</option>
-                  <option class="py-3" value="Koudougou">Koudougou</option>
-                  <option class="py-3" value="Kaya">Kaya</option>
-                  <option class="py-3" value="Dori">Dori</option>
-                  <option class="py-3" value="Fada N'Gourma">Fada N'Gourma</option>
-                  <option class="py-3" value="Po">Po</option>
+                  <option class="py-3" v-for="city in cities" :key="city" :value="city">{{city}}</option>
                 </select>
               </div>
               <label class="help is-black" for="pass">Entrez votre mot de passe:</label>
@@ -93,6 +86,17 @@ export default {
       rib: "",
       city: "",
       pwd: "",
+      cities: [
+        "Ouagadougou",
+        "Bobo Dioulasso",
+        "Banfora",
+        "Dori",
+        "Koudougou",
+        "Fada N'Gourma",
+        "Ouahigouya",
+        "Po",
+        "Kaya",
+      ],
     };
   },
   mounted() {

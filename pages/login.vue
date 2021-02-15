@@ -11,19 +11,21 @@
             <form autocomplete="off" @submit.prevent="handleLogin">
               <p class="help has-text-centered is-danger">{{ error }}</p>
               <div class="field my-0">
-                <label class="label help" for="email">Numéro de téléphone ou Email</label>
-                <input
+                <label class="label help" for="email">Numéro de téléphone</label>
+                <VueTelInput
+                  @input="phoneNumberValidation"
                   v-model="email"
-                  id="email"
                   class="input"
-                  type="text"
-                  placeholder="exemple@exemple.com"
-                />
+                  mode="international"
+                  id="email"
+                  required
+                  placeholder="Numéro de téléphone"
+                ></VueTelInput>
               </div>
               <div class="field my-0">
                 <label class="label help" for="pass">Mot de passe</label>
-                <input v-model="pwd" id="pass" class="input" type="password" placeholder="********" />
-                <button class="button mt-2 is-fullwidth is-primary" type="submit">Se connecter</button>
+                <b-input icon="lock" v-model="pwd" id="pass" type="password" placeholder="********" password-reveal />
+                <button class="button mt-2 is-fullwidth is-outlined is-primary" type="submit">Se connecter</button>
               </div>
             </form>
             <p class="has-text-grey help has-text-centered">
@@ -40,7 +42,15 @@
 </template>
 
 <script>
+
+import 'vue-tel-input/dist/vue-tel-input.css';
+import { VueTelInput } from 'vue-tel-input'
+
 export default {
+  components: {
+    VueTelInput,
+  },
+  auth: "guest",
   auth: "guest",
   head: {
     title: "Connection",
@@ -55,16 +65,33 @@ export default {
   },
   data() {
     return {
+      show: false,
       email: "",
       pwd: "",
-      showPass: false,
       error: "",
       isLoading: false,
+      canProceed: true,
     };
   },
   methods: {
+    phoneNumberValidation(value, payload) {
+      if (!payload.valid) {
+        this.canProceed = false;
+        return;
+      } else
+        this.canProceed = true;
+    },
     async handleLogin() {
+      if (this.canProceed === false){
+        this.error = "Numéro de téléphone incorrect.";
+        return;
+      }
       this.isLoading = true;
+      if (this.email === "" || this.pwd === "") {
+        this.error = "Veuillez entrer vos identifiants.";
+        this.isLoading = false;
+        return;
+      }
       try {
         const csrf = await this.$axios.$get("/api/auth/csrf");
         this.$axios.setHeader("XSRF-TOKEN", csrf.token);

@@ -143,7 +143,12 @@
 </template>
 
 <script>
+// import VueTelInputVuetify from "vue-tel-input-vuetify/lib/vue-tel-input-vuetify.vue";
+
 export default {
+  components: {
+    // VueTelInputVuetify,
+  },
   head: {
     title: "Infos",
     meta: [
@@ -157,9 +162,50 @@ export default {
   data() {
     return {
       modal: false,
+      error: "",
+      show: false,
+      readonly: true,
+
+      updateAccount: {
+        name: "",
+        tel: "",
+        email: "",
+        city: "",
+        oldPWD: "",
+        pwd: "",
+        confirmedPWD: "",
+      },
+      cities: [
+        "Ouagadougou",
+        "Bobo Dioulasso",
+        "Banfora",
+        "Dori",
+        "Koudougou",
+        "Fada N'Gourma",
+        "Ouahigouya",
+        "Po",
+        "Kaya",
+      ],
+      canProceed: true,
     };
   },
+  mounted() {
+    this.updateAccount.name = this.account.name;
+    this.updateAccount.tel = this.account.tel;
+    this.updateAccount.email = this.account.email;
+    this.updateAccount.city = this.account.city;
+  },
   methods: {
+    phoneNumberValidation(value, payload) {
+      if (payload.isValid === false) {
+        this.error = "Numéro de téléphone incorrect.";
+        this.canProceed = false;
+        return;
+      } else {
+        this.canProceed = true;
+        if (this.error.includes("Numéro de téléphone")) this.error = "";
+      }
+    },
     async requestAccountDeletion() {
       this.modal = false;
       try {
@@ -167,6 +213,44 @@ export default {
         this.$axios.setHeader("XSRF-TOKEN", csrf.token);
         const res = await this.$axios.$post("/api/auth/delete");
         if (res.message) await this.$auth.fetchUser();
+      } catch (err) {
+        this.error = err.response.data.message;
+      }
+    },
+    async accountUpdateHandler() {
+      if (this.canProceed === false) return;
+      if (
+        this.updateAccount.name === "" ||
+        this.updateAccount.tel === "" ||
+        this.updateAccount.email === "" ||
+        this.updateAccount.city === ""
+      ) {
+        this.error = "Veuillez renseigner touts les champs nécessaires.";
+        return;
+      }
+
+      if (this.updateAccount.pwd !== this.updateAccount.confirmedPWD) {
+        this.error = "Mots de passe différents";
+        return;
+      }
+
+      if (this.updateAccount.oldPWD === "" && this.updateAccount.pwd !== "") {
+        this.error = "Ancien mot de passe requis";
+        return;
+      }
+
+      try {
+        const csrf = await this.$axios.$get("/api/auth/csrf");
+        this.$axios.setHeader("XSRF-TOKEN", csrf.token);
+        const res = await this.$axios.$put(
+          "/api/auth/update",
+          this.updateAccount
+        );
+        if (res.message) {
+          await this.$auth.fetchUser();
+          this.error = "";
+          this.readonly = true;
+        }
       } catch (err) {
         this.error = err.response.data.message;
       }
@@ -179,11 +263,11 @@ export default {
     },
   },
   computed: {
-    isAuthenticated() {
-      return this.$auth.loggedIn;
-    },
     account() {
-      return this.$auth.user;
+      return this.$auth ? this.$auth.user : {};
+    },
+    isLoggedIn() {
+      return this.$auth ? this.$auth.loggedIn : false;
     },
     idUri() {
       return this.$auth.user.idUri ? "/dossiers/" + this.$auth.user.idUri : "#";
@@ -204,9 +288,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.text-decoration-none {
-  text-decoration: none !important;
-}
-</style>

@@ -5,7 +5,7 @@
         <h1 class="title has-text-centered mt-2">Mes opérations</h1>
         <p class="has-text-centered mb-3">
           <b-button tag="nuxt-link" to="/request" type="primary" class="is-success label">
-            <b-icon icon="pen" />&nbsp;&nbsp;
+            <b-icon icon="pencil" />&nbsp;&nbsp;
             Cliquez ici pour une demande de crédit
           </b-button>
         </p>
@@ -107,7 +107,7 @@
         </div>
       </div>
     </div>
-    <div v-if="account.isAccountValidated === ''" class="columns is-centered mt-6 pt-4">
+    <div v-else-if="account.isAccountValidated === '' && account.accountRegistrationCode !== ''" class="columns is-centered mt-6 pt-4">
       <div class="column is-half-desktop is-10-tablet">
         <div class="notification is-success is-light">
           <h2 class="subtitle has-text-centered">
@@ -115,37 +115,38 @@
             <b-icon size="is-small" icon="check-circle" />
           </h2>
           <p>
-            Merci d'avoir créé votre compte chez Express Money.
-            <br />Pour effectuer une demande de crédit, veuillez completer les informations nécessaires.
-            <br />Express Money vous remercie pour votre confiance.
+            Merci d'avoir créé votre compte chez Express Money. <br>
+            Un lien de confirmation a été envoyé à votre adress email <strong>{{ account.email }}</strong>. Veuillez consulter votre boîte mail pour valider votre compte.
           </p>
         </div>
         <hr />
         <p class="has-text-centered">
           <NuxtLink
             to="/complete"
-            class="is-info is-block is-radiusless button"
+            class="is-success is-block is-radiusless button is-outlined"
           >Compléter mes informations</NuxtLink>
         </p>
       </div>
     </div>
-    <div v-if="account.isAccountValidated === 'En attente'" class="columns is-centered mt-6 pt-4">
+    <div v-else-if="account.isAccountValidated === '' && account.accountRegistrationCode === ''" class="columns is-centered mt-6 pt-4">
       <div class="column is-half-desktop is-10-tablet">
-        <div class="notification box is-info is-light">
-          <h2 class="subtitle has-text-centered">
-            <b-icon size="is-small" icon="spinner" />&nbsp; Votre compte est en cours de vérification
+        <div class="notification  is-link-light">
+          <h2 class="subtitle has-text-centered has-text-primary">
+            <b-icon size="is-small" icon="check" />&nbsp; Félicitations
           </h2>
-          <p>
-            La durée habituelle de vérification peut aller jusqu'à 20min.
-            <br />Une fois votre compte vérifié cette page sera mise à jour.
-            <br />Express Money vous remercie pour votre confiance.
+          <p class="has-text-centered">
+            Vous avez terminé votre inscription. Pour faire votre premier emprunt, veuillez <NuxtLink class="has-text-primary has-text-weight-bold has-text-decoration-none" to="/complete">cliquer ici pour continuer</NuxtLink>
+          </p>
+          <hr/>
+          <p class="has-text-centered mt-3">
+              <NuxtLink
+            to="/complete"
+            class=" is-block is-primary button"
+          >
+          <b-icon icon="pen" class="has-text-white my-0"></b-icon>&nbsp;
+        Compléter mes informations</NuxtLink>
           </p>
         </div>
-        <b-message type="is-warning label">
-          <NuxtLink
-            to="/complete"
-          >Pendant que votre compte n'est pas encore approuvé vous pouvez mettre à jour votre dossier si nécessaire.</NuxtLink>
-        </b-message>
       </div>
     </div>
     <div :class="['modal', {'is-active': updateModal}]">
@@ -437,6 +438,8 @@ export default {
       return this.$auth.loggedIn;
     },
     account() {
+      this.$auth.user.isAccountValidated = "En attente";
+      this.$auth.user.accountRegistrationCode = "";
       return this.$auth.user;
     },
   },

@@ -23,7 +23,7 @@
             la validation de leurs comptes par sms ou mail.
           </p>
           <p class="has-text-centered mt-5" v-if="!this.$auth.loggedIn">
-            <NuxtLink to="/register" class="label has-text-primary box is-large">
+            <NuxtLink to="/register" class="button is-outlined has-text-primary">
               <b-icon icon="user" />&nbsp;&nbsp;
               Créer un compte pour commencer
             </NuxtLink>
