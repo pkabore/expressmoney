@@ -143,11 +143,12 @@
 </template>
 
 <script>
-// import VueTelInputVuetify from "vue-tel-input-vuetify/lib/vue-tel-input-vuetify.vue";
+import "vue-tel-input/dist/vue-tel-input.css";
+import { VueTelInput } from "vue-tel-input";
 
 export default {
   components: {
-    // VueTelInputVuetify,
+    VueTelInput,
   },
   head: {
     title: "Infos",

@@ -24,8 +24,18 @@
               </div>
               <div class="field my-0">
                 <label class="label help" for="pass">Mot de passe</label>
-                <b-input icon="lock" v-model="pwd" id="pass" type="password" placeholder="********" password-reveal />
-                <button class="button mt-2 is-fullwidth is-outlined is-primary" type="submit">Se connecter</button>
+                <b-input
+                  icon="lock"
+                  v-model="pwd"
+                  id="pass"
+                  type="password"
+                  placeholder="********"
+                  password-reveal
+                />
+                <button
+                  :class="['button mt-2 is-fullwidth is-outlined is-primary', {'is-loading': isLoading}]"
+                  type="submit"
+                >Se connecter</button>
               </div>
             </form>
             <p class="has-text-grey help has-text-centered">
@@ -34,7 +44,6 @@
               <NuxtLink to="/contact">Besoin d'aide?</NuxtLink>
             </p>
           </div>
-          <b-loading is-full-page v-model="isLoading" :can-cancel="false"></b-loading>
         </div>
       </div>
     </div>
@@ -42,9 +51,8 @@
 </template>
 
 <script>
-
-import 'vue-tel-input/dist/vue-tel-input.css';
-import { VueTelInput } from 'vue-tel-input'
+import "vue-tel-input/dist/vue-tel-input.css";
+import { VueTelInput } from "vue-tel-input";
 
 export default {
   components: {
@@ -78,11 +86,10 @@ export default {
       if (!payload.valid) {
         this.canProceed = false;
         return;
-      } else
-        this.canProceed = true;
+      } else this.canProceed = true;
     },
     async handleLogin() {
-      if (this.canProceed === false){
+      if (this.canProceed === false) {
         this.error = "Numéro de téléphone incorrect.";
         return;
       }

@@ -16,7 +16,6 @@
                         icon="user"
                         id="fname"
                         v-model="account.fname"
-
                         placeholder="Prénom"
                         name="fname"
                       />
@@ -31,7 +30,6 @@
                         icon="user"
                         id="lname"
                         v-model="account.lname"
-
                         placeholder="Nom"
                         name="lname"
                       />
@@ -49,7 +47,6 @@
                         v-model="account.tel"
                         mode="international"
                         id="telInput"
-
                         class="input telInput"
                         inputClasses="input"
                         placeholder="Numéro de téléphone"
@@ -66,7 +63,6 @@
                         id="email"
                         v-model="account.email"
                         type="email"
-
                         placeholder="example@example.com"
                         icon="at"
                       />
@@ -85,7 +81,6 @@
                         v-model="account.pwd"
                         type="password"
                         password-reveal
-
                         placeholder="********"
                         icon="lock"
                       />
@@ -102,7 +97,6 @@
                         v-model="account.confirmedPWD"
                         type="password"
                         password-reveal
-
                         placeholder="********"
                         icon="lock"
                       />
@@ -110,14 +104,15 @@
                   </div>
                 </div>
               </div>
-              <button class="mt-2 button is-fullwidth is-outlined is-primary" type="submit">
-                Créer un compte
-              </button>
+              <button
+                :class="['button mt-2 is-fullwidth is-outlined is-primary', {'is-loading': isLoading}]"
+                type="submit"
+              >Créer un compte</button>
               <p class="has-text-grey help has-text-centered">
-              <NuxtLink to="/login">Se connecter</NuxtLink>&nbsp;·&nbsp;
-              <NuxtLink to="/reset">Mot de passe oublié?</NuxtLink>&nbsp;·&nbsp;
-              <NuxtLink to="/contact">Besoin d'aide?</NuxtLink>
-            </p>
+                <NuxtLink to="/login">Se connecter</NuxtLink>&nbsp;·&nbsp;
+                <NuxtLink to="/reset">Mot de passe oublié?</NuxtLink>&nbsp;·&nbsp;
+                <NuxtLink to="/contact">Besoin d'aide?</NuxtLink>
+              </p>
             </form>
           </div>
           <b-loading is-full-page v-model="isLoading" :can-cancel="false"></b-loading>
@@ -128,8 +123,8 @@
 </template>
 
 <script>
-import 'vue-tel-input/dist/vue-tel-input.css';
-import { VueTelInput } from 'vue-tel-input'
+import "vue-tel-input/dist/vue-tel-input.css";
+import { VueTelInput } from "vue-tel-input";
 
 export default {
   components: {
@@ -181,11 +176,10 @@ export default {
       if (!payload.valid) {
         this.canProceed = false;
         return;
-      } else
-        this.canProceed = true;
+      } else this.canProceed = true;
     },
     async handleRegistration() {
-      if (this.canProceed === false){
+      if (this.canProceed === false) {
         this.error = "Numéro de téléphone incorrect.";
         return;
       }
@@ -245,5 +239,4 @@ export default {
 </script>
 
 <style>
-
 </style>
