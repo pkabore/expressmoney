@@ -1,7 +1,7 @@
 <template>
   <section class="section">
     <div class="columns is-centered mt-6">
-      <div class="column is-two-thirds-tablet is-half-desktop box">
+      <div class="column is-two-thirds-tablet is-half-desktop">
         <h2 class="has-text-centered title has-text-primary mb-3">Mot de passe oublié</h2>
         <p class="help has-text-centered is-danger">{{ error }}</p>
         <b-notification
@@ -13,22 +13,27 @@
         >Code envoyé avec success. Veuillez consulter votre boite de reception mail.</b-notification>
         <div class="field" v-if="activeForm === 'email'">
           <label class="label help" for="email">Address e-mail:</label>
-          <input
+          <b-input
             v-model="email"
+            icon="at"
             id="email"
-            class="input"
             type="email"
             placeholder="exemple@exemple.com"
           />
-          <button
+          <b-button
             @click="sendEmail"
-            class="button mt-2 is-fullwidth is-primary"
+            class="mt-2 is-fullwidth is-primary is-outlined"
             type="submit"
-          >M'envoyer un code de récupération</button>
+          >M'envoyer un code de récupération</b-button>
+          <p class="mt-2 help has-text-centered">
+            <NuxtLink to="/login">Se connecter</NuxtLink>&nbsp;·&nbsp;
+            <NuxtLink to="/register">Créer un compte</NuxtLink>&nbsp;·&nbsp;
+            <NuxtLink to="/contact">Besoin d'aide?</NuxtLink>
+          </p>
         </div>
         <div class="field" v-if="activeForm === 'code'">
           <label class="label help" for="code">Veuillez entrer le code reçu:</label>
-          <input v-model="code" id="code" class="input" type="text" />
+          <b-input v-model="code" id="code" class="input" type="text" />
           <button
             @click="sendCode"
             class="button mt-2 is-fullwidth is-primary"
@@ -37,9 +42,9 @@
         </div>
         <div class="field" v-if="activeForm === 'pass'">
           <label class="label help" for="pass">Créer un nouveau mot de passe:</label>
-          <input v-model="pwd" id="pass" class="input" type="password" placeholder="********" />
+          <b-input v-model="pwd" id="pass" class="input" type="password" placeholder="********" />
           <label class="label help" for="confirmedPWD">Confirmer le mot de passe choisi:</label>
-          <input
+          <b-input
             v-model="confirmedPWD"
             id="confirmedPWD"
             class="input"
@@ -128,7 +133,9 @@ export default {
           this.$router.push("/operations");
         }
       } catch (err) {
-        this.error = err.response.data.message;
+        if (!err.response.data) {
+          this.error = "Erreur survenue, veuillez reésayer";
+        } else this.error = err.response.data.message;
       }
     },
   },

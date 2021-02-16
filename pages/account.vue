@@ -1,7 +1,7 @@
 <template>
   <section class="section">
     <div class="columns is-centered py-1">
-      <div class="column my-0 is-two-thirds-tablet is-four-fiths-desktop box">
+      <div class="column my-0 is-8-desktop is-10-tablet">
         <h1 class="title has-text-centered mt-1">Compte</h1>
         <ul class="is-hoverable">
           <li class="columns m-0 p-0 is-mobile list-item">
@@ -79,15 +79,6 @@
             >{{ new Date(account.updatedAt).toLocaleString('fr-FR') }}</div>
           </li>
         </ul>
-        <b-message
-          class="mt-3"
-          v-if="account.isAccountValidated !== 'Validé' && account.isAccountValidated !== 'Suppression'"
-          type="is-warning"
-        >
-          <NuxtLink
-            to="/complete"
-          >Pendant que votre compte n'est pas encore approuvé vous pouvez mettre à jour votre dossier si nécessaire.</NuxtLink>
-        </b-message>
         <b-notification
           v-if="account.isAccountValidated === 'Suppression'"
           class="mt-1 has-text-centered"
@@ -122,10 +113,44 @@
       </div>
     </div>
     <div
+      v-if="account.isAccountValidated !== 'Validé' && account.isAccountValidated !== 'Suppression'"
+      class="columns is-centered"
+    >
+      <div class="column is-8-desktop is-10-tablet">
+        <h2
+          class="has-text-centered subtitle"
+        >Pendant que votre compte n'est pas encore approuvé, vous pouvez mettre à jour les fichiers ci-dessus.</h2>
+        <b-field class="file" label="Copie d'identité/Passeport">
+          <b-upload v-model="id" expanded>
+            <a class="button is-light is-fullwidth">
+              <b-icon icon="upload"></b-icon>
+              <span>{{ id.name || "Cliquer ici pour charger"}}</span>
+            </a>
+          </b-upload>
+        </b-field>
+        <b-field class="file" label="Carte de travailleur">
+          <b-upload v-model="wcard" expanded>
+            <a class="button is-light is-fullwidth">
+              <b-icon icon="upload"></b-icon>
+              <span>{{ wcard.name || "Cliquer ici pour charger"}}</span>
+            </a>
+          </b-upload>
+        </b-field>
+        <b-field class="file" label="Attestation de prise de service">
+          <b-upload v-model="codc" expanded>
+            <a class="button is-light is-fullwidth">
+              <b-icon icon="upload"></b-icon>
+              <span>{{ codc.name || "Cliquer ici pour charger"}}</span>
+            </a>
+          </b-upload>
+        </b-field>
+      </div>
+    </div>
+    <div
       class="columns is-centered py-1"
       v-if="account.isAccountValidated !== 'En attente' && account.isAccountValidated !== 'Suppression'"
     >
-      <div class="column my-0 is-two-thirds-tablet is-four-fiths-desktop box">
+      <div class="column is-8-desktop is-10-tablet has-background-red-light">
         <h2 class="subtitle has-text-danger has-text-centered">Zone dangereuse</h2>
         <p class="has-text-centered">
           <b-button
@@ -162,6 +187,9 @@ export default {
   },
   data() {
     return {
+      id: {},
+      wcard: {},
+      codc: {},
       modal: false,
       error: "",
       show: false,

@@ -1,100 +1,85 @@
 <template>
-  <section class="hero is-fullheight">
+  <section class="hero is-fullheight is-link">
     <div class="hero-body">
       <div class="container">
         <div class="columns is-centered">
-          <div class="column is-6-desktop is-8-tablet">
-            <section class="is-fullheight">
-              <h1 class="title has-text-centered">Nos contacts</h1>
-              <div class="content">
-                <ul class="list">
-                  <li class="subtitle">
-                    <div class="columns">
-                      <div class="is-3 column">Adresse:</div>
-                      <div class="is-9 column is-family-secondary">
-                        <b-icon icon="map-marker-alt"></b-icon>17 Esshokour 2 Khouribga
-                      </div>
-                    </div>
-                  </li>
-                  <li class="subtitle">
-                    <div class="columns">
-                      <div class="is-3 column">Tél 1:</div>
-                      <div class="is-9 column is-family-secondary">
-                        <b-icon icon="phone-alt"></b-icon>+226 70 00 00 00
-                      </div>
-                    </div>
-                  </li>
-                  <li class="subtitle">
-                    <div class="columns">
-                      <div class="is-3 column">Tel 2:</div>
-                      <div class="is-9 column is-family-secondary">
-                        <b-icon icon="phone-alt"></b-icon>+226 70 00 00 00
-                      </div>
-                    </div>
-                  </li>
-                  <li class="subtitle">
-                    <div class="columns">
-                      <div class="is-3 column">Email:</div>
-                      <div class="is-9 column is-family-secondary">
-                        <b-icon icon="envelope"></b-icon>expressmoney@mail.com
-                      </div>
-                    </div>
-                  </li>
-                </ul>
+          <!-- <div class="column">
+            <div class="block">
+              <h1 class="title has-text-centered">
+                <b-icon icon="map-marked-alt" size="is-medium"></b-icon>&nbsp; Adresses
+              </h1>
+
+              <ul class="mt-2">
+                <li
+                  class="mt-5 has-text-justify-mobile has-text-left-tablet mb-0 has-text-centered has-text-weight-bold is-family-primary"
+                >
+                  <b-icon icon="map-marker-alt" class="circular-sui" size="is-medium"></b-icon>&nbsp; 17 Esshokour 2 Khouribga
+                </li>
+                <li
+                  class="mt-5 has-text-justify-mobile has-text-left-tablet mb-0 has-text-centered has-text-weight-bold is-family-primary"
+                >
+                  <b-icon icon="envelope" class="circular-sui" size="is-medium"></b-icon>&nbsp; expressmoney@mail.com
+                </li>
+                <li
+                  class="mt-5 has-text-justify-mobile has-text-left-tablet mb-0 has-text-centered has-text-weight-bold is-family-primary"
+                >
+                  <b-icon icon="phone-alt" class="circular-sui" size="is-medium"></b-icon>&nbsp; +226 70 00 00 00
+                </li>
+                <li
+                  class="mt-5 has-text-justify-mobile has-text-left-tablet mb-0 has-text-centered has-text-weight-bold is-family-primary"
+                >
+                  <b-icon icon="phone-alt" class="circular-sui" size="is-medium"></b-icon>&nbsp;+226 76 00 00 00
+                </li>
+              </ul>
+            </div>
+          </div>-->
+          <div class="column is-6-desktop is-8-tablet box">
+            <h1 class="title has-text-link has-text-centered">
+              <b-icon icon="pen" class="circular-sui" size="is-large"></b-icon>&nbsp;Nous écrire
+            </h1>
+            <form action="POST" @submit.prevent="sendMail()">
+              <p class="help has-text-centered is-danger">{{ error }}</p>
+              <div class="field mt-1 mb-0">
+                <b-input
+                  label="Sujet"
+                  class="is-link"
+                  id="sujbect"
+                  icon="tag"
+                  v-model="email.subject"
+                  type="text"
+                  placeholder="Sujet"
+                />
               </div>
-            </section>
-          </div>
-        </div>
-        <hr />
-        <div class="columns is-centered">
-          <div class="column is-6-desktop is-8-tablet">
-            <section class="is-fullheight">
-              <h1 class="title has-text-centered">Nous écrire</h1>
-              <form action="POST" @submit.prevent="sendMail()">
-                <p class="help has-text-centered is-danger">{{ error }}</p>
-                <div class="field">
-                  <input
-                    id="sujbect"
-                    v-model="email.subject"
-                    class="input"
-                    type="text"
-                    placeholder="Sujet"
-                  />
-                </div>
-                <div class="field">
-                  <input
-                    v-model="email.email"
-                    id="mail"
-                    class="input"
-                    type="email"
-                    placeholder="Votre adresse email"
-                  />
-                </div>
-                <div class="field">
-                  <textarea
-                    v-model="email.message"
-                    placeholder="Message ..."
-                    id="msg"
-                    class="textarea"
-                  ></textarea>
-                  <p class="has-text-right">
-                    <button
-                      class="button is-outlined is-fullwidth is-primary"
-                      type="submit"
-                    >Envoyer le message</button>
-                  </p>
-                </div>
-              </form>
-            </section>
-          </div>
-        </div>
-        <hr />
-        <div class="columns is-centered">
-          <div class="column is-6-desktop is-8-tablet">
-            <section>
-              <h1 class="title has-text-centered">Sur la carte</h1>
-              <div class="map"></div>
-            </section>
+              <div class="field mt-1 mb-0">
+                <b-input
+                  label="Email"
+                  class="is-link"
+                  icon="at"
+                  v-model="email.email"
+                  id="mail"
+                  type="email"
+                  placeholder="Votre adresse email"
+                />
+              </div>
+              <div class="field mt-1 mb-0">
+                <b-input
+                  label="Message"
+                  class="is-link"
+                  type="textarea"
+                  v-model="email.message"
+                  placeholder="Message ..."
+                  id="msg"
+                ></b-input>
+                <p class="has-text-right mt-2">
+                  <b-button
+                    icon-right="check"
+                    @click="sendMail"
+                    class="is-outlined is-fullwidth is-primary"
+                    type="submit"
+                  >Envoyer le message</b-button>
+                </p>
+              </div>
+            </form>
           </div>
         </div>
       </div>

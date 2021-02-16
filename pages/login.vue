@@ -5,9 +5,6 @@
         <div class="columns is-centered">
           <div class="column is-6-desktop is-8-tablet">
             <h3 class="title has-text-black has-text-centered mb-0">Connection</h3>
-            <p
-              class="has-text-black help has-text-centered mb-4"
-            >Veuillez-vous identifier pour continuer.</p>
             <form autocomplete="off" @submit.prevent="handleLogin">
               <p class="help has-text-centered is-danger">{{ error }}</p>
               <div class="field my-0">

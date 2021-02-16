@@ -115,7 +115,6 @@
               </p>
             </form>
           </div>
-          <b-loading is-full-page v-model="isLoading" :can-cancel="false"></b-loading>
         </div>
       </div>
     </div>

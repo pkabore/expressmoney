@@ -20,6 +20,10 @@ export default {
 			{
 				rel: 'stylesheet',
 				href: `https://fonts.googleapis.com/css2?family=Baloo+2:wght@400&display=swap`
+			},
+			{
+				rel: 'stylesheet',
+				href: `https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap`
 			}
 		]
 	},
@@ -37,10 +41,20 @@ export default {
 
 	telemetry: false,
 
-	modules: [ '@nuxtjs/auth-next', '@nuxtjs/axios', 'nuxt-helmet', 'nuxt-buefy', 'nuxt-fontawesome', ['nuxt-gmaps', {
-    key: 'AIzaSyDaDfiEoPFyMUL4aVTwikAhWoLuYPsv5dA',
-    //libraries: ['places']
-  }] ],
+	modules: [
+		'@nuxtjs/auth-next',
+		'@nuxtjs/axios',
+		'nuxt-helmet',
+		'nuxt-buefy',
+		'nuxt-fontawesome',
+		[
+			'nuxt-gmaps',
+			{
+				key: 'AIzaSyDaDfiEoPFyMUL4aVTwikAhWoLuYPsv5dA'
+				//libraries: ['places']
+			}
+		]
+	],
 
 	buefy: {
 		materialDesignIcons: false,
@@ -131,7 +145,6 @@ export default {
 					name: '[path][name].[ext]'
 				}
 			});
-
 		}
 	},
 

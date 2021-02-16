@@ -1,58 +1,67 @@
 <template>
-  <footer class="footer m-0 has-background-grey-darker">
+  <footer class="footer my-0 py-1 has-background-grey-darker">
     <div class="columns is-centered has-text-centered">
       <div class="column">
-        <h2 class="has-text-light is-uppercase">Contacts</h2>
-        <ul>
-          <li>
-            <a class="has-text-light">
-              <b-icon class="has-text-light" icon="map-marker-alt"></b-icon>17 Esshokour 2 Khouribga
-            </a>
+        <h2 class="has-text-light is-uppercase">
+          <b-icon icon="map-marked-alt" class="circular-sui" size="is-medium"></b-icon>&nbsp; Contacts
+        </h2>
+        <ul class="mt-2">
+          <li class="my-1">
+            <a class="has-text-light">+226 70 00 00 00</a>
           </li>
-          <li>
-            <a class="has-text-light">
-              <b-icon class="has-text-light" icon="phone-alt"></b-icon>+226 70 00 00 00
-            </a>
+          <li class="my-1">
+            <a class="has-text-light">+226 76 00 00 00</a>
           </li>
-          <li>
-            <a class="has-text-light">
-              <b-icon class="has-text-light" icon="envelope"></b-icon>expressmoney@mail.com
-            </a>
+          <li class="my-1">
+            <a class="has-text-light">expressmoney@mail.com</a>
+          </li>
+          <li class="my-1">
+            <a class="has-text-light">17 Esshokour 2 Khouribga</a>
           </li>
         </ul>
       </div>
       <div class="column">
-        <h2 class="has-text-light is-uppercase">Liens</h2>
-        <ul>
-          <li>
+        <h2 class="has-text-light is-uppercase">
+          <b-icon icon="link" class="circular-sui" size="is-medium"></b-icon>&nbsp; Liens
+        </h2>
+        <ul class="mt-2">
+          <li class="my-1">
+            <NuxtLink to="/" class="has-text-light">Accueil</NuxtLink>
+          </li>
+          <li class="my-1">
             <NuxtLink to="/credit" class="has-text-light">Crédit</NuxtLink>
           </li>
-          <li>
+          <li class="my-1">
             <NuxtLink to="/login" class="has-text-light">Connection</NuxtLink>
           </li>
-          <li>
+          <li class="my-1">
             <NuxtLink to="/register" class="has-text-light">Créer un compte</NuxtLink>
           </li>
         </ul>
       </div>
       <div class="column">
-        <h2 class="has-text-light is-uppercase">Réseaux sociaux</h2>
-        <ul>
-          <li class>
-            <a class="has-text-light">Twitter</a>
+        <h2 class="has-text-light is-uppercase">
+          <b-icon icon="hashtag" class="circular-sui" size="is-medium"></b-icon>&nbsp; Réseaux sociaux
+        </h2>
+        <ul class="mt-2">
+          <li class="my-1">
+            <a class="has-text-light">Instagram</a>
           </li>
-          <li class>
+          <li class="my-1">
             <a class="has-text-light">Facebook</a>
           </li>
-          <li class>
-            <a class="has-text-light">Instagram</a>
+          <li class="my-1">
+            <a class="has-text-light">Telegram</a>
+          </li>
+          <li class="my-1">
+            <a class="has-text-light">Twitter</a>
           </li>
         </ul>
       </div>
     </div>
-    <div class="has-text-centered has-background-grey-dark py-2">
+    <div class="has-text-centered">
       <p>
-        <strong class="has-text-light">
+        <strong class="has-text-light is-family-secondary">
           Copyright &copy;
           {{ currentDate === 2021 ? "2021" : "2021 - " + currentDate }} Express
           Money

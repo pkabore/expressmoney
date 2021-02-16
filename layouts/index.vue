@@ -7,6 +7,7 @@
             <b-navbar-item tag="nuxt-link" to="/">Express Money</b-navbar-item>
           </template>
           <template #end>
+            <b-navbar-item tag="nuxt-link" to="/">Accueil</b-navbar-item>
             <b-navbar-item tag="nuxt-link" to="/credit">Crédit</b-navbar-item>
             <b-navbar-item tag="nuxt-link" to="/contact">Contact</b-navbar-item>
             <b-navbar-item tag="nuxt-link" to="/about">A propos</b-navbar-item>
@@ -24,7 +25,7 @@
                   <b-icon pack="fas" icon="sign-in-alt"></b-icon>&nbsp;&nbsp;
                   Se connecter
                 </NuxtLink>
-                <NuxtLink to="/register" class="button is-light is-outlined ">
+                <NuxtLink to="/register" class="button is-light is-outlined">
                   <b-icon pack="fas" icon="user"></b-icon>&nbsp;
                   <strong>S'inscrire</strong>
                 </NuxtLink>
@@ -54,7 +55,7 @@
           <div class="card is-fullheight">
             <div class="card-header is-flex is-justify-content-center is-flex-direction-column">
               <h2 class="title has-text-centered mt-2 has-text-primary">
-                <b-icon icon="user" size="large" />
+                <b-icon icon="user" class="circular-sui" size="is-large" />
                 <br />Vous êtes:
               </h2>
             </div>
@@ -67,13 +68,13 @@
                 </ol>
               </div>
             </div>
+          </div>
         </div>
-      </div>
-      <div class="column">
+        <div class="column">
           <div class="card is-fullheight">
             <div class="card-header is-flex is-justify-content-center is-flex-direction-column">
               <h2 class="title has-text-centered mt-2 has-text-primary">
-                <b-icon icon="layer-group" size="large" />
+                <b-icon icon="layer-group" class="circular-sui" size="is-large" />
                 <br />Et:
               </h2>
             </div>
@@ -86,32 +87,32 @@
                 </ol>
               </div>
             </div>
+          </div>
         </div>
-      </div>
-      <div class="column">
+        <div class="column">
           <div class="card is-fullheight">
             <div class="card-header is-flex is-justify-content-center is-flex-direction-column">
               <h2 class="title has-text-centered mt-2 has-text-primary">
-              <b-icon size="large" icon="map-marked-alt"></b-icon>
-            <br />Vous êtes au bon endroit.
-          </h2>
+                <b-icon class="circular-sui" size="is-large" icon="map-marked-alt"></b-icon>
+                <br />Vous êtes au bon endroit.
+              </h2>
             </div>
             <div class="card-content is-fullheight">
               <div class="content">
                 <p class="has-text-centered">
-            Avec Express Money,
-            <br />
-            <strong>emprunter la somme qui vous convient</strong>
-            <br />pour votre
-            problème (en 5 minutes)
-            <br />et la rembourser à votre salaire ou
-            bourse suivante.
-          </p>
+                  Avec Express Money,
+                  <br />
+                  <strong>emprunter la somme qui vous convient</strong>
+                  <br />pour votre
+                  problème (en 5 minutes)
+                  <br />et la rembourser à votre salaire ou
+                  bourse suivante.
+                </p>
               </div>
             </div>
+          </div>
         </div>
       </div>
-    </div>
     </section>
     <section class="section">
       <div class="h2 title has-text-centered has-text-primary">Avantages</div>
@@ -120,8 +121,9 @@
           <div class="card is-fullheight">
             <div class="card-header is-flex is-justify-content-center is-flex-direction-column">
               <h2 class="title has-text-centered mt-2 has-text-primary">
-                <b-icon icon="check" size="large" />
-                <br />{{item.title}}
+                <b-icon icon="check" class="circular-sui" size="is-large" />
+                <br />
+                {{item.title}}
               </h2>
             </div>
             <div class="card-content is-fullheight">
@@ -129,10 +131,15 @@
                 <p class="has-text-centered">{{item.description}}</p>
               </div>
             </div>
+          </div>
         </div>
       </div>
-    </div>
-    <p class="has-text-centered" v-if="!isAuthenticated"><NuxtLink to="/register" class="button is-outlined is-primary">Créer un compte pour commencer</NuxtLink></p>
+      <p class="has-text-centered" v-if="!isAuthenticated">
+        <NuxtLink
+          to="/register"
+          class="button is-outlined is-primary"
+        >Créer un compte pour commencer</NuxtLink>
+      </p>
     </section>
     <AppFooter />
   </div>
@@ -206,7 +213,7 @@ export default {
     },
     currentDate() {
       return new Date().getFullYear();
-    }
+    },
   },
   methods: {
     async handleLogout() {
@@ -220,5 +227,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

@@ -1,23 +1,39 @@
+html,
+body,
+main {
+  margin: 0%;
+  padding: 0%;
+}
+
 main {
   min-height: 100vh;
 }
 
-*{
-  box-sizing: border-box;
+/* *,
+*::before,
+*::after {
+  outline: 1px solid red;
+} */
+
+footer.footer {
+  overflow-x: hidden;
 }
 
 .list-item {
-	padding: 7px 0px;
-	margin: 0;
-	border-bottom: 2px dotted #e0e0e0;
+  padding: 7px 0px;
+  margin: 0;
+  border-bottom: 2px dotted #e0e0e0;
+  /* list-style-type: hiragana; */
+  list-style-type: none;
 }
 
-.navbar-item, b-navbar-item{
+.navbar-item,
+b-navbar-item {
   background-color: initial !important;
   font-weight: bold;
 }
 
-.button{
+.button {
   font-weight: bold;
 }
 
@@ -25,10 +41,16 @@ a {
   text-decoration: none !important;
 }
 
-.is-fullheight{
+.is-fullheight {
   height: 100% !important;
 }
 
-ul{
+ul {
   list-style-type: none !important;
+}
+
+.circular-sui {
+  padding: 0.5em 0.5em;
+  border-radius: 50%;
+  box-shadow: inset 0 0 3px #888;
 }
