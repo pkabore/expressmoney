@@ -25,6 +25,7 @@ const AccountSchema = new Schema(
 		idUri: String,
 		wcardUri: String,
 		codcUri: String,
+		updatingFile: String,
 		city: {
 			type: String,
 			trim: true,

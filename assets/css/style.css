@@ -9,6 +9,9 @@ main {
   min-height: 100vh;
 }
 
+/**
+Responsive design debug
+*/
 /* *,
 *::before,
 *::after {
@@ -20,10 +23,10 @@ footer.footer {
 }
 
 .list-item {
-  padding: 7px 0px;
-  margin: 0;
+  margin: 0% !important;
+  padding: 0% !important;
   border-bottom: 2px dotted #e0e0e0;
-  /* list-style-type: hiragana; */
+  list-style-type: hiragana;
   list-style-type: none;
 }
 

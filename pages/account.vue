@@ -1,167 +1,242 @@
 <template>
   <section class="section">
-    <div class="columns is-centered py-1">
-      <div class="column my-0 is-8-desktop is-10-tablet">
-        <h1 class="title has-text-centered mt-1">Compte</h1>
-        <ul class="is-hoverable">
-          <li class="columns m-0 p-0 is-mobile list-item">
-            <div class="column m-0 py-0 px-2 has-text-weight-bold">Nom:</div>
-            <div class="column m-0 p-0 is-6">{{ account.name }}</div>
-          </li>
-          <li class="columns m-0 p-0 is-mobile list-item mt-1">
-            <div class="column m-0 py-0 px-2 has-text-weight-bold">Tel:</div>
-            <div class="column m-0 p-0 is-6">{{ account.tel }}</div>
-          </li>
-          <li class="columns m-0 p-0 is-mobile list-item mt-1">
-            <div class="column m-0 py-0 px-2 has-text-weight-bold">E-mail:</div>
-            <div class="column m-0 p-0 is-6">{{ account.email }}</div>
-          </li>
-          <li class="columns m-0 p-0 is-mobile list-item mt-1">
-            <div class="column m-0 py-0 px-2 has-text-weight-bold">Ville:</div>
-            <div class="column m-0 p-0 is-6">{{ account.city || "-"}}</div>
-          </li>
-          <li class="columns m-0 p-0 is-mobile mt-1">
-            <div class="column m-0 py-0 px-2 has-text-weight-bold">Status:</div>
-            <div class="column m-0 p-0 is-6">
-              <b-tag
-                v-if="account.isAccountValidated === 'Validé'"
-                type="is-success is-light label"
-              >{{ account.isAccountValidated }}</b-tag>
-              <b-tag
-                v-if="account.isAccountValidated === 'En Attente'"
-                type="is-primary is-light label"
-              >{{ account.isAccountValidated }}</b-tag>
-              <b-tag
-                v-if="account.isAccountValidated === 'Décliné'"
-                type="is-danger is-light label"
-              >{{ account.isAccountValidated }}</b-tag>
-              <b-tag v-if="account.isAccountValidated === ''" type="is-info">Visiteur</b-tag>
-              <b-tag
-                v-if="account.isAccountValidated === 'Suppression'"
-                type="is-danger is-light label"
-              >Suppression</b-tag>
-            </div>
-          </li>
-          <li class="columns m-0 p-0 is-mobile list-item mt-4">
-            <div class="column m-0 py-0 px-2 has-text-weight-bold">Copie de CNIB/Passeport:</div>
-            <div class="column m-0 p-0 is-6">
-              <a :target="target" :href="idUri">
-                <b-icon icon="link" />Visualiser
-              </a>
-            </div>
-          </li>
-          <li class="columns m-0 p-0 is-mobile list-item mt-1">
-            <div class="column m-0 py-0 px-2 has-text-weight-bold">Carte de travailleur:</div>
-            <div class="column m-0 p-0 is-6">
-              <a :target="target" :href="wcardUri">
-                <b-icon icon="link" />Visualiser
-              </a>
-            </div>
-          </li>
-          <li class="columns m-0 p-0 is-mobile mt-1">
-            <div class="column m-0 py-0 px-2 has-text-weight-bold">Attestation de prise de service:</div>
-            <div class="column m-0 p-0 is-6">
-              <a :target="target" :href="codcUri">
-                <b-icon icon="link" />Visualiser
-              </a>
-            </div>
-          </li>
-          <li class="columns m-0 p-0 is-mobile list-item mt-4">
-            <div class="column m-0 py-0 px-2 has-text-weight-bold">Date de création:</div>
-            <div
-              class="column m-0 p-0 is-6"
-            >{{ new Date(account.createdAt).toLocaleString('fr-FR') }}</div>
-          </li>
-          <li class="columns m-0 p-0 is-mobile mt-1">
-            <div class="column m-t py-0 px-2 has-text-weight-bold">Dernière mise à jour:</div>
-            <div
-              class="column m-0 p-0 is-6"
-            >{{ new Date(account.updatedAt).toLocaleString('fr-FR') }}</div>
-          </li>
-        </ul>
-        <b-notification
-          v-if="account.isAccountValidated === 'Suppression'"
-          class="mt-1 has-text-centered"
-          type="is-danger is-light"
-        >Demande de suppression de compte en cours.</b-notification>
-      </div>
-    </div>
-    <div :class="['modal', {'is-active': modal}]">
-      <div class="modal-background"></div>
-      <div class="card">
-        <header class="card-header">
-          <p class="card-header-title has-text-centered">Confirmation</p>
-        </header>
-        <section class="card-content">
-          <p class="has-text-center has-text-danger">
-            Êtes-vous sûr de vouloir supprimer votre compte ?
-            <br />Attention: Cette action est irréversible!
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8-desktop is-10-tablet">
+          <p class="has-text-right">
+            <b-button
+              icon-left="pen"
+              type="is-primary"
+              v-if="account.isAccountValidated !== 'Suppression'"
+              @click.prevent="readonly = !readonly"
+            >Cliquez-ici pour modifier</b-button>
           </p>
-        </section>
-        <footer class="card-footer">
-          <a href="#" class="card-footer-item" @click.prevent="closeModal()">
-            <b-icon pack="fas" icon="times"></b-icon>&nbsp; Annuler
-          </a>
-          <a
-            href="#"
-            class="card-footer-item has-text-danger"
-            @click.prevent="requestAccountDeletion()"
-          >
-            <b-icon icon="trash-alt"></b-icon>&nbsp; Supprimer
-          </a>
-        </footer>
+          <p class="title has-text-centered mt-5 has-text-primary">1. Profile</p>
+          <b-field>
+            <b-input
+              type="text"
+              icon="user-circle"
+              v-model="updateAccount.name"
+              required
+              :disabled="readonly"
+              placeholder="Prénom et Nom"
+            />
+          </b-field>
+          <b-field>
+            <VueTelInput
+              aria-expanded
+              :disabled="readonly"
+              @input="phoneNumberValidation"
+              persistent
+              mode="international"
+              validCharactersOnly
+              selectLabel="Pays"
+              placeholder="Numéro de téléphone"
+              required
+              type="tel"
+              class="input my-0"
+              v-model="updateAccount.tel"
+            ></VueTelInput>
+          </b-field>
+          <b-field>
+            <b-input
+              type="email"
+              icon="at"
+              v-model="updateAccount.email"
+              required
+              :disabled="readonly"
+              placeholder="Email"
+            />
+          </b-field>
+
+          <b-field>
+            <b-select
+              expanded
+              v-model="updateAccount.city"
+              icon="city"
+              required
+              :disabled="readonly"
+              :placeholder="'Sélectionnner votre ville'"
+              :label="'Sélectionnner votre ville'"
+            >
+              <option v-for="option in cities" :value="option" :key="option">{{ option }}</option>
+            </b-select>
+          </b-field>
+        </div>
       </div>
-    </div>
-    <div
-      v-if="account.isAccountValidated !== 'Validé' && account.isAccountValidated !== 'Suppression'"
-      class="columns is-centered"
-    >
-      <div class="column is-8-desktop is-10-tablet">
-        <h2
-          class="has-text-centered subtitle"
-        >Pendant que votre compte n'est pas encore approuvé, vous pouvez mettre à jour les fichiers ci-dessus.</h2>
-        <b-field class="file" label="Copie d'identité/Passeport">
-          <b-upload v-model="id" expanded>
-            <a class="button is-light is-fullwidth">
-              <b-icon icon="upload"></b-icon>
-              <span>{{ id.name || "Cliquer ici pour charger"}}</span>
-            </a>
-          </b-upload>
-        </b-field>
-        <b-field class="file" label="Carte de travailleur">
-          <b-upload v-model="wcard" expanded>
-            <a class="button is-light is-fullwidth">
-              <b-icon icon="upload"></b-icon>
-              <span>{{ wcard.name || "Cliquer ici pour charger"}}</span>
-            </a>
-          </b-upload>
-        </b-field>
-        <b-field class="file" label="Attestation de prise de service">
-          <b-upload v-model="codc" expanded>
-            <a class="button is-light is-fullwidth">
-              <b-icon icon="upload"></b-icon>
-              <span>{{ codc.name || "Cliquer ici pour charger"}}</span>
-            </a>
-          </b-upload>
-        </b-field>
+      <div class="columns is-mobile is-centered" v-if="!readonly">
+        <div class="column is-8-desktop is-10-tablet">
+          <p class="title has-text-centered has-text-primary">2. Changement de mot de passe</p>
+          <b-field class="mt-1 mb-0">
+            <b-input
+              icon="lock"
+              placeholder="Ancien mot de passe"
+              v-model="updateAccount.oldPWD"
+              type="password"
+              password-reveal
+            />
+          </b-field>
+          <b-field class="mt-1 mb-0">
+            <b-input
+              placeholder="Créer un nouveau mot de passe"
+              icon="lock"
+              v-model="updateAccount.pwd"
+              type="password"
+              password-reveal
+            />
+          </b-field>
+          <b-field class="mt-1 mb-0">
+            <b-input
+              placeholder="Confirmer le mot de passe"
+              icon="lock"
+              v-model="updateAccount.confirmedPWD"
+              type="password"
+              password-reveal
+            />
+          </b-field>
+        </div>
       </div>
-    </div>
-    <div
-      class="columns is-centered py-1"
-      v-if="account.isAccountValidated !== 'En attente' && account.isAccountValidated !== 'Suppression'"
-    >
-      <div class="column is-8-desktop is-10-tablet has-background-red-light">
-        <h2 class="subtitle has-text-danger has-text-centered">Zone dangereuse</h2>
-        <p class="has-text-centered">
-          <b-button
-            class="mt-1 has-text-centered"
-            type="is-danger is-light"
-            @click.prevent="openModal()"
+      <div
+        id="dossier"
+        class="columns is-mobile is-centered"
+        v-if="!readonly && account.isAccountValidated !== 'Validé' && account.isAccountValidated !== 'Suppression'"
+      >
+        <div class="column is-8-desktop is-10-tablet">
+          <p class="title has-text-centered has-text-primary">3. Informations professionnelles</p>
+          <p
+            class="label help has-text-grey-dark has-text-centered"
+          >(Format: PDF/Image, Taille Max: 4M par fichier)</p>
+          <div
+            class="field my-0 py-0 columns"
+            v-if="account.isAccountValidated==='' || account.isAccountValidated==='En attente' || (account.isAccountValidated === 'Décliné' && account.updatingFile.includes('id'))"
           >
-            <b-icon icon="trash-alt" class="icon is-small" size="is-small"></b-icon>&nbsp;&nbsp;
-            Supprimer mon compte
-          </b-button>
-        </p>
+            <label for="id" class="column label help my-0 py-2">Copie de CNIB/Passeport:</label>
+            <input type="file" class="column my-0 py-2" ref="id" id="id" />
+          </div>
+          <div
+            class="field my-0 py-0 columns"
+            v-if="account.isAccountValidated==='' || account.isAccountValidated==='En attente' || (account.isAccountValidated === 'Décliné' && account.updatingFile.includes('wcard'))"
+          >
+            <label for="wcard" class="column label help my-0 py-2">Carte de travailleur:</label>
+            <input type="file" class="column my-0 py-2" id="wcard" ref="wcard" />
+          </div>
+          <div
+            class="field my-0 py-0 columns"
+            v-if="account.isAccountValidated==='' || account.isAccountValidated==='En attente' || (account.isAccountValidated === 'Décliné' && account.updatingFile.includes('codc'))"
+          >
+            <label for="codc" class="column label help my-0 py-2">Attestation de prise de service:</label>
+            <input type="file" class="column my-0 py-2" id="codc" ref="codc" />
+          </div>
+        </div>
+      </div>
+      <div class="columns is-centered">
+        <div class="column is-8-desktop is-10-tablet">
+          <ul>
+            <li class="columns list-item is-mobile mt-4">
+              <div class="column py-0 my-0 has-text-weight-bold">Status:</div>
+              <div class="column is-8 has-text-centered py-0 my-0">
+                <b-tag
+                  v-if="account.isAccountValidated === 'Validé'"
+                  type="is-light is-success"
+                >{{ account.isAccountValidated }}</b-tag>
+                <b-tag
+                  v-if="account.isAccountValidated === 'En attente'"
+                  type="is-light is-primary"
+                >{{ account.isAccountValidated }}</b-tag>
+                <b-tag
+                  v-if="account.isAccountValidated === 'Décliné'"
+                  type="is-light is-error"
+                >{{ account.isAccountValidated }}</b-tag>
+                <b-tag v-if="account.isAccountValidated === ''" type="is-light is-info">Visiteur</b-tag>
+                <b-tag
+                  v-if="account.isAccountValidated === 'Suppression'"
+                  type="is-light is-error"
+                >Suppression</b-tag>
+              </div>
+            </li>
+            <li class="columns list-item is-mobile">
+              <div class="column py-0 my-0 has-text-weight-bold">Copie de CNIB/Passeport:</div>
+              <div class="column is-8 has-text-centered py-0 my-0">
+                <a class="text-decoration-none" :target="target" :href="idUri">
+                  <b-icon icon="link" />&nbsp;Visualiser
+                </a>
+              </div>
+            </li>
+            <li class="columns list-item is-mobile">
+              <div class="column py-0 my-0 has-text-weight-bold">Carte de travailleur:</div>
+              <div class="column is-8 has-text-centered py-0 my-0">
+                <a class="text-decoration-none" :target="target" :href="wcardUri">
+                  <b-icon icon="link" />&nbsp;Visualiser
+                </a>
+              </div>
+            </li>
+            <li class="columns list-item is-mobile">
+              <div class="column py-0 my-0 has-text-weight-bold">Attestation de prise de service:</div>
+              <div class="column is-8 has-text-centered py-0 my-0">
+                <a class="text-decoration-none" :target="target" :href="codcUri">
+                  <b-icon icon="link" />&nbsp;Visualiser
+                </a>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="columns is-mobile is-centered">
+        <div class="column is-8-desktop is-10-tablet">
+          <p class="has-text-right pr-1 my-5">
+            <b-button
+              icon-right="check"
+              class="is-primary is-outlined"
+              @click="accountUpdateHandler()"
+            >Enregistrer toutes les modifications</b-button>
+          </p>
+        </div>
+      </div>
+      <div
+        class="columns is-mobile is-centered"
+        v-if="account.isAccountValidated !== 'En attente' && account.isAccountValidated !== 'Suppression' && readonly"
+      >
+        <div class="column is-8-desktop is-10-tablet">
+          <b-message type="is-warning">
+            <h2 class="has-text-centered title has-text-danger is-family-primary">
+              <b-icon class="has-text-danger" icon="exclamation-triangle"></b-icon>&nbsp;&nbsp; Zone dangereuse
+            </h2>
+            <hr />
+            <p class="has-text-centered mt-3">
+              <b-button class="is-danger is-outlined" @click.prevent="openModal()">
+                <b-icon icon="trash"></b-icon>&nbsp;&nbsp;
+                Supprimer mon compte
+              </b-button>
+            </p>
+          </b-message>
+          <div :class="['modal', {'is-active': modal}]">
+            <div class="modal-background"></div>
+            <div class="card">
+              <header class="card-header py-2">
+                <h2 class="has-text-centered subtitle has-text-weight-bold h2">Confirmation</h2>
+              </header>
+              <section class="card-content">
+                <p class="has-text-centered has-text-danger-dark">
+                  Êtes-vous sûr de vouloir supprimer votre compte ?
+                  <br />
+                  <b-icon class="has-text-danger" icon="exclamation-triangle"></b-icon>&nbsp;&nbsp;Attention: Cette action est irréversible!
+                </p>
+              </section>
+              <footer class="card-footer">
+                <a href="#" class="card-footer-item has-text-primary" @click.prevent="closeModal()">
+                  <b-icon icon="times"></b-icon>&nbsp; Annuler
+                </a>
+                <a
+                  href="#"
+                  class="card-footer-item has-text-danger"
+                  @click.prevent="requestAccountDeletion()"
+                >
+                  <b-icon icon="trash"></b-icon>&nbsp; Supprimer
+                </a>
+              </footer>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -176,7 +251,7 @@ export default {
     VueTelInput,
   },
   head: {
-    title: "Infos",
+    title: "Profile",
     meta: [
       {
         hid: "description",
@@ -187,12 +262,8 @@ export default {
   },
   data() {
     return {
-      id: {},
-      wcard: {},
-      codc: {},
       modal: false,
       error: "",
-      show: false,
       readonly: true,
 
       updateAccount: {
@@ -204,6 +275,9 @@ export default {
         pwd: "",
         confirmedPWD: "",
       },
+      id: {},
+      codc: {},
+      wcard: {},
       cities: [
         "Ouagadougou",
         "Bobo Dioulasso",
@@ -246,6 +320,18 @@ export default {
         this.error = err.response.data.message;
       }
     },
+    verifyfiles(file) {
+      const maxSize = 4194304;
+      if (
+        !file.type.includes("image/") &&
+        !file.type.includes("application/pdf")
+      ) {
+        return "Formats supportés: PDF/Image";
+      }
+      if (file.size > maxSize) {
+        return "Taille maximale par fichier: 4Mo";
+      }
+    },
     async accountUpdateHandler() {
       if (this.canProceed === false) return;
       if (
@@ -267,13 +353,40 @@ export default {
         this.error = "Ancien mot de passe requis";
         return;
       }
+      let formData = new FormData();
+      const maxSize = 4194304;
+      if (
+        !file.type.includes("image/") &&
+        !file.type.includes("application/pdf")
+      ) {
+        this.error = "Formats supportés: PDF/Image";
+        return;
+      }
+      if (file.size > maxSize) {
+        this.error = "Taille maximale par fichier: 4Mo";
+        return;
+      }
 
+      if (this.updateAccount.id.name)
+        formData.append("papers", this.updateAccount.id);
+      if (this.updateAccount.wcard.name)
+        formData.append("papers", this.updateAccount.wcard);
+      if (this.updateAccount.codc.name)
+        formData.append("papers", this.updateAccount.codc);
+
+      formData.append("city", this.updateAccount.city);
       try {
         const csrf = await this.$axios.$get("/api/auth/csrf");
-        this.$axios.setHeader("XSRF-TOKEN", csrf.token);
+        const config = {
+          headers: {
+            "XSRF-TOKEN": csrf.token,
+            "Content-Type": "multipart/form-data",
+          },
+        };
         const res = await this.$axios.$put(
           "/api/auth/update",
-          this.updateAccount
+          this.updateAccount,
+          config
         );
         if (res.message) {
           await this.$auth.fetchUser();
@@ -317,3 +430,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.text-decoration-none {
+  text-decoration: none !important;
+}
+</style>

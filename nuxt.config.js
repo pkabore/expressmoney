@@ -31,7 +31,7 @@ export default {
 	plugins: [],
 
 	loading: {
-		color: 'grey',
+		color: '#3273dc',
 		height: '3px'
 	},
 

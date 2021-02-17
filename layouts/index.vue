@@ -2,35 +2,34 @@
   <div>
     <section class="hero is-primary is-medium">
       <div class="hero-head">
-        <b-navbar centered class="is-primary">
+        <b-navbar class="is-primary" centered>
           <template #brand>
             <b-navbar-item tag="nuxt-link" to="/">Express Money</b-navbar-item>
           </template>
-          <template #end>
+
+          <template #start>
             <b-navbar-item tag="nuxt-link" to="/">Accueil</b-navbar-item>
             <b-navbar-item tag="nuxt-link" to="/credit">Crédit</b-navbar-item>
             <b-navbar-item tag="nuxt-link" to="/contact">Contact</b-navbar-item>
             <b-navbar-item tag="nuxt-link" to="/about">A propos</b-navbar-item>
-            <b-navbar-item v-if="isAuthenticated" to="/account" tag="nuxt-link">
-              <b-icon icon="user"></b-icon>&nbsp;
-              <span>{{ account.name }}</span>
+          </template>
+          <template #end>
+            <b-navbar-dropdown v-if="isAuthenticated" :label="account.name" hoverable>
+              <b-navbar-item class="has-text-primary" tag="nuxt-link" to="/account">
+                <b-icon icon="user"></b-icon>&nbsp; Compte
+              </b-navbar-item>
+              <a class="has-text-primary navbar-item" tag="nuxt-link" @click.prevent="handleLogout">
+                <b-icon icon="sign-out-alt"></b-icon>&nbsp; Déconnection
+              </a>
+            </b-navbar-dropdown>
+            <b-navbar-item v-if="!isAuthenticated" tag="nuxt-link" to="/login">
+              <b-icon pack="fas" icon="sign-in-alt"></b-icon>&nbsp;
+              <span>Se connecter</span>
             </b-navbar-item>
-            <a v-if="isAuthenticated" class="navbar-item" href="#" @click.prevent="handleLogout">
-              <b-icon icon="sign-out-alt" pack="fas"></b-icon>&nbsp;
-              <span>Se déconnecter</span>
-            </a>
-            <div class="navbar-item" v-if="!isAuthenticated">
-              <div class="buttons">
-                <NuxtLink to="/login" class="button is-primary">
-                  <b-icon pack="fas" icon="sign-in-alt"></b-icon>&nbsp;&nbsp;
-                  Se connecter
-                </NuxtLink>
-                <NuxtLink to="/register" class="button is-light is-outlined">
-                  <b-icon pack="fas" icon="user"></b-icon>&nbsp;
-                  <strong>S'inscrire</strong>
-                </NuxtLink>
-              </div>
-            </div>
+            <b-navbar-item v-if="!isAuthenticated" tag="nuxt-link" to="/register">
+              <b-icon pack="fas" icon="user"></b-icon>&nbsp;
+              <span>S'inscrire</span>
+            </b-navbar-item>
           </template>
         </b-navbar>
       </div>

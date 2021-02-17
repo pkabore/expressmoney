@@ -45,6 +45,7 @@
                       <VueTelInput
                         @input="phoneNumberValidation"
                         v-model="account.tel"
+                        validCharactersOnly
                         mode="international"
                         id="telInput"
                         class="input telInput"

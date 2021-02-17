@@ -13,6 +13,7 @@
                   @input="phoneNumberValidation"
                   v-model="email"
                   class="input"
+                  validCharactersOnly
                   mode="international"
                   id="email"
                   required

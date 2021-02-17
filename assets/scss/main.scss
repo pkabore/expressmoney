@@ -49,7 +49,7 @@ $message-radius: 0px;
 $notification-radius: 0px;
 //$box-radius: 2px;
 $toast-border-radius: 2px;
-
+$message-body-border-width: 0 0 0 2px;
 $family-sans-serif: "Roboto", BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
 	"Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 
@@ -58,12 +58,8 @@ $font-family: $family-sans-serif;
 $family-secondary: 'Baloo 2', BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
 "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", cursive, sans-serif;
 
-.title, .button, .navbar-item, b-navbar-item{
+.button, .navbar-item, b-navbar-item{
 	font-family: $family-secondary;
-}
-
-.label{
-  @extend .help;
 }
 
 $input-shadow: inset 0 1px 2px rgba($black, 0.1);
