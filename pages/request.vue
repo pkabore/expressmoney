@@ -200,7 +200,9 @@ export default {
         this.codeSent = true;
         this.codeConfirmationModal = true;
       } catch (err) {
-        this.error = err.response.data.message;
+        if (!err.response.data) {
+          this.error = "Erreur survenue, veuillez reésayer";
+        } else this.error = err.response.data.message;
       }
     },
     async submitFinalHandler() {
@@ -212,8 +214,10 @@ export default {
         this.$router.push("/credit");
       } catch (err) {
         this.isLoading = false;
+        if (!err.response.data) {
+          this.error = "Erreur survenue, veuillez reésayer";
+        } else this.error = err.response.data.message;
         this.codeConfirmationModal = false;
-        this.error = err.response.data.message;
       }
     },
     closeModal() {

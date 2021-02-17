@@ -1,31 +1,38 @@
 <template>
   <section class="section">
     <div class="container">
+      <CompleteProfile
+        v-if="account.isAccountValidated==='' && account.accountRegistrationCode===''"
+      />
       <div class="columns is-centered">
-        <div class="column is-8-desktop is-10-tablet">
-          <p class="has-text-right">
-            <b-button
-              icon-left="pen"
-              type="is-primary"
-              v-if="account.isAccountValidated !== 'Suppression'"
-              @click.prevent="readonly = !readonly"
-            >Cliquez-ici pour modifier</b-button>
+        <div class="column is-6-desktop is-8-tablet bordered-box is-secondary">
+          <h2 class="title has-text-centered">Profil</h2>
+          <p class="has-text-right my-2 has-text-primary is-family-secondary">
+            <b-switch
+              v-if="account.isAccountValidated!=='Suppression'&&account.accountRegistrationCode===''&&account.isAccountValidated!==''"
+              type="is-success"
+              v-model="readonly"
+              size="is-medium"
+            >Modifier</b-switch>
           </p>
-          <p class="title has-text-centered mt-5 has-text-primary">1. Profile</p>
+        </div>
+      </div>
+      <div class="columns is-centered">
+        <div class="column is-6-desktop is-8-tablet bordered-box is-secondary">
           <b-field>
             <b-input
               type="text"
               icon="user-circle"
-              v-model="updateAccount.name"
+              v-model="name"
               required
-              :disabled="readonly"
+              :disabled="!readonly"
               placeholder="Prénom et Nom"
             />
           </b-field>
           <b-field>
             <VueTelInput
               aria-expanded
-              :disabled="readonly"
+              :disabled="!readonly"
               @input="phoneNumberValidation"
               persistent
               mode="international"
@@ -35,43 +42,38 @@
               required
               type="tel"
               class="input my-0"
-              v-model="updateAccount.tel"
+              v-model="tel"
             ></VueTelInput>
           </b-field>
           <b-field>
             <b-input
               type="email"
               icon="at"
-              v-model="updateAccount.email"
+              v-model="email"
               required
-              :disabled="readonly"
+              :disabled="!readonly"
               placeholder="Email"
             />
           </b-field>
-
-          <b-field>
-            <b-select
-              expanded
-              v-model="updateAccount.city"
-              icon="city"
-              required
-              :disabled="readonly"
-              :placeholder="'Sélectionnner votre ville'"
-              :label="'Sélectionnner votre ville'"
-            >
-              <option v-for="option in cities" :value="option" :key="option">{{ option }}</option>
-            </b-select>
-          </b-field>
+          <div class="field">
+            <div class="control">
+              <div class="select is-fullwidth" id="city">
+                <select name="city" :disabled="!readonly" required v-model="city">
+                  <option class="py-3" value disabled>Ville</option>
+                  <option class="py-3" v-for="city in cities" :key="city" :value="city">{{city}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="columns is-mobile is-centered" v-if="!readonly">
-        <div class="column is-8-desktop is-10-tablet">
-          <p class="title has-text-centered has-text-primary">2. Changement de mot de passe</p>
+      <div class="columns is-centered" v-if="readonly">
+        <div class="column is-6-desktop is-8-tablet bordered-box is-secondary">
           <b-field class="mt-1 mb-0">
             <b-input
               icon="lock"
               placeholder="Ancien mot de passe"
-              v-model="updateAccount.oldPWD"
+              v-model="oldPWD"
               type="password"
               password-reveal
             />
@@ -80,7 +82,7 @@
             <b-input
               placeholder="Créer un nouveau mot de passe"
               icon="lock"
-              v-model="updateAccount.pwd"
+              v-model="pwd"
               type="password"
               password-reveal
             />
@@ -89,7 +91,7 @@
             <b-input
               placeholder="Confirmer le mot de passe"
               icon="lock"
-              v-model="updateAccount.confirmedPWD"
+              v-model="confirmedPWD"
               type="password"
               password-reveal
             />
@@ -98,11 +100,10 @@
       </div>
       <div
         id="dossier"
-        class="columns is-mobile is-centered"
-        v-if="!readonly && account.isAccountValidated !== 'Validé' && account.isAccountValidated !== 'Suppression'"
+        class="columns is-centered"
+        v-if="readonly && account.isAccountValidated !== 'Validé' && account.isAccountValidated !== 'Suppression'"
       >
-        <div class="column is-8-desktop is-10-tablet">
-          <p class="title has-text-centered has-text-primary">3. Informations professionnelles</p>
+        <div class="column is-6-desktop is-8-tablet bordered-box is-secondary">
           <p
             class="label help has-text-grey-dark has-text-centered"
           >(Format: PDF/Image, Taille Max: 4M par fichier)</p>
@@ -111,78 +112,76 @@
             v-if="account.isAccountValidated==='' || account.isAccountValidated==='En attente' || (account.isAccountValidated === 'Décliné' && account.updatingFile.includes('id'))"
           >
             <label for="id" class="column label help my-0 py-2">Copie de CNIB/Passeport:</label>
-            <input type="file" class="column my-0 py-2" ref="id" id="id" />
+            <input type="file" class="column my-0 py-2" @change="upload($event, 'id')" id="id" />
           </div>
           <div
             class="field my-0 py-0 columns"
             v-if="account.isAccountValidated==='' || account.isAccountValidated==='En attente' || (account.isAccountValidated === 'Décliné' && account.updatingFile.includes('wcard'))"
           >
             <label for="wcard" class="column label help my-0 py-2">Carte de travailleur:</label>
-            <input type="file" class="column my-0 py-2" id="wcard" ref="wcard" />
+            <input type="file" class="column my-0 py-2" @change="upload($event, 'wcard')" />
           </div>
           <div
             class="field my-0 py-0 columns"
             v-if="account.isAccountValidated==='' || account.isAccountValidated==='En attente' || (account.isAccountValidated === 'Décliné' && account.updatingFile.includes('codc'))"
           >
             <label for="codc" class="column label help my-0 py-2">Attestation de prise de service:</label>
-            <input type="file" class="column my-0 py-2" id="codc" ref="codc" />
+            <input type="file" class="column my-0 py-2" id="codc" @change="upload($event, 'codc')" />
           </div>
         </div>
       </div>
       <div class="columns is-centered">
-        <div class="column is-8-desktop is-10-tablet">
-          <ul>
-            <li class="columns list-item is-mobile mt-4">
-              <div class="column py-0 my-0 has-text-weight-bold">Status:</div>
-              <div class="column is-8 has-text-centered py-0 my-0">
-                <b-tag
-                  v-if="account.isAccountValidated === 'Validé'"
-                  type="is-light is-success"
-                >{{ account.isAccountValidated }}</b-tag>
-                <b-tag
-                  v-if="account.isAccountValidated === 'En attente'"
-                  type="is-light is-primary"
-                >{{ account.isAccountValidated }}</b-tag>
-                <b-tag
-                  v-if="account.isAccountValidated === 'Décliné'"
-                  type="is-light is-error"
-                >{{ account.isAccountValidated }}</b-tag>
-                <b-tag v-if="account.isAccountValidated === ''" type="is-light is-info">Visiteur</b-tag>
-                <b-tag
-                  v-if="account.isAccountValidated === 'Suppression'"
-                  type="is-light is-error"
-                >Suppression</b-tag>
-              </div>
-            </li>
-            <li class="columns list-item is-mobile">
-              <div class="column py-0 my-0 has-text-weight-bold">Copie de CNIB/Passeport:</div>
-              <div class="column is-8 has-text-centered py-0 my-0">
-                <a class="text-decoration-none" :target="target" :href="idUri">
-                  <b-icon icon="link" />&nbsp;Visualiser
-                </a>
-              </div>
-            </li>
-            <li class="columns list-item is-mobile">
-              <div class="column py-0 my-0 has-text-weight-bold">Carte de travailleur:</div>
-              <div class="column is-8 has-text-centered py-0 my-0">
-                <a class="text-decoration-none" :target="target" :href="wcardUri">
-                  <b-icon icon="link" />&nbsp;Visualiser
-                </a>
-              </div>
-            </li>
-            <li class="columns list-item is-mobile">
-              <div class="column py-0 my-0 has-text-weight-bold">Attestation de prise de service:</div>
-              <div class="column is-8 has-text-centered py-0 my-0">
-                <a class="text-decoration-none" :target="target" :href="codcUri">
-                  <b-icon icon="link" />&nbsp;Visualiser
-                </a>
-              </div>
-            </li>
-          </ul>
+        <div class="column is-6-desktop is-8-tablet bordered-box is-secondary">
+          <div class="columns is-mobile mt-4 mb-4">
+            <div class="column is-8 py-0 my-0 has-text-weight-bold">Status:</div>
+            <div class="column is-4 has-text-centered py-0 my-0">
+              <b-tag
+                v-if="account.isAccountValidated === 'Validé'"
+                type="is-success"
+              >{{ account.isAccountValidated }}</b-tag>
+              <b-tag
+                v-if="account.isAccountValidated === 'En attente'"
+                type="is-primary"
+              >{{ account.isAccountValidated }}</b-tag>
+              <b-tag
+                v-if="account.isAccountValidated === 'Décliné'"
+                type="is-danger"
+              >{{ account.isAccountValidated }}</b-tag>
+              <b-tag v-if="account.isAccountValidated === ''" type="is-info">Visiteur</b-tag>
+              <b-tag
+                v-if="account.isAccountValidated === 'Suppression'"
+                type="is-danger"
+              >Suppression</b-tag>
+            </div>
+          </div>
+          <div class="columns is-mobile">
+            <div class="column is-8 py-0 my-0 has-text-weight-bold">Copie de CNIB/Passeport:</div>
+            <div class="column is-4 has-text-centered py-0 my-0">
+              <a class="text-decoration-none" :target="target" :href="idUri">
+                <b-icon icon="link" />&nbsp;Visualiser
+              </a>
+            </div>
+          </div>
+          <div class="columns is-mobile">
+            <div class="column is-8 py-0 my-0 has-text-weight-bold">Carte de travailleur:</div>
+            <div class="column is-4 has-text-centered py-0 my-0">
+              <a class="text-decoration-none" :target="target" :href="wcardUri">
+                <b-icon icon="link" />&nbsp;Visualiser
+              </a>
+            </div>
+          </div>
+          <div class="columns is-mobile">
+            <div class="column is-8 py-0 my-0 has-text-weight-bold">Attestation de prise de service:</div>
+            <div class="column is-4 has-text-centered py-0 my-0">
+              <a class="text-decoration-none" :target="target" :href="codcUri">
+                <b-icon icon="link" />&nbsp;Visualiser
+              </a>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="columns is-mobile is-centered">
-        <div class="column is-8-desktop is-10-tablet">
+      <div class="columns is-centered" v-if="readonly">
+        <div class="column is-6-desktop is-8-tablet">
           <p class="has-text-right pr-1 my-5">
             <b-button
               icon-right="check"
@@ -193,22 +192,16 @@
         </div>
       </div>
       <div
-        class="columns is-mobile is-centered"
+        class="columns is-mobile is-centered mt-6"
         v-if="account.isAccountValidated !== 'En attente' && account.isAccountValidated !== 'Suppression' && readonly"
       >
-        <div class="column is-8-desktop is-10-tablet">
-          <b-message type="is-warning">
-            <h2 class="has-text-centered title has-text-danger is-family-primary">
-              <b-icon class="has-text-danger" icon="exclamation-triangle"></b-icon>&nbsp;&nbsp; Zone dangereuse
-            </h2>
-            <hr />
-            <p class="has-text-centered mt-3">
-              <b-button class="is-danger is-outlined" @click.prevent="openModal()">
-                <b-icon icon="trash"></b-icon>&nbsp;&nbsp;
-                Supprimer mon compte
-              </b-button>
-            </p>
-          </b-message>
+        <div class="column is-6-desktop is-8-tablet bordered-box is-danger mt-6">
+          <p class="has-text-centered mt-3">
+            <b-button
+              class="is-danger is-outlined"
+              @click.prevent="openModal()"
+            >Supprimer mon compte</b-button>
+          </p>
           <div :class="['modal', {'is-active': modal}]">
             <div class="modal-background"></div>
             <div class="card">
@@ -251,7 +244,7 @@ export default {
     VueTelInput,
   },
   head: {
-    title: "Profile",
+    title: "Profil",
     meta: [
       {
         hid: "description",
@@ -264,17 +257,14 @@ export default {
     return {
       modal: false,
       error: "",
-      readonly: true,
-
-      updateAccount: {
-        name: "",
-        tel: "",
-        email: "",
-        city: "",
-        oldPWD: "",
-        pwd: "",
-        confirmedPWD: "",
-      },
+      readonly: false,
+      name: "",
+      tel: "",
+      email: "",
+      city: "",
+      oldPWD: "",
+      pwd: "",
+      confirmedPWD: "",
       id: {},
       codc: {},
       wcard: {},
@@ -293,10 +283,10 @@ export default {
     };
   },
   mounted() {
-    this.updateAccount.name = this.account.name;
-    this.updateAccount.tel = this.account.tel;
-    this.updateAccount.email = this.account.email;
-    this.updateAccount.city = this.account.city;
+    this.name = this.account.name;
+    this.tel = this.account.tel;
+    this.email = this.account.email;
+    this.city = this.account.city;
   },
   methods: {
     phoneNumberValidation(value, payload) {
@@ -309,6 +299,11 @@ export default {
         if (this.error.includes("Numéro de téléphone")) this.error = "";
       }
     },
+    upload(event, filename) {
+      if (filename === "id") this.id = event.target.files[0];
+      if (filename === "wcard") this.wcard = event.target.files[0];
+      if (filename === "codc") this.codc = event.target.files[0];
+    },
     async requestAccountDeletion() {
       this.modal = false;
       try {
@@ -320,7 +315,7 @@ export default {
         this.error = err.response.data.message;
       }
     },
-    verifyfiles(file) {
+    verifyfile(file) {
       const maxSize = 4194304;
       if (
         !file.type.includes("image/") &&
@@ -331,51 +326,76 @@ export default {
       if (file.size > maxSize) {
         return "Taille maximale par fichier: 4Mo";
       }
+      return null;
     },
     async accountUpdateHandler() {
       if (this.canProceed === false) return;
       if (
-        this.updateAccount.name === "" ||
-        this.updateAccount.tel === "" ||
-        this.updateAccount.email === "" ||
-        this.updateAccount.city === ""
+        this.name === "" ||
+        this.tel === "" ||
+        this.email === "" ||
+        this.city === ""
       ) {
         this.error = "Veuillez renseigner touts les champs nécessaires.";
         return;
       }
 
-      if (this.updateAccount.pwd !== this.updateAccount.confirmedPWD) {
+      if (this.pwd !== this.confirmedPWD) {
         this.error = "Mots de passe différents";
         return;
       }
 
-      if (this.updateAccount.oldPWD === "" && this.updateAccount.pwd !== "") {
+      if (this.oldPWD === "" && this.pwd !== "") {
         this.error = "Ancien mot de passe requis";
         return;
       }
       let formData = new FormData();
-      const maxSize = 4194304;
-      if (
-        !file.type.includes("image/") &&
-        !file.type.includes("application/pdf")
-      ) {
-        this.error = "Formats supportés: PDF/Image";
-        return;
+
+      if (this.id.name) {
+        const errMsg = this.verifyfile(this.id);
+        if (errMsg) {
+          this.error = errMsg;
+          return;
+        }
+        formData.append("papers", this.id);
       }
-      if (file.size > maxSize) {
-        this.error = "Taille maximale par fichier: 4Mo";
-        return;
+      if (this.wcard.name) {
+        const errMsg = this.verifyfile(this.wcard);
+        if (errMsg) {
+          this.error = errMsg;
+          return;
+        }
+        formData.append("papers", this.wcard);
+      }
+      if (this.codc.name) {
+        const errMsg = this.verifyfile(this.codc);
+        if (errMsg) {
+          this.error = errMsg;
+          return;
+        }
+        formData.append("papers", this.codc);
       }
 
-      if (this.updateAccount.id.name)
-        formData.append("papers", this.updateAccount.id);
-      if (this.updateAccount.wcard.name)
-        formData.append("papers", this.updateAccount.wcard);
-      if (this.updateAccount.codc.name)
-        formData.append("papers", this.updateAccount.codc);
-
-      formData.append("city", this.updateAccount.city);
+      formData.append("name", this.name);
+      formData.append("tel", this.tel);
+      formData.append("email", this.email);
+      formData.append("city", this.city);
+      formData.append("oldPWD", this.oldPWD);
+      formData.append("pwd", this.pwd);
+      formData.append("confirmedPWD", this.confirmedPWD);
       try {
+        const a = formData.getAll("papers");
+
+        let b = {};
+        b.name = formData.get("name");
+        b.tel = formData.get("tel");
+        b.email = formData.get("email");
+        b.city = formData.get("city");
+        b.oldPWD = formData.get("oldPWD");
+        b.pwd = formData.get("pwd");
+        b.confirmedPWD = formData.get("confirmedPWD");
+        console.log(b, a);
+        return;
         const csrf = await this.$axios.$get("/api/auth/csrf");
         const config = {
           headers: {
@@ -383,11 +403,7 @@ export default {
             "Content-Type": "multipart/form-data",
           },
         };
-        const res = await this.$axios.$put(
-          "/api/auth/update",
-          this.updateAccount,
-          config
-        );
+        const res = await this.$axios.$put("/api/auth/update", this.config);
         if (res.message) {
           await this.$auth.fetchUser();
           this.error = "";

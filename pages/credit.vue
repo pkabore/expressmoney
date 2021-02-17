@@ -111,49 +111,49 @@
       v-else-if="account.isAccountValidated === '' && account.accountRegistrationCode !== ''"
       class="columns is-centered mt-6 pt-4"
     >
-      <div class="column is-half-desktop is-10-tablet">
-        <div class="notification is-success is-light">
-          <h2 class="subtitle has-text-centered">
-            Félicitations
-            <b-icon size="is-small" icon="check-circle" />
-          </h2>
-          <p>
+      <div class="column is-6-desktop is-10-tablet">
+        <div class="box is-success is-light">
+          <h2 class="title has-text-success has-text-centered">Félicitations!</h2>
+          <p class="has-text-centered">
             Merci d'avoir créé votre compte chez Express Money.
-            <br />Un lien de confirmation a été envoyé à votre adress email
-            <strong>{{ account.email }}</strong>. Veuillez consulter votre boîte mail pour valider votre compte.
+            <br />Un lien de confirmation a été envoyé à votre adresse email
+            <strong>{{ account.email }}</strong>. Veuillez consulter votre boîte de reception pour valider votre compte.
+          </p>
+          <hr />
+          <p class="has-text-centered">
+            <b-button
+              tag="nuxt-link"
+              icon-left="pen"
+              to="/account"
+              class="is-success is-block button is-outlined"
+            >Compléter mes informations</b-button>
           </p>
         </div>
-        <hr />
-        <p class="has-text-centered">
-          <NuxtLink
-            to="/complete"
-            class="is-success is-block is-radiusless button is-outlined"
-          >Compléter mes informations</NuxtLink>
-        </p>
       </div>
     </div>
     <div
       v-else-if="account.isAccountValidated === '' && account.accountRegistrationCode === ''"
       class="columns is-centered mt-6 pt-4"
     >
-      <div class="column is-half-desktop is-10-tablet">
-        <div class="notification is-link-light">
-          <h2 class="subtitle has-text-centered has-text-primary">
-            <b-icon size="is-small" icon="check" />&nbsp; Félicitations
-          </h2>
-          <p class="has-text-centered">
-            Vous avez terminé votre inscription. Pour faire votre premier emprunt, veuillez
+      <div class="column is-6-desktop is-10-tablet">
+        <div class="box">
+          <h2 class="title has-text-centered has-text-success">Félicitations!</h2>
+          <p class="has-text-centered has-text-success">
+            Vous avez terminé votre inscription.
+            <br />Pour faire votre premier emprunt, veuillez
             <NuxtLink
-              class="has-text-primary has-text-weight-bold has-text-decoration-none"
-              to="/complete"
-            >cliquer ici pour continuer</NuxtLink>
+              class="has-text-success has-text-weight-bold has-text-decoration-none"
+              to="/account"
+            >completer ces informations pour achever</NuxtLink>
           </p>
           <hr />
           <p class="has-text-centered mt-3">
-            <NuxtLink to="/complete" class="is-block is-primary button">
-              <b-icon icon="pen" class="has-text-white my-0"></b-icon>&nbsp;
-              Compléter mes informations
-            </NuxtLink>
+            <b-button
+              tag="nuxt-link"
+              to="/account"
+              icon-left="pen"
+              class="is-outlined is-success"
+            >Compléter mes informations</b-button>
           </p>
         </div>
       </div>
@@ -337,7 +337,7 @@
 <script>
 export default {
   head: {
-    title: "Opérations",
+    title: "Crédit",
     meta: [
       {
         hid: "description",
@@ -367,9 +367,7 @@ export default {
         return operation;
       });
       this.isLoading = false;
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   },
   methods: {
     openModal(id) {
@@ -418,7 +416,9 @@ export default {
           this.$fetch();
         }
       } catch (err) {
-        this.error = err.response.data.message;
+        if (!err.response.data) {
+          this.error = "Erreur survenue, veuillez reésayer";
+        } else this.error = err.response.data.message;
       }
     },
     async cancelOperation() {
@@ -438,7 +438,9 @@ export default {
           this.$fetch();
         }
       } catch (err) {
-        this.error = err.response.data.message;
+        if (!err.response.data) {
+          this.error = "Erreur survenue, veuillez reésayer";
+        } else this.error = err.response.data.message;
       }
     },
   },

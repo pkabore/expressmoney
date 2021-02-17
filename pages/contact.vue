@@ -3,7 +3,7 @@
     <div class="hero-body">
       <div class="container">
         <div class="columns is-centered">
-          <div class="column is-6-desktop is-8-tablet box">
+          <div class="column is-6-desktop is-8-tablet">
             <b-message
               type="is-success"
               v-model="isMessageSent"
@@ -47,9 +47,8 @@
                 ></b-input>
                 <p class="has-text-right mt-2">
                   <b-button
-                    icon-right="check"
                     @click="sendMail"
-                    class="is-outlined is-fullwidth is-primary"
+                    class="is-fullwidth is-primary"
                     type="submit"
                   >Envoyer le message</b-button>
                 </p>

@@ -36,7 +36,7 @@
                 >Se connecter</button>
               </div>
             </form>
-            <p class="has-text-grey help has-text-centered">
+            <p class="has-text-grey help has-text-centered mt-3">
               <NuxtLink to="/register">Créer un compte</NuxtLink>&nbsp;·&nbsp;
               <NuxtLink to="/reset">Mot de passe oublié?</NuxtLink>&nbsp;·&nbsp;
               <NuxtLink to="/contact">Besoin d'aide?</NuxtLink>
@@ -105,7 +105,10 @@ export default {
         });
       } catch (err) {
         this.isLoading = false;
+        if (err.response.data)
         this.error = err.response.data.message;
+        else
+          this.error = 'Erreur survenue. Veuillez reéssayer';
       }
     },
   },

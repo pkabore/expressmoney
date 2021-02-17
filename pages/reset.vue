@@ -91,7 +91,9 @@ export default {
           this.activeForm = "code";
         }
       } catch (err) {
-        this.error = err.response.data.message;
+        if (!err.response.data) {
+          this.error = "Erreur survenue, veuillez reésayer";
+        } else this.error = err.response.data.message;
       }
     },
     async sendCode() {
@@ -105,7 +107,9 @@ export default {
           this.activeForm = "pass";
         }
       } catch (err) {
-        this.error = err.response.data.message;
+        if (!err.response.data) {
+          this.error = "Erreur survenue, veuillez reésayer";
+        } else this.error = err.response.data.message;
       }
     },
     async sendPass() {

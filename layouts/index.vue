@@ -22,14 +22,24 @@
                 <b-icon icon="sign-out-alt"></b-icon>&nbsp; Déconnection
               </a>
             </b-navbar-dropdown>
-            <b-navbar-item v-if="!isAuthenticated" tag="nuxt-link" to="/login">
-              <b-icon pack="fas" icon="sign-in-alt"></b-icon>&nbsp;
-              <span>Se connecter</span>
-            </b-navbar-item>
-            <b-navbar-item v-if="!isAuthenticated" tag="nuxt-link" to="/register">
-              <b-icon pack="fas" icon="user"></b-icon>&nbsp;
-              <span>S'inscrire</span>
-            </b-navbar-item>
+            <div class="navbar-item">
+              <div class="buttons">
+                <b-button
+                  type="is-primary"
+                  icon-left="sign-in-alt"
+                  v-if="!isAuthenticated"
+                  tag="nuxt-link"
+                  to="/login"
+                >Se connecter</b-button>
+                <b-button
+                  icon-left="user-circle"
+                  class="is-light is-outlined"
+                  v-if="!isAuthenticated"
+                  tag="nuxt-link"
+                  to="/register"
+                >S'inscrire</b-button>
+              </div>
+            </div>
           </template>
         </b-navbar>
       </div>

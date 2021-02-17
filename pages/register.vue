@@ -109,7 +109,7 @@
                 :class="['button mt-2 is-fullwidth is-outlined is-primary', {'is-loading': isLoading}]"
                 type="submit"
               >Créer un compte</button>
-              <p class="has-text-grey help has-text-centered">
+              <p class="has-text-grey help has-text-centered mt-3">
                 <NuxtLink to="/login">Se connecter</NuxtLink>&nbsp;·&nbsp;
                 <NuxtLink to="/reset">Mot de passe oublié?</NuxtLink>&nbsp;·&nbsp;
                 <NuxtLink to="/contact">Besoin d'aide?</NuxtLink>
@@ -216,11 +216,21 @@ export default {
           await this.$auth.loginWith("cookie", {
             data: { email: this.account.email, pwd: this.account.pwd },
           });
-          this.isEmailSent = true;
+          this.$buefy.notification.open({
+            duration: 5000,
+            message: `Compte crée avec <b>succès</b>. Veuillez consulter votre boite de reception email pour vérifier le compte.`,
+            position: "is-top-right",
+            type: "is-success",
+            hasIcon: true,
+          });
         }
       } catch (err) {
         if (err.response) {
           this.isLoading = false;
+          if (!err.response.data) {
+            this.error = "Erreur survenue. Veuillez reéssayer";
+            return;
+          }
           if (
             err.response.data.message.includes("fname") ||
             err.response.data.message.includes("lname")

@@ -5,7 +5,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const authenticator = require('otplib').authenticator;
-const mjml2html = require('mjml');
+const utils = require('../utils/utilities');
 
 const ensureAuthentication = (req, res, next) => {
 	if (req.isAuthenticated()) {
@@ -13,23 +13,6 @@ const ensureAuthentication = (req, res, next) => {
 	}
 	res.status(401).end();
 };
-
-const nodemailer = require('nodemailer');
-let id = '';
-let transporter = nodemailer.createTransport({
-	host: 'smtp.gmail.com',
-	port: 465,
-	secure: true,
-	auth: {
-		type: 'OAuth2',
-		user: process.env.USER_EMAIL,
-		clientId: process.env.CLIENT_ID,
-		clientSecret: process.env.CLIENT_SECRET,
-		refreshToken: process.env.REFRESH_TOKEN,
-		accessToken: process.env.ACCESS_TOKEN,
-		expires: parseInt(process.env.EXPIRY_DURATION)
-	}
-});
 
 router.get('/', ensureAuthentication, async (req, res, next) => {
 	let mquery = {};
@@ -140,11 +123,10 @@ router.post('/request/code', ensureAuthentication, async (req, res) => {
 			from: process.env.USER_EMAIL,
 			to: req.user.email,
 			subject: 'Demande de crédit Express Money.',
-			html: getEmailHtml('Code de confirmation pour votre demande de crédit:', token)
+			html: utils.getEmailHtml('Code de confirmation pour votre demande de crédit:', token)
 		};
-		transporter.sendMail(mailOptions, async (err, info) => {
+		utils.transporter.sendMail(mailOptions, async (err, info) => {
 			if (err) {
-				console.log(err);
 				account.operationConfirmationCode = new mongoose.Types.ObjectId();
 				await account.save();
 				res.status(500).json({ message: 'Envoi du code à votre email échoué. Veuillez reéssayer.' });
@@ -193,38 +175,10 @@ router.post('/request', ensureAuthentication, async (req, res) => {
 				await operation.save();
 				return res.json({ message: 'ok' });
 			} catch (error) {
-				console.log('something here ...');
 				return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
 			}
 		});
 	});
 });
-
-const getEmailHtml = (subject, code) => {
-	const link = `${process.env.BASE_URL}/verification/${code}`;
-	let message = `
-		<mjml>
-			<mj-head>
-				<mj-font name="Raleway"
-       href="https://fonts.googleapis.com/css?family=Raleway" />
-			</mj-head>
-			<mj-body>
-				<mj-section>
-					<mj-column>
-						<mj-text font-size="25px" align="center" color="#1976d2" font-weight="bold" font-family="Raleway, Arial, cursive">Express Money, Service Client</mj-text>
-						<mj-divider border-color="#1976d2"></mj-divider>`;
-	if (subject.includes('Cliquez'))
-		message += `<mj-button font-family="Raleway, Arial, cursive" font-size="20px" background-color="#1976d2" color="white" href=${link}>
-						Cliquez ici pour vérifier votre compte
-					</mj-button>`;
-	else
-		message += `<mj-text font-family="Raleway, Arial, cursive" font-size="20px" align="center" padding-top="35px">${subject} ${code}</mj-text>`;
-
-	message += `</mj-column>
-				</mj-section>
-			</mj-body>
-		</mjml>`;
-	return mjml2html(message).html;
-};
 
 module.exports = router;

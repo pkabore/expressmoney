@@ -4,9 +4,10 @@ const Joi = require('joi');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const mongoose = require('mongoose');
+const multer = require('multer');
 const router = express.Router();
 const authenticator = require('otplib').authenticator;
-const mjml2html = require('mjml');
+const utils = require('../utils/utilities');
 
 const ensureAuthentication = (req, res, next) => {
 	if (req.isAuthenticated()) {
@@ -14,22 +15,6 @@ const ensureAuthentication = (req, res, next) => {
 	}
 	res.status(401).end();
 };
-
-const nodemailer = require('nodemailer');
-let transporter = nodemailer.createTransport({
-	host: 'smtp.gmail.com',
-	port: 465,
-	secure: true,
-	auth: {
-		type: 'OAuth2',
-		user: process.env.USER_EMAIL,
-		clientId: process.env.CLIENT_ID,
-		clientSecret: process.env.CLIENT_SECRET,
-		refreshToken: process.env.REFRESH_TOKEN,
-		accessToken: process.env.ACCESS_TOKEN,
-		expires: parseInt(process.env.EXPIRY_DURATION)
-	}
-});
 
 /*-------------------------account routes------------------------------*/
 router.get('/account', ensureAuthentication, (req, res) => {
@@ -95,9 +80,9 @@ router.post('/register', (req, res, next) => {
 					from: process.env.USER_EMAIL,
 					to: req.body.email,
 					subject: 'Vérification de votre compte Express Money.',
-					html: getEmailHtml('Cliquez', verificationToken)
+					html: utils.getEmailHtml('Cliquez', verificationToken)
 				};
-				transporter.sendMail(mailOptions, async (err, info) => {
+				utils.transporter.sendMail(mailOptions, async (err, info) => {
 					if (err) {
 						console.log(err);
 						await account.delete();
@@ -111,13 +96,93 @@ router.post('/register', (req, res, next) => {
 	});
 });
 
-router.get('/verification/:id', (req, res) => {
-	Account.findOne({ accountRegistrationCode: id }, async (err, account) => {
-		if (err || !account) return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
-		account.accountRegistrationCode = '';
+router.put('/update', ensureAuthentication, (req, res) => {
+	/**
+	* Multer configuration for files upload
+	*/
+	let uris = [];
+	const storage = multer.diskStorage({
+		destination: (req, file, cb) => {
+			cb(null, appRoot + '/dossiers');
+		},
+		filename: (req, file, cb) => {
+			const id = new mongoose.Types.ObjectId() + path.extname(file.originalname);
+			uris.push(id);
+			cb(null, id);
+		}
+	});
+	let upload = multer({
+		storage,
+		fileFilter: (req, file, cb) => {
+			const maxSize = parseInt(process.env.FILE_MAX_SIZE);
+			if (!file.mimetype.includes('image/') && !file.mimetype.includes('application/pdf')) return cb(null, false);
+			if (file.size > maxSize) return cb(null, false);
+			cb(null, true);
+		}
+	});
+	upload = upload.array('papers', 3);
+	/**------------------------------------------------------------------ */
+	Account.findOne({ email: req.user.email }, async (err, doc) => {
+		if (err || !doc) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+		let hashedPassword = '';
+		if (req.body.name === '' || req.body.email === '' || req.body.tel === '' || req.body.city === '')
+			return res.status(400).json({ message: 'Veuillez renseigner touts les champs nécessaires.' });
 		try {
+			if (req.body.pwd !== '') {
+				if (req.body.pwd.length < 4)
+					return res.status(400).json({ message: 'Mots de passe courts. Min (4 charactères)' });
+				if (!await bcrypt.compare(req.body.oldPWD, doc.pwd))
+					return res.status(400).json({ message: 'Ancien mot de passe incorrect.' });
+				if (req.body.pwd !== req.body.confirmedPWD)
+					return res.status(400).json({ message: 'Mots de passe différents' });
+				hashedPassword = await bcrypt.hash(req.body.pwd, parseInt(process.env.BCRYPT_WORK_FACTOR));
+				doc.pwd = hashedPassword;
+			}
+			upload(req, res, async (err) => {
+				if (err instanceof multer.MulterError) {
+					const filesErrorMessage = `Format supporté: PDF|JPEG|JPG, taille max: 4MB`;
+					return res.status(400).json({ message: filesErrorMessage });
+				} else if (err) {
+					return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+				}
+				if (doc.isAccountValidated === '' && uris.length < 3)
+					return res.status(400).json({ message: 'Fichiers incomplets' });
+				const uploadingFiles = doc.uploadingFile.split(' ');
+				if (doc.isAccountValidated === 'Déclliné' && uploadingFiles.length < 3)
+					return res.status(400).json({ message: 'Fichiers incomplets' });
+				utils.deleteOldFiles(account.idUri, account.wcardUri, account.codcUri);
+				doc.name = req.body.name;
+				doc.email = req.body.email;
+				doc.tel = req.body.tel;
+				doc.city = req.body.city;
+				if (doc.isAccountValidated === 'Décliné' || uris.length > 0) {
+					if (uploadingFiles.length === 3 || uris.length === 3) {
+						doc.idUri = uris[0];
+						doc.wcardUri = uris[1];
+						doc.codcUri = uris[2];
+					} else {
+						if (uploadingFiles.includes('id')) doc.idUri = uris[0];
+						if (uploadingFiles.includes('wcard')) doc.wcardUri = uris[1];
+						if (uploadingFiles.includes('codc')) doc.codcUri = uris[2];
+					}
+				}
+				await doc.save();
+				res.json({ message: 'ok' });
+			});
+		} catch (error) {
+			return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+		}
+	});
+});
+
+router.get('/verification/:id', (req, res) => {
+	Account.findOne({ accountRegistrationCode: req.params.id }, async (err, account) => {
+		if (err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+		if (!account) return res.status(400).json({ message: 'Code invalide ou déjà utilisé' });
+		try {
+			account.accountRegistrationCode = '';
 			await account.save();
-			res.redirect('/credit');
+			res.json({ message: 'ok' });
 		} catch (error) {
 			res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
 		}
@@ -143,10 +208,10 @@ router.post('/resetemail', (req, res) => {
 			to: req.body.email,
 			subject: 'Express Money, Mot de passe oublié ',
 			text: `Code: ${token}`,
-			html: getEmailHtml('Code de récupération de mot de passe:', token)
+			html: utils.getEmailHtml('Code de récupération de mot de passe:', token)
 		};
 
-		transporter.sendMail(mailOptions, function(err, info) {
+		utils.transporter.sendMail(mailOptions, function(err, info) {
 			if (err) {
 				console.log(err);
 				res.status(500).json({ message: "Echec d'envoi de code à votre adresse email. Veuillez reéssayer." });
@@ -188,7 +253,7 @@ router.post('/email', (req, res) => {
 		subject: req.body.subject,
 		text: req.body.message
 	};
-	transporter.sendMail(mailOptions, async (err, info) => {
+	utils.transporter.sendMail(mailOptions, async (err, info) => {
 		if (err) {
 			console.log(err);
 			res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
@@ -202,10 +267,10 @@ const accountValidationSchema = Joi.object({
 	fname: Joi.string().min(2).max(40).required(),
 	lname: Joi.string().min(2).max(40).required(),
 	tel: Joi.string().required(),
+	city: Joi.string().required(),
 	email: Joi.string().email().required(),
 	pwd: Joi.string().min(4).required(),
-	confirmedPWD: Joi.string().min(4).required(),
-	_csrf: Joi.string()
+	confirmedPWD: Joi.string().min(4).required()
 });
 
 const emailValidationSchema = Joi.object({
@@ -224,33 +289,6 @@ const validateEmailInformations = (infos) => {
 	const { error } = emailValidationSchema.validate(infos);
 	if (error) return error.details[0].message;
 	return null;
-};
-
-const getEmailHtml = (subject, code) => {
-	const link = `${process.env.BASE_URL}/verification/${code}`;
-	let message = `
-		<mjml>
-			<mj-head>
-				<mj-font name="Raleway"
-       href="https://fonts.googleapis.com/css?family=Raleway" />
-			</mj-head>
-			<mj-body>
-				<mj-section>
-					<mj-column>
-						<mj-text font-size="25px" align="center" color="#1976d2" font-weight="bold" font-family="Raleway, Arial, cursive">Express Money, Service Client</mj-text>
-						<mj-divider border-color="#1976d2"></mj-divider>`;
-	if (subject.includes('Cliquez'))
-		message += `<mj-button font-family="Raleway, Arial, cursive" font-size="20px" background-color="#1976d2" color="white" href=${link}>
-						Cliquez ici pour vérifier votre compte
-					</mj-button>`;
-	else
-		message += `<mj-text font-family="Raleway, Arial, cursive" font-size="20px" align="center" padding-top="35px">${subject} ${code}</mj-text>`;
-
-	message += `</mj-column>
-				</mj-section>
-			</mj-body>
-		</mjml>`;
-	return mjml2html(message).html;
 };
 
 module.exports = router;

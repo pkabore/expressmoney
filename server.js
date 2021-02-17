@@ -64,7 +64,7 @@ async function start() {
 					}
 					if (!account) {
 						return done(null, false, {
-							message: 'Mot de passe, numéro ou e-mail incorrect.'
+							message: 'Numéro ou mot de passe incorrect(s).'
 						});
 					}
 					bcrypt.compare(pwd, account.pwd, (bcrypt_err, bcrypt_res) => {
@@ -73,7 +73,7 @@ async function start() {
 						}
 						if (!bcrypt_res) {
 							return done(null, false, {
-								message: 'Mot de passe, numéro ou e-mail incorrect.'
+								message: 'Numéro ou mot de passe incorrect(s).'
 							});
 						}
 						const sessionAccount = {
@@ -82,7 +82,8 @@ async function start() {
 							tel: account.tel,
 							email: account.email,
 							accountRegistrationCode: account.accountRegistrationCode,
-							isAccountValidated: account.isAccountValidated
+							isAccountValidated: account.isAccountValidated,
+							uploadingFile: account.uploadingFile
 						};
 						return done(null, sessionAccount);
 					});
