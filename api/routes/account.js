@@ -5,6 +5,8 @@ const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const mongoose = require('mongoose');
 const multer = require('multer');
+const path = require('path');
+const appRoot = require('app-root-path');
 const router = express.Router();
 const authenticator = require('otplib').authenticator;
 const utils = require('../utils/utilities');
@@ -96,7 +98,7 @@ router.post('/register', (req, res, next) => {
 	});
 });
 
-router.put('/update', ensureAuthentication, (req, res) => {
+router.post('/update', ensureAuthentication, (req, res) => {
 	/**
 	* Multer configuration for files upload
 	*/
@@ -122,57 +124,68 @@ router.put('/update', ensureAuthentication, (req, res) => {
 	});
 	upload = upload.array('papers', 3);
 	/**------------------------------------------------------------------ */
-	Account.findOne({ email: req.user.email }, async (err, doc) => {
-		if (err || !doc) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
-		let hashedPassword = '';
-		if (req.body.name === '' || req.body.email === '' || req.body.tel === '' || req.body.city === '')
-			return res.status(400).json({ message: 'Veuillez renseigner touts les champs nécessaires.' });
-		try {
-			if (req.body.pwd !== '') {
-				if (req.body.pwd.length < 4)
-					return res.status(400).json({ message: 'Mots de passe courts. Min (4 charactères)' });
-				if (!await bcrypt.compare(req.body.oldPWD, doc.pwd))
-					return res.status(400).json({ message: 'Ancien mot de passe incorrect.' });
-				if (req.body.pwd !== req.body.confirmedPWD)
-					return res.status(400).json({ message: 'Mots de passe différents' });
-				hashedPassword = await bcrypt.hash(req.body.pwd, parseInt(process.env.BCRYPT_WORK_FACTOR));
-				doc.pwd = hashedPassword;
-			}
-			upload(req, res, async (err) => {
-				if (err instanceof multer.MulterError) {
-					const filesErrorMessage = `Format supporté: PDF|JPEG|JPG, taille max: 4MB`;
-					return res.status(400).json({ message: filesErrorMessage });
-				} else if (err) {
-					return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+	Account.findOne(
+		{
+			email: req.user.email,
+			$and: [ { isAccountValidated: { $ne: 'Validé' } }, { isAccountValidated: { $ne: 'Suppression' } } ]
+		},
+		async (err, doc) => {
+			if (err || !doc) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+			let hashedPassword = '';
+			if (req.body.name === '' || req.body.email === '' || req.body.tel === '' || req.body.city === '')
+				return res.status(400).json({ message: 'Veuillez renseigner touts les champs nécessaires.' });
+			try {
+				console.log('err 1');
+				if (req.body.pwd !== '') {
+					if (req.body.pwd.length < 4)
+						return res.status(400).json({ message: 'Mots de passe courts. Min (4 charactères)' });
+					const passwordsDoMatch = await bcrypt.compare(req.body.oldPWD, doc.pwd);
+					if (!passwordsDoMatch) return res.status(400).json({ message: 'Ancien mot de passe incorrect.' });
+					if (req.body.pwd !== req.body.confirmedPWD)
+						return res.status(400).json({ message: 'Mots de passe différents' });
+					console.log('err 2');
+					hashedPassword = await bcrypt.hash(req.body.pwd, parseInt(process.env.BCRYPT_WORK_FACTOR));
+					doc.pwd = hashedPassword;
 				}
-				if (doc.isAccountValidated === '' && uris.length < 3)
-					return res.status(400).json({ message: 'Fichiers incomplets' });
-				const uploadingFiles = doc.uploadingFile.split(' ');
-				if (doc.isAccountValidated === 'Déclliné' && uploadingFiles.length < 3)
-					return res.status(400).json({ message: 'Fichiers incomplets' });
-				utils.deleteOldFiles(account.idUri, account.wcardUri, account.codcUri);
-				doc.name = req.body.name;
-				doc.email = req.body.email;
-				doc.tel = req.body.tel;
-				doc.city = req.body.city;
-				if (doc.isAccountValidated === 'Décliné' || uris.length > 0) {
-					if (uploadingFiles.length === 3 || uris.length === 3) {
-						doc.idUri = uris[0];
-						doc.wcardUri = uris[1];
-						doc.codcUri = uris[2];
-					} else {
-						if (uploadingFiles.includes('id')) doc.idUri = uris[0];
-						if (uploadingFiles.includes('wcard')) doc.wcardUri = uris[1];
-						if (uploadingFiles.includes('codc')) doc.codcUri = uris[2];
+
+				upload(req, res, async (err) => {
+					if (err instanceof multer.MulterError) {
+						const filesErrorMessage = `Format supporté: PDF|JPEG|JPG, taille max: 4MB`;
+						return res.status(400).json({ message: filesErrorMessage });
+					} else if (err) {
+						return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
 					}
-				}
-				await doc.save();
-				res.json({ message: 'ok' });
-			});
-		} catch (error) {
-			return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+					if (doc.isAccountValidated === '' && uris.length < 3)
+						return res.status(400).json({ message: 'Fichiers incomplets' });
+					const uploadingFiles = doc.uploadingFile.split(' ');
+					if (doc.isAccountValidated === 'Déclliné' && uploadingFiles.length < 3)
+						return res.status(400).json({ message: 'Fichiers incomplets' });
+					utils.deleteOldFiles(account.idUri, account.wcardUri, account.codcUri);
+					doc.name = req.body.name;
+					doc.email = req.body.email;
+					doc.tel = req.body.tel;
+					doc.city = req.body.city;
+					if (doc.isAccountValidated !== 'Décliné') account.isAccountValidated = 'En attente';
+					if (doc.isAccountValidated === 'Décliné' || uris.length > 0) {
+						if (uploadingFiles.length === 3 || uris.length === 3) {
+							doc.idUri = uris[0];
+							doc.wcardUri = uris[1];
+							doc.codcUri = uris[2];
+						} else {
+							if (uploadingFiles.includes('id')) doc.idUri = uris[0];
+							if (uploadingFiles.includes('wcard')) doc.wcardUri = uris[1];
+							if (uploadingFiles.includes('codc')) doc.codcUri = uris[2];
+						}
+					}
+					await doc.save();
+					res.json({ message: 'ok' });
+				});
+			} catch (error) {
+				console.log('err fin');
+				return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+			}
 		}
-	});
+	);
 });
 
 router.get('/verification/:id', (req, res) => {

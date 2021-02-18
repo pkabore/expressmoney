@@ -132,6 +132,13 @@ export default {
         };
         await this.$axios.post("/api/complete", formData, config);
         await this.$auth.fetchUser();
+        this.$buefy.notification.open({
+          duration: 5000,
+          message: `Dossier envoyé avec <b>succès</b>. Il ne reste que l'approbation du Service client d'Express Money avant de donner l'accès au service de demande de crédit.`,
+          position: "is-top-right",
+          type: "is-success",
+          hasIcon: true,
+        });
         this.$router.push("/credit");
       } catch (error) {
         this.error = error.response.data.message;

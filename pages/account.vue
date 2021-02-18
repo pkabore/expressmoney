@@ -1,15 +1,12 @@
 <template>
   <section class="section">
     <div class="container">
-      <CompleteProfile
-        v-if="account.isAccountValidated==='' && account.accountRegistrationCode===''"
-      />
       <div class="columns is-centered">
         <div class="column is-6-desktop is-8-tablet bordered-box is-secondary">
           <h2 class="title has-text-centered">Profil</h2>
           <p class="has-text-right my-2 has-text-primary is-family-secondary">
             <b-switch
-              v-if="account.isAccountValidated!=='Suppression'&&account.accountRegistrationCode===''&&account.isAccountValidated!==''"
+              v-if="account.isAccountValidated!=='Suppression'&&account.accountRegistrationCode===''"
               type="is-success"
               v-model="readonly"
               size="is-medium"
@@ -384,18 +381,6 @@ export default {
       formData.append("pwd", this.pwd);
       formData.append("confirmedPWD", this.confirmedPWD);
       try {
-        const a = formData.getAll("papers");
-
-        let b = {};
-        b.name = formData.get("name");
-        b.tel = formData.get("tel");
-        b.email = formData.get("email");
-        b.city = formData.get("city");
-        b.oldPWD = formData.get("oldPWD");
-        b.pwd = formData.get("pwd");
-        b.confirmedPWD = formData.get("confirmedPWD");
-        console.log(b, a);
-        return;
         const csrf = await this.$axios.$get("/api/auth/csrf");
         const config = {
           headers: {
@@ -403,7 +388,11 @@ export default {
             "Content-Type": "multipart/form-data",
           },
         };
-        const res = await this.$axios.$put("/api/auth/update", this.config);
+        const res = await this.$axios.$post(
+          "/api/auth/update",
+          formData,
+          config
+        );
         if (res.message) {
           await this.$auth.fetchUser();
           this.error = "";

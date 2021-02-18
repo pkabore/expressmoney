@@ -1,5 +1,6 @@
 const express = require('express');
 const multer = require('multer');
+const path = require('path');
 const mongoose = require('mongoose');
 const appRoot = require('app-root-path');
 const Account = require('../models/Account.js');
@@ -59,7 +60,6 @@ router.post('/', ensureAuthentication, (req, res) => {
 			utils.deleteOldFiles(account.idUri, account.wcardUri, account.codcUri);
 
 			account.city = req.body.city;
-			account.rib = req.body.rib;
 			account.idUri = uris[0];
 			account.wcardUri = uris[1];
 			account.codcUri = uris[2];
