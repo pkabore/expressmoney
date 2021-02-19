@@ -65,9 +65,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.navbar-item:hover {
-  color: rgb(0, 0, 95) !important;
-}
-</style>

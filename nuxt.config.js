@@ -41,20 +41,7 @@ export default {
 
 	telemetry: false,
 
-	modules: [
-		'@nuxtjs/auth-next',
-		'@nuxtjs/axios',
-		'nuxt-helmet',
-		'nuxt-buefy',
-		'nuxt-fontawesome',
-		[
-			'nuxt-gmaps',
-			{
-				key: 'AIzaSyDaDfiEoPFyMUL4aVTwikAhWoLuYPsv5dA'
-				//libraries: ['places']
-			}
-		]
-	],
+	modules: [ '@nuxtjs/auth-next', '@nuxtjs/axios', 'nuxt-helmet', 'nuxt-buefy', 'nuxt-fontawesome' ],
 
 	buefy: {
 		materialDesignIcons: false,

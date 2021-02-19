@@ -9,7 +9,7 @@
               v-model="isMessageSent"
               aria-close-label="Fermer la notification"
             >Message envoyé avec succès</b-message>
-            <h1 class="title has-text-link has-text-centered">
+            <h1 class="title has-text-centered">
               <b-icon icon="pen" class="circular-sui" size="is-large"></b-icon>&nbsp;Nous écrire
             </h1>
             <form action="POST" @submit.prevent="sendMail()">
@@ -48,12 +48,30 @@
                 <p class="has-text-right mt-2">
                   <b-button
                     @click="sendMail"
-                    class="is-fullwidth is-primary"
+                    class="is-fullwidth is-primary is-outlined"
                     type="submit"
                   >Envoyer le message</b-button>
                 </p>
               </div>
             </form>
+          </div>
+        </div>
+        <hr />
+        <div class="columns is-centered mt-5">
+          <div class="column is-6-desktop is-8-tablet box">
+            <h2 class="title has-text-centered">
+              <b-icon icon="map-marked-alt" class="circular-sui" size="is-large"></b-icon>&nbsp;Sur la carte
+            </h2>
+            <iframe
+              width="100%"
+              height="350"
+              style="border:1"
+              loading="lazy"
+              language="FR"
+              allowfullscreen
+              src="https://www.google.com/maps/embed/v1/place?maptype=satellite&key=AIzaSyBrxAlTd9i7r2pFQVPbtbnERdachT4FNqw
+    &q=Ouagadougou"
+            ></iframe>
           </div>
         </div>
       </div>
@@ -84,7 +102,6 @@ export default {
       },
       isMessageSent: false,
       error: "",
-      location: { lat: -25.344, lng: 131.036 },
     };
   },
   mounted: () => {},

@@ -13,10 +13,10 @@
             <a class="has-text-light">+226 76 00 00 00</a>
           </li>
           <li class="my-1">
-            <a class="has-text-light">expressmoney@mail.com</a>
+            <a class="has-text-light">expressgroupbf@gmail.com</a>
           </li>
           <li class="my-1">
-            <a class="has-text-light">17 Esshokour 2 Khouribga</a>
+            <a class="has-text-light">Adresse</a>
           </li>
         </ul>
       </div>

@@ -8,17 +8,14 @@
             <form autocomplete="off" @submit.prevent="handleLogin">
               <p class="help has-text-centered is-danger">{{ error }}</p>
               <div class="field my-0">
-                <label class="label help" for="email">Numéro de téléphone</label>
-                <VueTelInput
-                  @input="phoneNumberValidation"
+                <label class="label help" for="email">Adresse email, numéro de téléphone</label>
+                <b-input
+                  icon="envelope"
                   v-model="email"
-                  class="input"
-                  validCharactersOnly
-                  mode="international"
                   id="email"
-                  required
-                  placeholder="Numéro de téléphone"
-                ></VueTelInput>
+                  type="email"
+                  placeholder="example@example.com"
+                />
               </div>
               <div class="field my-0">
                 <label class="label help" for="pass">Mot de passe</label>
@@ -49,14 +46,7 @@
 </template>
 
 <script>
-import "vue-tel-input/dist/vue-tel-input.css";
-import { VueTelInput } from "vue-tel-input";
-
 export default {
-  components: {
-    VueTelInput,
-  },
-  auth: "guest",
   auth: "guest",
   head: {
     title: "Connection",
@@ -71,26 +61,14 @@ export default {
   },
   data() {
     return {
-      show: false,
       email: "",
       pwd: "",
       error: "",
       isLoading: false,
-      canProceed: true,
     };
   },
   methods: {
-    phoneNumberValidation(value, payload) {
-      if (!payload.valid) {
-        this.canProceed = false;
-        return;
-      } else this.canProceed = true;
-    },
     async handleLogin() {
-      if (this.canProceed === false) {
-        this.error = "Numéro de téléphone incorrect.";
-        return;
-      }
       this.isLoading = true;
       if (this.email === "" || this.pwd === "") {
         this.error = "Veuillez entrer vos identifiants.";
@@ -105,10 +83,8 @@ export default {
         });
       } catch (err) {
         this.isLoading = false;
-        if (err.response.data)
-        this.error = err.response.data.message;
-        else
-          this.error = 'Erreur survenue. Veuillez reéssayer';
+        if (err.response.data) this.error = err.response.data.message;
+        else this.error = "Erreur survenue. Veuillez reéssayer";
       }
     },
   },

@@ -6,6 +6,7 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const multer = require('multer');
 const path = require('path');
+const crypto = require('crypto');
 const appRoot = require('app-root-path');
 const router = express.Router();
 const authenticator = require('otplib').authenticator;
@@ -63,8 +64,9 @@ router.post('/register', (req, res, next) => {
 			return res.status(400).json({ message: 'Mots de passe différents' });
 		bcrypt.hash(req.body.pwd, parseInt(process.env.BCRYPT_WORK_FACTOR), async (bcrypt_err, hashedPassword) => {
 			if (bcrypt_err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
-			const verificationToken = new mongoose.Types.ObjectId() + new mongoose.Types.ObjectId();
-
+			let verificationToken = '';
+			verificationToken = await crypto.randomBytes(32);
+			verificationToken = verificationToken.toString('hex');
 			const account = new Account({
 				name: req.body.fname + ' ' + req.body.lname,
 				tel: req.body.tel,
@@ -81,7 +83,7 @@ router.post('/register', (req, res, next) => {
 				const mailOptions = {
 					from: process.env.USER_EMAIL,
 					to: req.body.email,
-					subject: 'Vérification de votre compte Express Money.',
+					subject: 'Vérification de votre email',
 					html: utils.getEmailHtml('Cliquez', verificationToken)
 				};
 				utils.transporter.sendMail(mailOptions, async (err, info) => {
@@ -98,7 +100,73 @@ router.post('/register', (req, res, next) => {
 	});
 });
 
-router.post('/update', ensureAuthentication, (req, res) => {
+router.post('/emailchallenge', async (req, res) => {
+	let verificationToken = '';
+	verificationToken = await crypto.randomBytes(32);
+	verificationToken = verificationToken.toString('hex');
+	const mailOptions = {
+		from: process.env.USER_EMAIL,
+		to: req.body.email,
+		subject: 'Vérification de votre email',
+		html: utils.getEmailHtml('Cliquez', verificationToken)
+	};
+	utils.transporter.sendMail(mailOptions, async (err, info) => {
+		if (err) {
+			console.log(err);
+			res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+		} else {
+			res.json({ message: 'ok' });
+		}
+	});
+});
+
+router.post('/emailchange', async (req, res) => {
+	let verificationToken = '';
+	verificationToken = await crypto.randomBytes(32);
+	verificationToken = verificationToken.toString('hex');
+
+	const mailOptions = {
+		from: process.env.USER_EMAIL,
+		to: req.body.email,
+		subject: 'Vérification de votre email',
+		html: utils.getEmailHtml('Cliquez', verificationToken)
+	};
+	utils.transporter.sendMail(mailOptions, async (err, info) => {
+		if (err) {
+			res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+		} else {
+			let email = '';
+			if (req.user) email = req.user.email;
+			else email = req.body.email;
+			Account.findOne({ email }, async (err, account) => {
+				if (err || !account) return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+				try {
+					account.accountRegistrationCode = verificationToken;
+					await account.save();
+					res.json({ message: 'ok' });
+				} catch (error) {
+					res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+				}
+			});
+		}
+	});
+});
+
+router.get('/verification/:id', (req, res) => {
+	Account.findOne({ accountRegistrationCode: req.params.id }, async (err, account) => {
+		if (err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+		if (!account) return res.status(400).json({ message: 'Code invalide ou déjà utilisé' });
+		try {
+			account.accountRegistrationCode = '';
+			await account.save();
+			res.json({ message: 'ok' });
+		} catch (error) {
+			res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+		}
+	});
+});
+
+router.post('/update', ensureAuthentication, async (req, res) => {
 	/**
 	* Multer configuration for files upload
 	*/
@@ -131,23 +199,15 @@ router.post('/update', ensureAuthentication, (req, res) => {
 		},
 		async (err, doc) => {
 			if (err || !doc) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+			if (doc.accountRegistrationCode !== '')
+				return res.status(403).json({
+					message:
+						"Votre compte n'a pas été vérifié. Veuillez cliquez sur le lien envoyé à votre adresse mail."
+				});
 			let hashedPassword = '';
 			if (req.body.name === '' || req.body.email === '' || req.body.tel === '' || req.body.city === '')
 				return res.status(400).json({ message: 'Veuillez renseigner touts les champs nécessaires.' });
 			try {
-				console.log('err 1');
-				if (req.body.pwd !== '') {
-					if (req.body.pwd.length < 4)
-						return res.status(400).json({ message: 'Mots de passe courts. Min (4 charactères)' });
-					const passwordsDoMatch = await bcrypt.compare(req.body.oldPWD, doc.pwd);
-					if (!passwordsDoMatch) return res.status(400).json({ message: 'Ancien mot de passe incorrect.' });
-					if (req.body.pwd !== req.body.confirmedPWD)
-						return res.status(400).json({ message: 'Mots de passe différents' });
-					console.log('err 2');
-					hashedPassword = await bcrypt.hash(req.body.pwd, parseInt(process.env.BCRYPT_WORK_FACTOR));
-					doc.pwd = hashedPassword;
-				}
-
 				upload(req, res, async (err) => {
 					if (err instanceof multer.MulterError) {
 						const filesErrorMessage = `Format supporté: PDF|JPEG|JPG, taille max: 4MB`;
@@ -155,10 +215,21 @@ router.post('/update', ensureAuthentication, (req, res) => {
 					} else if (err) {
 						return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
 					}
+					if (req.body.pwd !== '') {
+						if (req.body.pwd.length < 4)
+							return res.status(400).json({ message: 'Mots de passe courts. Min (4 charactères)' });
+						if (req.body.pwd !== req.body.confirmedPWD)
+							return res.status(400).json({ message: 'Mots de passe différents' });
+						const passwordsDoMatch = await bcrypt.compare(req.body.oldPWD, doc.pwd);
+						if (!passwordsDoMatch)
+							return res.status(400).json({ message: 'Ancien mot de passe incorrect.' });
+						hashedPassword = await bcrypt.hash(req.body.pwd, parseInt(process.env.BCRYPT_WORK_FACTOR));
+						doc.pwd = hashedPassword;
+					}
 					if (doc.isAccountValidated === '' && uris.length < 3)
 						return res.status(400).json({ message: 'Fichiers incomplets' });
-					const uploadingFiles = doc.uploadingFile.split(' ');
-					if (doc.isAccountValidated === 'Déclliné' && uploadingFiles.length < 3)
+					const updatingFiles = doc.updatingFile.split(' ');
+					if (doc.isAccountValidated === 'Déclliné' && updatingFiles.length < 3)
 						return res.status(400).json({ message: 'Fichiers incomplets' });
 					utils.deleteOldFiles(account.idUri, account.wcardUri, account.codcUri);
 					doc.name = req.body.name;
@@ -167,39 +238,24 @@ router.post('/update', ensureAuthentication, (req, res) => {
 					doc.city = req.body.city;
 					if (doc.isAccountValidated !== 'Décliné') account.isAccountValidated = 'En attente';
 					if (doc.isAccountValidated === 'Décliné' || uris.length > 0) {
-						if (uploadingFiles.length === 3 || uris.length === 3) {
+						if (updatingFiles.length === 3 || uris.length === 3) {
 							doc.idUri = uris[0];
 							doc.wcardUri = uris[1];
 							doc.codcUri = uris[2];
 						} else {
-							if (uploadingFiles.includes('id')) doc.idUri = uris[0];
-							if (uploadingFiles.includes('wcard')) doc.wcardUri = uris[1];
-							if (uploadingFiles.includes('codc')) doc.codcUri = uris[2];
+							if (updatingFiles.includes('id')) doc.idUri = uris[0];
+							if (updatingFiles.includes('wcard')) doc.wcardUri = uris[1];
+							if (updatingFiles.includes('codc')) doc.codcUri = uris[2];
 						}
 					}
 					await doc.save();
 					res.json({ message: 'ok' });
 				});
 			} catch (error) {
-				console.log('err fin');
 				return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
 			}
 		}
 	);
-});
-
-router.get('/verification/:id', (req, res) => {
-	Account.findOne({ accountRegistrationCode: req.params.id }, async (err, account) => {
-		if (err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
-		if (!account) return res.status(400).json({ message: 'Code invalide ou déjà utilisé' });
-		try {
-			account.accountRegistrationCode = '';
-			await account.save();
-			res.json({ message: 'ok' });
-		} catch (error) {
-			res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
-		}
-	});
 });
 
 router.post('/resetemail', (req, res) => {

@@ -32,7 +32,6 @@ footer.footer {
 .navbar-item,
 b-navbar-item {
   background-color: initial !important;
-  font-weight: bold;
 }
 
 .button {

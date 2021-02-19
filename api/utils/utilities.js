@@ -41,20 +41,22 @@ module.exports = {
 		let message = `
 		<mjml>
 			<mj-head>
-				<mj-font name="Raleway"
-       href="https://fonts.googleapis.com/css?family=Raleway" />
+				<mj-font name="Roboto"
+       href="https://fonts.googleapis.com/css2?family=Roboto" />
 			</mj-head>
 			<mj-body>
 				<mj-section>
 					<mj-column>
-						<mj-text font-size="25px" align="center" color="#1976d2" font-weight="bold" font-family="Raleway, Arial, cursive">Express Money, Service Client</mj-text>
+						<mj-text font-size="25px" align="center" color="#1976d2" font-weight="bold" font-family="Roboto, sans-serif, Arial">Express Money, Service Client</mj-text>
 						<mj-divider border-color="#1976d2"></mj-divider>`;
 		if (subject.includes('Cliquez'))
-			message += `<mj-button font-family="Raleway, Arial, cursive" font-size="20px" background-color="#1976d2" color="white" href=${link}>
-						Cliquez ici pour valider votre compte
+			message += `<mj-button font-family="Roboto, sans-serif, Arial" font-size="20px" background-color="#1976d2" color="white" href=${link}>
+						Cliquez ici pour vérifier votre adresse email
 					</mj-button>`;
-		else
-			message += `<mj-text font-family="Raleway, Arial, cursive" font-size="20px" align="center" padding-top="35px">${subject} ${code}</mj-text>`;
+		else {
+			message += `<mj-text font-family="Roboto, sans-serif, Arial" font-size="20px" align="center" padding-top="20px">${subject}</mj-text>`;
+			message += `<mj-text font-family="Roboto, sans-serif, Arial" margin-top="15px" font-weight="bold" font-size="40px" align="center" padding-top="35px">${code}</mj-text>`;
+		}
 
 		message += `</mj-column>
 				</mj-section>

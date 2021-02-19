@@ -134,7 +134,7 @@ export default {
             data: { email: this.email, pwd: this.pwd },
           });
           await this.$auth.fetchUser();
-          this.$router.push("/operations");
+          this.$router.push("/credit");
         }
       } catch (err) {
         if (!err.response.data) {

@@ -43,12 +43,14 @@ async function start() {
 	});
 
 	passport.deserializeUser((_id, done) => {
-		Account.findById(_id).select('name tel email confirmation isAccountValidated').exec((err, account) => {
-			if (err) {
-				return done(err);
-			}
-			return done(null, account);
-		});
+		Account.findById(_id)
+			.select('name tel email accountRegistrationCode isAccountValidated')
+			.exec((err, account) => {
+				if (err) {
+					return done(err);
+				}
+				return done(null, account);
+			});
 	});
 
 	passport.use(
@@ -64,7 +66,13 @@ async function start() {
 					}
 					if (!account) {
 						return done(null, false, {
-							message: 'Numéro ou mot de passe incorrect(s).'
+							message: 'Email, numéro ou mot de passe incorrect(s).'
+						});
+					}
+					if (account.accountRegistrationCode != '') {
+						return done(null, false, {
+							message:
+								"Votre email n'a pas encore été vérifiée. Veuillez cliquer sur le lien envoyé à votre adresse email pour vérifier votre compte."
 						});
 					}
 					bcrypt.compare(pwd, account.pwd, (bcrypt_err, bcrypt_res) => {
@@ -73,7 +81,7 @@ async function start() {
 						}
 						if (!bcrypt_res) {
 							return done(null, false, {
-								message: 'Numéro ou mot de passe incorrect(s).'
+								message: 'Email, numéro ou mot de passe incorrect(s).'
 							});
 						}
 						const sessionAccount = {
@@ -81,7 +89,6 @@ async function start() {
 							name: account.name,
 							tel: account.tel,
 							email: account.email,
-							accountRegistrationCode: account.accountRegistrationCode,
 							isAccountValidated: account.isAccountValidated,
 							uploadingFile: account.uploadingFile
 						};

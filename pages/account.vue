@@ -15,6 +15,21 @@
         </div>
       </div>
       <div class="columns is-centered">
+        <div class="column is-6-desktop is-8-tablet">
+          <b-steps v-model="activeStep">
+            <template v-for="(step, index) in steps">
+              <b-step-item
+                icon="check"
+                v-if="step.displayed"
+                :key="index"
+                :visible="step.visible"
+                :label="step.label"
+              >{{ step.content }}</b-step-item>
+            </template>
+          </b-steps>
+        </div>
+      </div>
+      <div class="columns is-centered">
         <div class="column is-6-desktop is-8-tablet bordered-box is-secondary">
           <b-field>
             <b-input
@@ -277,6 +292,10 @@ export default {
         "Kaya",
       ],
       canProceed: true,
+      activeStep: 0,
+      showMusic: true,
+      showBooks: false,
+      showGames: false,
     };
   },
   mounted() {
@@ -431,6 +450,45 @@ export default {
     },
     target() {
       return this.$auth.user.idUri ? "_blank" : "_self";
+    },
+    baseSteps() {
+      return [
+        {
+          label: "Pictures",
+          content: "Pictures: Lorem ipsum dolor sit amet.",
+          displayed: true,
+        },
+        {
+          label: "Music",
+          content: "Music: Lorem ipsum dolor sit amet.",
+          displayed: this.showMusic,
+        },
+        {
+          label: "Games",
+          content: "Games: Lorem ipsum dolor sit amet.",
+          displayed: true,
+          visible: this.showGames,
+        },
+        {
+          label: "Videos",
+          content: "Videos: Lorem ipsum dolor sit amet.",
+          displayed: true,
+        },
+      ];
+    },
+    steps() {
+      const steps = [...this.baseSteps];
+      if (this.showBooks) {
+        steps.splice(steps.length - 1, 0, this.bookStep);
+      }
+      return steps;
+    },
+    bookStep() {
+      return {
+        label: "Books",
+        content: "Books: Lorem ipsum dolor sit amet.",
+        displayed: true,
+      };
     },
   },
 };

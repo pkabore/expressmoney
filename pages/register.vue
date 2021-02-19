@@ -116,6 +116,7 @@
               </p>
             </form>
           </div>
+          <NuxtChild :key="$route.params.id" :email="account.email" />
         </div>
       </div>
     </div>
@@ -130,18 +131,6 @@ export default {
   components: {
     VueTelInput,
   },
-  head: {
-    title: "Création de compte",
-    meta: [
-      {
-        hid: "description",
-        name: "description",
-        content:
-          "Créer un compte pour effectuer vos demandes chez Express Money.",
-      },
-    ],
-  },
-  auth: "guest",
   auth: "guest",
   head: {
     title: "Création de compte",
@@ -203,6 +192,7 @@ export default {
           this.isLoading = false;
           return;
         }
+        const email = this.account.email;
         const csrf = await this.$axios.$get("/api/auth/csrf");
         this.$axios.setHeader("XSRF-TOKEN", csrf.token);
         const response = await this.$axios.$post(
@@ -211,18 +201,9 @@ export default {
         );
         if (response.message) {
           this.isLoading = false;
-          const csrfToken = await this.$axios.$get("/api/auth/csrf");
-          this.$axios.setHeader("XSRF-TOKEN", csrfToken.token);
-          await this.$auth.loginWith("cookie", {
-            data: { email: this.account.email, pwd: this.account.pwd },
-          });
-          this.$buefy.notification.open({
-            duration: 5000,
-            message: `Compte crée avec <b>succès</b>. Veuillez consulter votre boite de reception email pour vérifier le compte.`,
-            position: "is-top-right",
-            type: "is-success",
-            hasIcon: true,
-          });
+          this.$store.state.email = email;
+          this.$store.state.pass = pass;
+          this.$router.push("/confirmation");
         }
       } catch (err) {
         if (err.response) {
