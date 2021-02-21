@@ -226,28 +226,15 @@ router.post('/update', ensureAuthentication, async (req, res) => {
 						hashedPassword = await bcrypt.hash(req.body.pwd, parseInt(process.env.BCRYPT_WORK_FACTOR));
 						doc.pwd = hashedPassword;
 					}
-					if (doc.isAccountValidated === '' && uris.length < 3)
-						return res.status(400).json({ message: 'Fichiers incomplets' });
-					const updatingFiles = doc.updatingFile.split(' ');
-					if (doc.isAccountValidated === 'Déclliné' && updatingFiles.length < 3)
-						return res.status(400).json({ message: 'Fichiers incomplets' });
-					utils.deleteOldFiles(account.idUri, account.wcardUri, account.codcUri);
+					if (uris.length < 3) return res.status(400).json({ message: 'Fichiers incomplets' });
+					utils.deleteOldFiles(doc.idUri, doc.wcardUri, doc.codcUri);
 					doc.name = req.body.name;
 					doc.email = req.body.email;
 					doc.tel = req.body.tel;
 					doc.city = req.body.city;
-					if (doc.isAccountValidated !== 'Décliné') account.isAccountValidated = 'En attente';
-					if (doc.isAccountValidated === 'Décliné' || uris.length > 0) {
-						if (updatingFiles.length === 3 || uris.length === 3) {
-							doc.idUri = uris[0];
-							doc.wcardUri = uris[1];
-							doc.codcUri = uris[2];
-						} else {
-							if (updatingFiles.includes('id')) doc.idUri = uris[0];
-							if (updatingFiles.includes('wcard')) doc.wcardUri = uris[1];
-							if (updatingFiles.includes('codc')) doc.codcUri = uris[2];
-						}
-					}
+					doc.idUri = uris[0];
+					doc.wcardUri = uris[1];
+					doc.codcUri = uris[2];
 					await doc.save();
 					res.json({ message: 'ok' });
 				});
@@ -293,7 +280,7 @@ router.post('/resetemail', (req, res) => {
 
 router.post('/resetcode', (req, res) => {
 	Account.findOne({ email: req.body.email }, async (err, account) => {
-		if (err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reésayer.' });
+		if (err || !account) return res.status(500).json({ message: 'Erreur survenue. Veuillez reésayer.' });
 		if (JSON.stringify(account.passwordResetCode) !== JSON.stringify(req.body.code.trim()))
 			return res.status(400).json({ message: 'Code incorrect.' });
 		res.json({ message: 'ok' });

@@ -5,8 +5,8 @@
       <div class="column is-8-desktop is-11-tablet">
         <form autocomplete="off" class="mt-4" method="POST" @submit.prevent="submitHandler">
           <p class="has-text-danger has-text-centered">{{ error }}</p>
-          <b-message type="is-warning is-light label" class="my-0 is-size-7">
-            <b-icon icon="info-circle" size="is-small" />Note importante: Il s'agit ici de renseigner le nom et le prénom
+          <b-message type="is-info">
+            <b-icon icon="info-circle" size="is-small" />&nbsp;Note importante: Il s'agit ici de renseigner le nom et le prénom
             qui ont identifié le numéro Orange Money que vous allez renseigner.
           </b-message>
           <br />
@@ -14,25 +14,40 @@
             <div class="column my-0 py-0">
               <div class="field my-0">
                 <label for="rfname" class="label help py-0 my-0">Prénom du Receveur:</label>
-                <input class="input" v-model="request.rfname" type="text" id="rfname" name="rfname" />
+                <b-input
+                  icon="user"
+                  v-model="request.rfname"
+                  type="text"
+                  id="rfname"
+                  name="rfname"
+                />
               </div>
             </div>
             <div class="column my-0 py-0">
               <div class="field my-0">
                 <label for="rlname" class="label help py-0 my-0">Nom du Receveur:</label>
-                <input class="input" v-model="request.rlname" type="text" id="rlname" name="rlname" />
+                <b-input
+                  icon="user"
+                  v-model="request.rlname"
+                  type="text"
+                  id="rlname"
+                  name="rlname"
+                />
               </div>
             </div>
             <div class="column my-0 py-0">
               <div class="field my-0">
                 <label for="rnumber" class="label help py-0 my-0">Numéro Orange Money du Receveur:</label>
-                <input
-                  class="input"
+                <VueTelInput
+                  @input="phoneNumberValidation"
                   v-model="request.rnumber"
-                  type="tel"
+                  validCharactersOnly
+                  mode="international"
                   id="rnumber"
-                  name="rnumber"
-                />
+                  class="input telInput"
+                  inputClasses="input"
+                  placeholder="Numéro de téléphone"
+                ></VueTelInput>
               </div>
             </div>
           </div>
@@ -40,10 +55,10 @@
             <div class="column">
               <div class="field my-0">
                 <label for="amount" class="label help py-0 my-0">Montant en FCFA:</label>
-                <input
-                  class="input"
+                <b-input
+                  icon="sort-amount-up"
                   v-model="request.amount"
-                  placeholder="10000"
+                  placeholder="Montant en FCFA"
                   type="number"
                   step="0.0001"
                   id="amount"
@@ -56,9 +71,9 @@
             <div class="column">
               <div class="field my-0">
                 <label for="pwd" class="label help py-0 my-0">Confirmez votre mot de passe:</label>
-                <input class="input" v-model="request.pwd" type="password" id="pwd" name="pwd" />
+                <b-input icon="lock" v-model="request.pwd" type="password" id="pwd" name="pwd" />
                 <button
-                  class="button mt-2 is-fullwidth is-large is-primary box"
+                  class="button mt-2 is-fullwidth is-primary box"
                   type="submit"
                 >Envoyer la demande</button>
               </div>
@@ -116,7 +131,7 @@
           <div class="field">
             <div class="control">
               <p class="label help" for="code">Code de confirmation</p>
-              <input type="text" class="input" id="code" v-model="request.code" />
+              <b-input type="text" icon="user" id="code" v-model="request.code" />
             </div>
           </div>
         </section>
@@ -139,7 +154,13 @@
 </template>
 
 <script>
+import "vue-tel-input/dist/vue-tel-input.css";
+import { VueTelInput } from "vue-tel-input";
+
 export default {
+  components: {
+    VueTelInput,
+  },
   head: {
     title: "Demande de crédit",
     meta: [
@@ -169,9 +190,16 @@ export default {
       confirmationModal: false,
       codeConfirmationModal: false,
       codeSent: false,
+      canProceed: true,
     };
   },
   methods: {
+    phoneNumberValidation(value, payload) {
+      if (!payload.valid) {
+        this.canProceed = false;
+        return;
+      } else this.canProceed = true;
+    },
     async submitHandler() {
       if (
         this.request.rfname === "" ||
@@ -180,6 +208,10 @@ export default {
         this.request.pwd === ""
       ) {
         this.error = "Veuillez renseignez touts les champs";
+        return;
+      }
+      if (this.canProceed === false) {
+        this.error = "Numéro de téléphone incorrect.";
         return;
       }
       if (this.request.amount < 500 || this.request.amount > 50000) {

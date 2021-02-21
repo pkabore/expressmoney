@@ -18,9 +18,9 @@ export default {
     } catch (error) {
       if (error.response.data) this.error = error.response.data.message;
       else this.error = "Erreur survenue. Veuillez reéssayer";
-      this.$buefy.toast.open({
+      this.$buefy.snackbar.open({
         type: "is-danger",
-        duration: 5000,
+        indefinite: true,
         position: "is-top-right",
         message: error.response.data ? error.response.data.message : "Erreur",
       });

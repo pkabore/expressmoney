@@ -4,13 +4,6 @@
       <div class="column is-two-thirds-tablet is-half-desktop">
         <h2 class="has-text-centered title has-text-primary mb-3">Mot de passe oublié</h2>
         <p class="help has-text-centered is-danger">{{ error }}</p>
-        <b-notification
-          v-if="activeForm === 'code'"
-          type="is-light is-success"
-          has-icon
-          icon="check"
-          aria-close-label="Close notification"
-        >Code envoyé avec success. Veuillez consulter votre boite de reception mail.</b-notification>
         <div class="field" v-if="activeForm === 'email'">
           <label class="label help" for="email">Address e-mail:</label>
           <b-input
@@ -32,8 +25,11 @@
           </p>
         </div>
         <div class="field" v-if="activeForm === 'code'">
-          <label class="label help" for="code">Veuillez entrer le code reçu:</label>
-          <b-input v-model="code" id="code" class="input" type="text" />
+          <label class="label help" for="code">
+            Veuillez entrer le code envoyé au:
+            <span class="has-text-success">{{email}}</span>
+          </label>
+          <b-input v-model="code" id="code" type="text" />
           <button
             @click="sendCode"
             class="button mt-2 is-fullwidth is-primary"
@@ -41,16 +37,26 @@
           >Envoyer</button>
         </div>
         <div class="field" v-if="activeForm === 'pass'">
-          <label class="label help" for="pass">Créer un nouveau mot de passe:</label>
-          <b-input v-model="pwd" id="pass" class="input" type="password" placeholder="********" />
-          <label class="label help" for="confirmedPWD">Confirmer le mot de passe choisi:</label>
-          <b-input
-            v-model="confirmedPWD"
-            id="confirmedPWD"
-            class="input"
-            type="password"
-            placeholder="********"
-          />
+          <b-field label="Créer un nouveau mot de passe:" class="help">
+            <b-input
+              icon="lock"
+              v-model="pwd"
+              id="pass"
+              type="password"
+              placeholder="********"
+              password-reveal
+            />
+          </b-field>
+          <b-field label="Confirmer le mot de passe:" class="help">
+            <b-input
+              icon="lock"
+              v-model="confirmedPWD"
+              id="confirmedPWD"
+              type="password"
+              placeholder="********"
+              password-reveal
+            />
+          </b-field>
           <button
             @click="sendPass"
             class="button mt-2 is-fullwidth is-primary"
@@ -85,10 +91,19 @@ export default {
         const csrf = await this.$axios.$get("/api/auth/csrf");
         this.$axios.setHeader("XSRF-TOKEN", csrf.token);
         const result = await this.$axios.$post("/api/auth/resetemail", {
-          data: { email: this.email },
+          email: this.email,
         });
         if (result.message) {
           this.activeForm = "code";
+          this.$buefy.snackbar.open({
+            message:
+              "Code envoyé avec success. Veuillez consulter votre boite de reception mail",
+            type: "is-success",
+            indefinite: true,
+            queue: false,
+            position: "is-top-right",
+            actionText: "Fermer",
+          });
         }
       } catch (err) {
         if (!err.response.data) {
@@ -101,7 +116,8 @@ export default {
         const csrf = await this.$axios.$get("/api/auth/csrf");
         this.$axios.setHeader("XSRF-TOKEN", csrf.token);
         const res = await this.$axios.$post("/api/auth/resetcode", {
-          data: { code: this.code.trim() },
+          code: this.code.trim(),
+          email: this.email,
         });
         if (res.message) {
           this.activeForm = "pass";
@@ -121,11 +137,9 @@ export default {
         const csrf = await this.$axios.$get("/api/auth/csrf");
         this.$axios.setHeader("XSRF-TOKEN", csrf.token);
         const res = await this.$axios.$post("/api/auth/resetpass", {
-          data: {
-            pwd: this.pwd,
-            confirmedPWD: this.confirmedPWD,
-            email: this.email,
-          },
+          pwd: this.pwd,
+          confirmedPWD: this.confirmedPWD,
+          email: this.email,
         });
         if (res.message) {
           const csrf = await this.$axios.$get("/api/auth/csrf");

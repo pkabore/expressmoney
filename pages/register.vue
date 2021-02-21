@@ -202,7 +202,6 @@ export default {
         if (response.message) {
           this.isLoading = false;
           this.$store.state.email = email;
-          this.$store.state.pass = pass;
           this.$router.push("/confirmation");
         }
       } catch (err) {

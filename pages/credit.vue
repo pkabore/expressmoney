@@ -1,13 +1,16 @@
 <template>
-  <div class="section">
+  <section class="section">
     <div class="columns is-centered" v-if="account.isAccountValidated === 'Validé'">
       <div class="column">
         <h1 class="title has-text-centered mt-2">Mes opérations</h1>
         <p class="has-text-centered mb-3">
-          <b-button tag="nuxt-link" to="/request" type="primary" class="is-success label">
-            <b-icon icon="pencil" />&nbsp;&nbsp;
-            Cliquez ici pour une demande de crédit
-          </b-button>
+          <b-button
+            icon-left="pen"
+            tag="nuxt-link"
+            to="/request"
+            type="primary"
+            class="is-success label"
+          >Cliquez ici pour une demande de crédit</b-button>
         </p>
         <div v-if="isLoading">
           <h2 class="subtitle has-text-centered">Chargement en cours ...</h2>
@@ -107,55 +110,39 @@
         </div>
       </div>
     </div>
-    <div
-      v-else-if="account.isAccountValidated === '' && account.accountRegistrationCode !== ''"
-      class="columns is-centered mt-6 pt-4"
-    >
-      <div class="column is-6-desktop is-10-tablet">
-        <div class="box is-success is-light">
-          <h2 class="title has-text-success has-text-centered">Félicitations!</h2>
-          <p class="has-text-centered">
-            Merci d'avoir créé votre compte chez Express Money.
-            <br />Un lien de confirmation a été envoyé à votre adresse email
-            <strong>{{ account.email }}</strong>. Veuillez consulter votre boîte de reception pour valider votre compte.
+    <div v-else-if="account.isAccountValidated === 'Suppression'" class="columns is-centered">
+      <div class="column is-6-desktop is-8-tablet">
+        <b-message type="is-danger" class="has-text-centered">
+          <h2 class="title">Votre compte est marqué pour la suppression</h2>
+          <p>
+            Bientôt votre compte sera supprimé après vérification. Si vous l'avez fait par erreur, veuillez
+            <NuxtLink to="/contact">contacter le service client</NuxtLink>.
           </p>
-          <hr />
-          <p class="has-text-centered">
-            <b-button
-              tag="nuxt-link"
-              icon-left="pen"
-              to="/account"
-              class="is-success is-block button is-outlined"
-            >Compléter mes informations</b-button>
-          </p>
-        </div>
+          <b-button
+            icon-left="comment-alt"
+            outlined
+            class="mt-3"
+            type="is-danger"
+            tag="nuxt-link"
+            to="/account"
+          >Contacter le service client</b-button>
+        </b-message>
       </div>
     </div>
-    <div
-      v-else-if="account.isAccountValidated === '' && account.accountRegistrationCode === ''"
-      class="columns is-centered mt-6 pt-4"
-    >
-      <div class="column is-6-desktop is-10-tablet">
-        <div class="box">
-          <h2 class="title has-text-centered has-text-success">Félicitations!</h2>
-          <p class="has-text-centered has-text-success">
-            Vous avez terminé votre inscription.
-            <br />Pour faire votre premier emprunt, veuillez
-            <NuxtLink
-              class="has-text-success has-text-weight-bold has-text-decoration-none"
-              to="/account"
-            >completer ces informations pour achever</NuxtLink>
-          </p>
-          <hr />
-          <p class="has-text-centered mt-3">
-            <b-button
-              tag="nuxt-link"
-              to="/account"
-              icon-left="pen"
-              class="is-outlined is-success"
-            >Compléter mes informations</b-button>
-          </p>
-        </div>
+    <div v-else class="columns is-centered">
+      <div class="column is-6-desktop is-8-tablet">
+        <b-message type="is-primary" class="has-text-centered">
+          <h2 class="title">Merci d'avoir créé votre compte Express Money</h2>
+          <p>Votre compte n'a pas encore été validé. Veuillez compléter votre profil pour valider votre compte afin d'effectuer vos opérations.</p>
+          <b-button
+            icon-left="pen"
+            outlined
+            class="mt-3"
+            type="is-primary"
+            tag="nuxt-link"
+            to="/account"
+          >Mettre à jour mon profil</b-button>
+        </b-message>
       </div>
     </div>
     <div :class="['modal', {'is-active': updateModal}]">
@@ -331,7 +318,7 @@
         </footer>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script>
@@ -445,13 +432,12 @@ export default {
     },
   },
   computed: {
-    isAuthenticated() {
-      return this.$auth.loggedIn;
-    },
     account() {
-      // this.$auth.user.isAccountValidated = "En attente";
-      // this.$auth.user.accountRegistrationCode = "";
-      return this.$auth.user;
+      this.$auth.user.isAccountValidated = "Validé";
+      return this.$auth ? this.$auth.user : {};
+    },
+    isLoggedIn() {
+      return this.$auth ? this.$auth.loggedIn : false;
     },
   },
 };
