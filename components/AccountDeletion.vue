@@ -1,5 +1,5 @@
 <template>
-  <div class="bordered-box is-danger py-6">
+  <div class="bordered-box is-danger py-6 mb-5">
     <p class="has-text-centered">
       <b-button class="is-danger is-outlined" @click.prevent="openModal()">Supprimer mon compte</b-button>
     </p>

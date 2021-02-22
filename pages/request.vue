@@ -82,7 +82,7 @@
         </form>
       </div>
     </div>
-    <div :class="['modal', {'is-active': confirmationModal}]">
+    <div :class="['modal', {'is-active': modal}]">
       <div class="modal-background"></div>
       <div class="card is-radiusless larger">
         <header class="card-header">

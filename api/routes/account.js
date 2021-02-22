@@ -153,20 +153,95 @@ router.post('/emailchange', async (req, res) => {
 });
 
 router.get('/verification/:id', (req, res) => {
-	Account.findOne({ accountRegistrationCode: req.params.id }, async (err, account) => {
+	Account.findOne(
+		{ $or: [ { accountRegistrationCode: req.params.id }, { emailChangeCode: req.params.id } ] },
+		async (err, account) => {
+			if (err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+			if (!account) return res.status(400).json({ message: 'Code invalide ou déjà utilisé' });
+			try {
+				if (account.emailChangeCode !== 'default') account.accountRegistrationCode = '';
+				else {
+					account.emailChangeCode = '';
+					account.email = account.tempoEmail;
+					account.tempoEmail = '';
+				}
+				await account.save();
+				res.json({ message: 'ok' });
+			} catch (error) {
+				res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+			}
+		}
+	);
+});
+
+router.post('/updatepassword', ensureAuthentication, (req, res) => {
+	if (req.body.pwd !== req.body.confirmedPWD) return res.status(400).json({ message: 'Mots de passe différents.' });
+	Account.findOne({ email: req.user.email }, async (err, account) => {
 		if (err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
-		if (!account) return res.status(400).json({ message: 'Code invalide ou déjà utilisé' });
-		try {
-			account.accountRegistrationCode = '';
+		if (!account) return res.status(403).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+		const passwordsDoMatch = await bcrypt.compare(req.body.oldPWD, account.pwd);
+		if (!passwordsDoMatch) return res.status(400).json({ message: 'Ancien mot de passe incorrect.' });
+		const hashedPassword = await bcrypt.hash(req.body.pwd, parseInt(process.env.BCRYPT_WORK_FACTOR));
+		account.pwd = hashedPassword;
+		await account.save();
+		res.json({ message: 'ok' });
+	});
+});
+
+router.post('/updateprofile', ensureAuthentication, (req, res) => {
+	if (req.body.name === '' || req.body.email === '' || req.body.tel === '' || req.body.city === '')
+		return res.status(400).json({ message: 'Veuillez remplir touts les champs necéssaires.' });
+	Account.findOne({ email: req.user.email }, async (err, account) => {
+		if (err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+		if (!account) return res.status(403).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+
+		account.name = req.body.name;
+		account.tel = req.body.tel;
+		account.city = req.body.city;
+		account.secondaryEmail = req.body.email;
+		let verificationToken = '';
+		verificationToken = await crypto.randomBytes(32);
+		verificationToken = verificationToken.toString('hex');
+		if (req.body.email !== account.email) {
+			const mailOptions = {
+				from: process.env.USER_EMAIL,
+				to: req.body.email,
+				subject: 'Vérification de votre email',
+				html: utils.getEmailHtml('Cliquez', verificationToken)
+			};
+			utils.transporter.sendMail(mailOptions, async (err, info) => {
+				if (err) {
+					res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+				} else {
+					let email = '';
+					if (req.user) email = req.user.email;
+					else email = req.body.email;
+					Account.findOne({ email }, async (err, account) => {
+						if (err || !account)
+							return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+						try {
+							account.emailChangeCode = verificationToken;
+							await account.save();
+							res.json({
+								message:
+									"Veuillez cliquez sur le lien envoyé à l'adresse email: " +
+									req.body.email +
+									' pour la vérification.'
+							});
+						} catch (error) {
+							res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+						}
+					});
+				}
+			});
+		} else {
 			await account.save();
 			res.json({ message: 'ok' });
-		} catch (error) {
-			res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
 		}
 	});
 });
 
-router.post('/update', ensureAuthentication, async (req, res) => {
+router.post('/updatedossier', ensureAuthentication, async (req, res) => {
 	/**
 	* Multer configuration for files upload
 	*/
@@ -204,9 +279,6 @@ router.post('/update', ensureAuthentication, async (req, res) => {
 					message:
 						"Votre compte n'a pas été vérifié. Veuillez cliquez sur le lien envoyé à votre adresse mail."
 				});
-			let hashedPassword = '';
-			if (req.body.name === '' || req.body.email === '' || req.body.tel === '' || req.body.city === '')
-				return res.status(400).json({ message: 'Veuillez renseigner touts les champs nécessaires.' });
 			try {
 				upload(req, res, async (err) => {
 					if (err instanceof multer.MulterError) {
@@ -215,23 +287,8 @@ router.post('/update', ensureAuthentication, async (req, res) => {
 					} else if (err) {
 						return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
 					}
-					if (req.body.pwd !== '') {
-						if (req.body.pwd.length < 4)
-							return res.status(400).json({ message: 'Mots de passe courts. Min (4 charactères)' });
-						if (req.body.pwd !== req.body.confirmedPWD)
-							return res.status(400).json({ message: 'Mots de passe différents' });
-						const passwordsDoMatch = await bcrypt.compare(req.body.oldPWD, doc.pwd);
-						if (!passwordsDoMatch)
-							return res.status(400).json({ message: 'Ancien mot de passe incorrect.' });
-						hashedPassword = await bcrypt.hash(req.body.pwd, parseInt(process.env.BCRYPT_WORK_FACTOR));
-						doc.pwd = hashedPassword;
-					}
 					if (uris.length < 3) return res.status(400).json({ message: 'Fichiers incomplets' });
 					utils.deleteOldFiles(doc.idUri, doc.wcardUri, doc.codcUri);
-					doc.name = req.body.name;
-					doc.email = req.body.email;
-					doc.tel = req.body.tel;
-					doc.city = req.body.city;
 					doc.idUri = uris[0];
 					doc.wcardUri = uris[1];
 					doc.codcUri = uris[2];
@@ -255,6 +312,7 @@ router.post('/resetemail', (req, res) => {
 		const token = authenticator.generate(secret);
 		try {
 			account.passwordResetCode = token;
+			account.passwordResetCodeExpires = 60 * 60 * 1000 + new Date();
 			await account.save();
 		} catch (error) {
 			return res.status(500).json({ message: 'Erreur survenue. Veuillez reésayer.' });
@@ -279,25 +337,33 @@ router.post('/resetemail', (req, res) => {
 });
 
 router.post('/resetcode', (req, res) => {
-	Account.findOne({ email: req.body.email }, async (err, account) => {
-		if (err || !account) return res.status(500).json({ message: 'Erreur survenue. Veuillez reésayer.' });
-		if (JSON.stringify(account.passwordResetCode) !== JSON.stringify(req.body.code.trim()))
-			return res.status(400).json({ message: 'Code incorrect.' });
-		res.json({ message: 'ok' });
-	});
+	Account.findOne(
+		{ email: req.body.email, passwordResetCode: req.body.code, passwordResetCodeExpires: { $gte: new Date() } },
+		async (err, account) => {
+			if (err || !account) return res.status(500).json({ message: 'Erreur survenue. Veuillez reésayer.' });
+			if (JSON.stringify(account.passwordResetCode) !== JSON.stringify(req.body.code.trim()))
+				return res.status(400).json({ message: 'Code de changement de mot de passe expiré ou invalide.' });
+			res.json({ message: 'ok' });
+		}
+	);
 });
 
 router.post('/resetpass', (req, res) => {
 	if (req.body.pwd !== req.body.confirmedPWD) return res.status(400).json({ message: 'Mots de passe différents.' });
-	Account.findOne({ email: req.body.email }, async (err, account) => {
-		if (err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reésayer.' });
-		if (!account)
-			return res.status(400).json({ message: 'Aucun compte associé à cet e-mail. Veuillez créer un compte.' });
-		const hashedPassword = await bcrypt.hash(req.body.pwd, parseInt(process.env.BCRYPT_WORK_FACTOR));
-		account.pwd = hashedPassword;
-		await account.save();
-		res.json({ message: 'ok' });
-	});
+	Account.findOne(
+		{ email: req.body.email, passwordResetCode: req.body.code, passwordResetCodeExpires: { $gte: new Date() } },
+		async (err, account) => {
+			if (err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reésayer.' });
+			if (!account)
+				return res.status(400).json({ message: 'Code de changement de mot de passe expiré ou invalide.' });
+			const hashedPassword = await bcrypt.hash(req.body.pwd, parseInt(process.env.BCRYPT_WORK_FACTOR));
+			account.pwd = hashedPassword;
+			account.passwordResetCode = '';
+			account.passwordResetCodeExpires = new Date() - 10;
+			await account.save();
+			res.json({ message: 'ok' });
+		}
+	);
 });
 
 router.post('/email', (req, res) => {

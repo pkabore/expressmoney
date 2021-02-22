@@ -140,6 +140,7 @@ export default {
           pwd: this.pwd,
           confirmedPWD: this.confirmedPWD,
           email: this.email,
+          code: this.code.trim(),
         });
         if (res.message) {
           const csrf = await this.$axios.$get("/api/auth/csrf");
