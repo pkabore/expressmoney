@@ -1,5 +1,5 @@
 <template>
-  <section class="section">
+  <section class="section hero is-fullheight">
     <div class="columns is-centered" v-if="account.isAccountValidated === 'Validé'">
       <div class="column">
         <h1 class="title has-text-centered mt-2">Mes opérations</h1>
@@ -9,7 +9,7 @@
             tag="nuxt-link"
             to="/request"
             type="primary"
-            class="is-success label"
+            class="is-success is-outlined label"
           >Cliquez ici pour une demande de crédit</b-button>
         </p>
         <div v-if="isLoading">
@@ -20,6 +20,9 @@
             :data="operations"
             striped
             narrowed
+            bordered
+            scrollable
+            class="has-background-dark"
             hoverable
             paginated
             :per-page="perPage"
@@ -131,7 +134,7 @@
     </div>
     <div v-else class="columns is-centered">
       <div class="column is-6-desktop is-8-tablet">
-        <b-message type="is-primary" class="has-text-centered">
+        <b-message type="is-primary" class="mt-5 has-text-centered">
           <h2 class="title">Merci d'avoir créé votre compte Express Money</h2>
           <p>Votre compte n'a pas encore été validé. Veuillez compléter votre profil pour valider votre compte afin d'effectuer vos opérations.</p>
           <b-button
@@ -141,7 +144,7 @@
             type="is-primary"
             tag="nuxt-link"
             to="/account"
-          >Mettre à jour mon profil</b-button>
+          >Completer mon profil</b-button>
         </b-message>
       </div>
     </div>
@@ -404,7 +407,7 @@ export default {
         }
       } catch (err) {
         if (!err.response.data) {
-          this.error = "Erreur survenue, veuillez reésayer";
+          this.error = "Erreur survenue, veuillez réessayer";
         } else this.error = err.response.data.message;
       }
     },
@@ -426,14 +429,13 @@ export default {
         }
       } catch (err) {
         if (!err.response.data) {
-          this.error = "Erreur survenue, veuillez reésayer";
+          this.error = "Erreur survenue, veuillez réessayer";
         } else this.error = err.response.data.message;
       }
     },
   },
   computed: {
     account() {
-      this.$auth.user.isAccountValidated = "Validé";
       return this.$auth ? this.$auth.user : {};
     },
     isLoggedIn() {

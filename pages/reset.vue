@@ -107,7 +107,7 @@ export default {
         }
       } catch (err) {
         if (!err.response.data) {
-          this.error = "Erreur survenue, veuillez reésayer";
+          this.error = "Erreur survenue, veuillez réessayer";
         } else this.error = err.response.data.message;
       }
     },
@@ -124,7 +124,7 @@ export default {
         }
       } catch (err) {
         if (!err.response.data) {
-          this.error = "Erreur survenue, veuillez reésayer";
+          this.error = "Erreur survenue, veuillez réessayer";
         } else this.error = err.response.data.message;
       }
     },
@@ -153,7 +153,7 @@ export default {
         }
       } catch (err) {
         if (!err.response.data) {
-          this.error = "Erreur survenue, veuillez reésayer";
+          this.error = "Erreur survenue, veuillez réessayer";
         } else this.error = err.response.data.message;
       }
     },

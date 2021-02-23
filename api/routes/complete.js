@@ -44,7 +44,7 @@ router.post('/', ensureAuthentication, (req, res) => {
 			return res.status(403).json({
 				message: "Votre compte n'a pas été vérifié. Veuillez cliquez sur le lien envoyé à votre adresse mail."
 			});
-		if (err) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+		if (err) return res.status(500).json({ message: 'Erreur technique survenue!' });
 		if (!account) {
 			return res.redirect('/credit');
 		}
@@ -53,7 +53,7 @@ router.post('/', ensureAuthentication, (req, res) => {
 				const filesErrorMessage = `Format supporté: PDF|JPEG|JPG, taille max: 4MB`;
 				return res.status(400).json({ message: filesErrorMessage });
 			} else if (err) {
-				return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+				return res.status(500).json({ message: 'Erreur technique survenue!' });
 			}
 
 			if (uris.length < 3) return res.status(400).json({ message: 'Fichiers incomplets' });
@@ -65,7 +65,7 @@ router.post('/', ensureAuthentication, (req, res) => {
 			account.codcUri = uris[2];
 			account.isAccountValidated = 'En attente';
 			account.save((err, result) => {
-				if (err) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+				if (err) return res.status(500).json({ message: 'Erreur technique survenue!' });
 				if (result) {
 					res.json({ message: 'ok' });
 				}

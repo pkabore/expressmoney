@@ -17,7 +17,7 @@ export default {
       this.$router.push("/account");
     } catch (error) {
       if (error.response.data) this.error = error.response.data.message;
-      else this.error = "Erreur survenue. Veuillez reéssayer";
+      else this.error = "Erreur technique survenue! Veuillez reéssayer.";
       this.$buefy.snackbar.open({
         type: "is-danger",
         indefinite: true,

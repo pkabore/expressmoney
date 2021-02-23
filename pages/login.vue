@@ -84,7 +84,7 @@ export default {
       } catch (err) {
         this.isLoading = false;
         if (err.response.data) this.error = err.response.data.message;
-        else this.error = "Erreur survenue. Veuillez reéssayer";
+        else this.error = "Erreur technique survenue! Veuillez reéssayer.";
       }
     },
   },

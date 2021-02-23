@@ -1,6 +1,6 @@
 <template>
   <div>
-    <section class="hero is-primary is-medium">
+    <section class="hero is-dark is-medium">
       <div class="hero-head">
         <b-navbar class="is-primary" centered>
           <template #brand>
@@ -22,19 +22,17 @@
                 <b-icon icon="sign-out-alt"></b-icon>&nbsp; Déconnection
               </a>
             </b-navbar-dropdown>
-            <div class="navbar-item">
+            <div v-else class="navbar-item">
               <div class="buttons">
                 <b-button
                   type="is-primary"
                   icon-left="sign-in-alt"
-                  v-if="!isAuthenticated"
                   tag="nuxt-link"
                   to="/login"
                 >Se connecter</b-button>
                 <b-button
                   icon-left="user-circle"
                   class="is-light is-outlined"
-                  v-if="!isAuthenticated"
                   tag="nuxt-link"
                   to="/register"
                 >S'inscrire</b-button>
@@ -52,8 +50,12 @@
             <br />Créer un compte pour commencer à utiliser nos services.
           </p>
           <p class="has-text-centered" v-if="!isAuthenticated">
-            <NuxtLink to="/login" class="button is-primary">Se connecter</NuxtLink>
-            <NuxtLink to="/register" class="button is-light is-outlined">Créer un compte</NuxtLink>
+            <NuxtLink to="/login" class="button mx-1 is-primary">Se connecter</NuxtLink>
+            <NuxtLink to="/register" class="button mx-1 is-light is-outlined">Créer un compte</NuxtLink>
+          </p>
+          <p class="has-text-centered" v-else>
+            <NuxtLink to="/account" class="button mx-1 is-light is-outlined">Compte</NuxtLink>
+            <NuxtLink to="/credit" class="button mx-1 is-primary">Crédit</NuxtLink>
           </p>
         </div>
       </div>
@@ -63,7 +65,7 @@
         <div class="column">
           <div class="card is-fullheight">
             <div class="card-header is-flex is-justify-content-center is-flex-direction-column">
-              <h2 class="title has-text-centered mt-2 has-text-primary">
+              <h2 class="title has-text-centered mt-2 has-text-dark">
                 <b-icon icon="user" class="circular-sui" size="is-large" />
                 <br />Vous êtes:
               </h2>
@@ -82,7 +84,7 @@
         <div class="column">
           <div class="card is-fullheight">
             <div class="card-header is-flex is-justify-content-center is-flex-direction-column">
-              <h2 class="title has-text-centered mt-2 has-text-primary">
+              <h2 class="title has-text-centered mt-2 has-text-dark">
                 <b-icon icon="layer-group" class="circular-sui" size="is-large" />
                 <br />Et:
               </h2>
@@ -101,7 +103,7 @@
         <div class="column">
           <div class="card is-fullheight">
             <div class="card-header is-flex is-justify-content-center is-flex-direction-column">
-              <h2 class="title has-text-centered mt-2 has-text-primary">
+              <h2 class="title has-text-centered mt-2 has-text-dark">
                 <b-icon class="circular-sui" size="is-large" icon="map-marked-alt"></b-icon>
                 <br />Vous êtes au bon endroit.
               </h2>
@@ -124,12 +126,12 @@
       </div>
     </section>
     <section class="section">
-      <div class="h2 title has-text-centered has-text-primary">Avantages</div>
+      <div class="h2 title has-text-centered has-text-dark">Avantages</div>
       <div class="columns">
         <div class="column" v-for="item in items" :key="item.title">
           <div class="card is-fullheight">
             <div class="card-header is-flex is-justify-content-center is-flex-direction-column">
-              <h2 class="title has-text-centered mt-2 has-text-primary">
+              <h2 class="title has-text-centered mt-2 has-text-dark">
                 <b-icon icon="check" class="circular-sui" size="is-large" />
                 <br />
                 {{item.title}}
@@ -148,6 +150,9 @@
           to="/register"
           class="button is-outlined is-primary"
         >Créer un compte pour commencer</NuxtLink>
+      </p>
+      <p class="has-text-centered" v-else>
+        <NuxtLink to="/credit" class="button is-outlined is-primary">Faire une demande de crédit</NuxtLink>
       </p>
     </section>
     <AppFooter />

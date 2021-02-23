@@ -29,6 +29,12 @@ footer.footer {
   list-style-type: none;
 }
 
+.list-item {
+  padding: 7px 0px;
+  margin: 0 auto;
+  border-bottom: 2px dotted #e0e0e0;
+}
+
 .navbar-item,
 b-navbar-item {
   background-color: initial !important;

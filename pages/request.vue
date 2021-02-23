@@ -2,8 +2,8 @@
   <div class="mt-6">
     <h1 class="mt-6 title has-text-centered">Demande de crédit</h1>
     <div class="columns is-centered">
-      <div class="column is-8-desktop is-11-tablet">
-        <form autocomplete="off" class="mt-4" method="POST" @submit.prevent="submitHandler">
+      <div class="column is-6-desktop is-8-tablet">
+        <form autocomplete="off" class="mt-4" method="POST">
           <p class="has-text-danger has-text-centered">{{ error }}</p>
           <b-message type="is-info">
             <b-icon icon="info-circle" size="is-small" />&nbsp;Note importante: Il s'agit ici de renseigner le nom et le prénom
@@ -35,21 +35,6 @@
                 />
               </div>
             </div>
-            <div class="column my-0 py-0">
-              <div class="field my-0">
-                <label for="rnumber" class="label help py-0 my-0">Numéro Orange Money du Receveur:</label>
-                <VueTelInput
-                  @input="phoneNumberValidation"
-                  v-model="request.rnumber"
-                  validCharactersOnly
-                  mode="international"
-                  id="rnumber"
-                  class="input telInput"
-                  inputClasses="input"
-                  placeholder="Numéro de téléphone"
-                ></VueTelInput>
-              </div>
-            </div>
           </div>
           <div class="columns my-0 py-0">
             <div class="column">
@@ -66,6 +51,21 @@
                 />
               </div>
             </div>
+            <div class="column">
+              <div class="field my-0">
+                <label for="rnumber" class="label help py-0 my-0">Numéro Orange Money du Receveur:</label>
+                <VueTelInput
+                  @input="phoneNumberValidation"
+                  v-model="request.rnumber"
+                  validCharactersOnly
+                  mode="international"
+                  id="rnumber"
+                  class="input telInput"
+                  inputClasses="input"
+                  placeholder="Numéro de téléphone"
+                ></VueTelInput>
+              </div>
+            </div>
           </div>
           <div class="columns">
             <div class="column">
@@ -74,7 +74,7 @@
                 <b-input icon="lock" v-model="request.pwd" type="password" id="pwd" name="pwd" />
                 <button
                   class="button mt-2 is-fullwidth is-primary box"
-                  type="submit"
+                  @click.prevent="modal = !modal"
                 >Envoyer la demande</button>
               </div>
             </div>
@@ -89,6 +89,7 @@
           <p class="card-header-title has-text-centered">Confirmation</p>
         </header>
         <section class="card-content">
+          <p class="has-text-centered is-danger help">{{error}}</p>
           <ul class="is-hoverable">
             <li class="columns m-0 p-0 is-mobile list-item mt-1">
               <div class="column m-0 py-0 px-2 has-text-weight-bold">Nom du Receveur:</div>
@@ -104,15 +105,15 @@
             </li>
             <li class="columns m-0 p-0 is-mobile list-item mt-1">
               <div class="column m-0 py-0 px-2 has-text-weight-bold">Frais d'envoi:</div>
-              <div class="column m-0 py-0 px-2">{{ request.amount * fee_rate}} FCFA</div>
+              <div class="column m-0 py-0 px-2">{{ (request.amount * fee_rate).toFixed(3)}} FCFA</div>
             </li>
           </ul>
         </section>
         <footer class="card-footer">
-          <a href="#" class="card-footer-item has-text-danger" @click.prevent="closeModal()">
+          <a class="card-footer-item has-text-danger" @click.prevent="closeModal()">
             <b-icon icon="times"></b-icon>&nbsp; Annuler
           </a>
-          <a href="#" class="card-footer-item" @click.prevent="requestCodeHandler()">
+          <a class="card-footer-item" @click.prevent="requestCodeHandler()">
             <b-icon icon="check"></b-icon>&nbsp; Envoyer
           </a>
         </footer>
@@ -233,7 +234,7 @@ export default {
         this.codeConfirmationModal = true;
       } catch (err) {
         if (!err.response.data) {
-          this.error = "Erreur survenue, veuillez reésayer";
+          this.error = "Erreur survenue, veuillez réessayer";
         } else this.error = err.response.data.message;
       }
     },
@@ -247,7 +248,7 @@ export default {
       } catch (err) {
         this.isLoading = false;
         if (!err.response.data) {
-          this.error = "Erreur survenue, veuillez reésayer";
+          this.error = "Erreur survenue, veuillez réessayer";
         } else this.error = err.response.data.message;
         this.codeConfirmationModal = false;
       }

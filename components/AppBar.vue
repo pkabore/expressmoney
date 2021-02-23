@@ -1,23 +1,18 @@
 <template>
   <header>
-    <b-navbar fixed-top class="is-white" centered>
+    <b-navbar fixed-top class="is-dark" centered>
       <template #brand>
-        <b-navbar-item class="has-text-primary" tag="nuxt-link" to="/">Express Money</b-navbar-item>
+        <b-navbar-item tag="nuxt-link" to="/">Express Money</b-navbar-item>
       </template>
 
       <template #start>
-        <b-navbar-item class="has-text-primary" tag="nuxt-link" to="/">Accueil</b-navbar-item>
-        <b-navbar-item class="has-text-primary" tag="nuxt-link" to="/credit">Crédit</b-navbar-item>
-        <b-navbar-item class="has-text-primary" tag="nuxt-link" to="/contact">Contact</b-navbar-item>
-        <b-navbar-item class="has-text-primary" tag="nuxt-link" to="/about">A propos</b-navbar-item>
+        <b-navbar-item tag="nuxt-link" to="/">Accueil</b-navbar-item>
+        <b-navbar-item tag="nuxt-link" to="/credit">Crédit</b-navbar-item>
+        <b-navbar-item tag="nuxt-link" to="/contact">Contact</b-navbar-item>
+        <b-navbar-item tag="nuxt-link" to="/about">A propos</b-navbar-item>
       </template>
       <template #end>
-        <b-navbar-dropdown
-          v-if="isAuthenticated"
-          :label="account.name"
-          hoverable
-          class="has-text-primary"
-        >
+        <b-navbar-dropdown v-if="isAuthenticated" :label="account.name" hoverable class>
           <b-navbar-item class="has-text-primary" tag="nuxt-link" to="/account">
             <b-icon icon="user"></b-icon>&nbsp; Compte
           </b-navbar-item>
@@ -25,19 +20,22 @@
             <b-icon icon="sign-out-alt"></b-icon>&nbsp; Déconnection
           </a>
         </b-navbar-dropdown>
-        <b-navbar-item class="has-text-primary" v-if="!isAuthenticated" tag="nuxt-link" to="/login">
-          <b-icon pack="fas" icon="sign-in-alt"></b-icon>&nbsp;
-          <span>Se connecter</span>
-        </b-navbar-item>
-        <b-navbar-item
-          class="has-text-primary"
-          v-if="!isAuthenticated"
-          tag="nuxt-link"
-          to="/register"
-        >
-          <b-icon pack="fas" icon="user"></b-icon>&nbsp;
-          <span>S'inscrire</span>
-        </b-navbar-item>
+        <div v-else class="navbar-item">
+          <div class="buttons">
+            <b-button
+              type="is-primary"
+              icon-left="sign-in-alt"
+              tag="nuxt-link"
+              to="/login"
+            >Se connecter</b-button>
+            <b-button
+              icon-left="user-circle"
+              class="is-outlined"
+              tag="nuxt-link"
+              to="/register"
+            >S'inscrire</b-button>
+          </div>
+        </div>
       </template>
     </b-navbar>
   </header>

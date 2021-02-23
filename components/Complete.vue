@@ -1,12 +1,11 @@
 <template>
   <div>
-    <p class="has-text-primary has-text-weight-bold">2. Informations professionnelles</p>
-    <p class="has-text-right has-text-primary is-family-secondary">
+    <p class="has-text-right has-text-primary my-0 is-family-secondary">
       <b-button
         icon-left="pen"
         outlined
         size="is-small"
-        class="my-2"
+        class="mb-1"
         type="is-primary"
         @click="readonly = !readonly"
       >Modifier</b-button>
@@ -22,7 +21,7 @@
                 <p>
                   <b-icon icon="upload" size="is-large"></b-icon>
                 </p>
-                <p>Cliquez pour charger les fichers suivants ou les glisser-déposer:</p>
+                <p>Cliquez pour charger ou glisser-déposez les fichers suivants:</p>
                 <p class="help has-text-centered mt-0 pt-0 mb-3">
                   <b-icon icon="info-circle"></b-icon>&nbsp; Format: PDF/Image, Taille Max: 4M par fichier
                 </p>
@@ -45,21 +44,48 @@
         </span>
       </div>
     </section>
-    <div class="field my-0">
-      <div class="control my-0">
-        <label for="city" class="label help my-0 py-2">Ville:</label>
-        <div class="select is-fullwidth" id="city">
-          <select name="city" :disabled="!readonly" required v-model="city">
-            <option class="py-3" value disabled>Ville</option>
-            <option class="py-3" v-for="city in cities" :key="city" :value="city">{{city}}</option>
-          </select>
+
+    <ul class="my-5" v-if="!readonly">
+      <li class="columns m-0 p-0 is-mobile list-item mt-4">
+        <div class="column m-0 py-0 px-1 has-text-weight-bold">CNIB/Passeport:</div>
+        <div class="column m-0 py-0 px-1">
+          <a :target="target" :href="idUri">
+            <b-icon icon="link" />Visualiser
+          </a>
         </div>
-      </div>
+      </li>
+      <li class="columns m-0 p-0 is-mobile list-item mt-1">
+        <div class="column m-0 py-0 px-1 has-text-weight-bold">Carte de travailleur:</div>
+        <div class="column m-0 py-0 px-1">
+          <a :target="target" :href="wcardUri">
+            <b-icon icon="link" />Visualiser
+          </a>
+        </div>
+      </li>
+      <li class="columns m-0 p-0 is-mobile mt-1">
+        <div class="column m-0 py-0 px-1 has-text-weight-bold">Att. Prise de service:</div>
+        <div class="column m-0 py-0 px-1">
+          <a :target="target" :href="codcUri">
+            <b-icon icon="link" />Visualiser
+          </a>
+        </div>
+      </li>
+    </ul>
+    <div class="field">
+      <label for="city" class="help label">Ville:</label>
+      <b-select icon="city" v-model="city" expanded :disabled="!readonly" placeholder="Ville">
+        <option
+          v-for="(item, i) in cities"
+          :value="item"
+          :key="i"
+          :selected="item === account.city"
+        >{{ item }}</option>
+      </b-select>
     </div>
+
     <p class="has-text-right mt-2" v-if="readonly">
       <b-button
-        icon-right="check"
-        class="is-primary is-fullwidth is-outlined"
+        class="is-primary is-fullwidth"
         @click="accountUpdateHandler()"
       >Enregistrer les modifications</b-button>
     </p>
@@ -75,7 +101,7 @@ export default {
       dropFiles: [],
       error: "",
       readonly: false,
-      city: "",
+      city: this.$auth.user.city,
       cities: [
         "Ouagadougou",
         "Bobo Dioulasso",
@@ -88,6 +114,9 @@ export default {
         "Kaya",
       ],
     };
+  },
+  fetch() {
+    this.city = this.account.city;
   },
   methods: {
     deleteDropFile(index) {
@@ -144,6 +173,7 @@ export default {
         if (res.message) {
           this.dropFiles = [];
           await this.$auth.fetchUser();
+          this.error = "";
           this.city = this.$auth.user.city;
           this.readonly = false;
           this.$buefy.snackbar.open({
@@ -158,7 +188,7 @@ export default {
       } catch (err) {
         this.error = err.response.data
           ? err.response.data.message
-          : "Erreur technique. Veuillez reéssayer";
+          : "Erreur technique. Veuillez réessayer";
         this.openNotification();
       }
     },
@@ -179,6 +209,22 @@ export default {
     },
     isLoggedIn() {
       return this.$auth ? this.$auth.loggedIn : false;
+    },
+    idUri() {
+      return this.$auth.user.idUri ? "/dossiers/" + this.$auth.user.idUri : "#";
+    },
+    wcardUri() {
+      return this.$auth.user.wcardUri
+        ? "/dossiers/" + this.$auth.user.wcardUri
+        : "#";
+    },
+    codcUri() {
+      return this.$auth.user.codcUri
+        ? "/dossiers/" + this.$auth.user.codcUri
+        : "#";
+    },
+    target() {
+      return this.$auth.user.idUri ? "_blank" : "_self";
     },
   },
 };

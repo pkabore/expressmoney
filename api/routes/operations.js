@@ -19,25 +19,25 @@ router.get('/', ensureAuthentication, async (req, res, next) => {
 	mquery.sender_id = req.user._id;
 	if (req.query.q && req.query.q !== '') mquery.status = req.query.q;
 	Operation.find(mquery, (err, operations) => {
-		if (err) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+		if (err) return res.status(500).json({ message: 'Erreur technique survenue!' });
 		return res.json(operations);
 	});
 });
 
 router.put('/:id', ensureAuthentication, async (req, res) => {
 	Operation.findById(new mongoose.Types.ObjectId(req.params.id), (err, operation) => {
-		if (err) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+		if (err) return res.status(500).json({ message: 'Erreur technique survenue!' });
 		if (!operation) return res.status(404).json({ message: 'Échec! Opération non existante' });
 		if (operation.status === 'Réussi')
 			return res.status(400).json({ message: 'Modification échouée: opération déjà effectuée!' });
 		Account.findOne({ tel: req.user.tel }, async (err, account) => {
-			if (err) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
-			if (!account) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+			if (err) return res.status(500).json({ message: 'Erreur technique survenue!' });
+			if (!account) return res.status(500).json({ message: 'Erreur technique survenue!' });
 			try {
 				const passwordsDoMatch = await bcrypt.compare(req.body.pwd, account.pwd);
 				if (!passwordsDoMatch) return res.status(403).json({ message: 'Mot de passe incorrect' });
 			} catch (err) {
-				return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+				return res.status(500).json({ message: 'Erreur technique survenue!' });
 			}
 			if (
 				parseFloat(req.body.amount) < parseFloat(process.env.SOMME_MIN) ||
@@ -67,7 +67,7 @@ router.put('/:id', ensureAuthentication, async (req, res) => {
 				await operation.save();
 				return res.json({ message: 'ok' });
 			} catch (error) {
-				return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+				return res.status(500).json({ message: 'Erreur technique survenue!' });
 			}
 		});
 	});
@@ -76,18 +76,18 @@ router.put('/:id', ensureAuthentication, async (req, res) => {
 /** Delete an operation */
 router.post('/delete/:id', ensureAuthentication, async (req, res) => {
 	Operation.findById(new mongoose.Types.ObjectId(req.params.id), (err, operation) => {
-		if (err) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+		if (err) return res.status(500).json({ message: 'Erreur technique survenue!' });
 		if (!operation) return res.status(404).json({ message: 'Échec! Opération non existante' });
 		if (operation.status === 'Réussi')
 			return res.status(400).json({ message: 'Annulation échouée: opération déjà effectuée!' });
 		Account.findOne({ tel: req.user.tel }, async (err, account) => {
-			if (err) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
-			if (!account) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+			if (err) return res.status(500).json({ message: 'Erreur technique survenue!' });
+			if (!account) return res.status(500).json({ message: 'Erreur technique survenue!' });
 			try {
 				const passwordsDoMatch = await bcrypt.compare(req.body.pwd, account.pwd);
 				if (!passwordsDoMatch) return res.status(403).json({ message: 'Mot de passe incorrect' });
 			} catch (err) {
-				return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+				return res.status(500).json({ message: 'Erreur technique survenue!' });
 			}
 			try {
 				account.totalRequestedAmount -= operation.amount;
@@ -95,7 +95,7 @@ router.post('/delete/:id', ensureAuthentication, async (req, res) => {
 				await operation.deleteOne();
 				return res.json({ message: 'ok' });
 			} catch (error) {
-				return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+				return res.status(500).json({ message: 'Erreur technique survenue!' });
 			}
 		});
 	});
@@ -103,7 +103,7 @@ router.post('/delete/:id', ensureAuthentication, async (req, res) => {
 
 router.post('/request/code', ensureAuthentication, async (req, res) => {
 	Account.findOne({ _id: req.user._id, isAccountValidated: 'Validé' }, async (err, account) => {
-		if (err || !account) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+		if (err || !account) return res.status(500).json({ message: 'Erreur technique survenue!' });
 
 		if (parseFloat(req.body.amount) + account.totalRequestedAmount > parseFloat(process.env.REQUEST_LIMIT_AMOUNT))
 			return res.status(400).json({
@@ -116,7 +116,7 @@ router.post('/request/code', ensureAuthentication, async (req, res) => {
 		try {
 			await account.save();
 		} catch (error) {
-			return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+			return res.status(500).json({ message: 'Erreur technique survenue!' });
 		}
 
 		const mailOptions = {
@@ -129,7 +129,7 @@ router.post('/request/code', ensureAuthentication, async (req, res) => {
 			if (err) {
 				account.operationConfirmationCode = new mongoose.Types.ObjectId();
 				await account.save();
-				res.status(500).json({ message: 'Envoi du code à votre email échoué. Veuillez reéssayer.' });
+				res.status(500).json({ message: 'Envoi du code à votre email échoué. Veuillez réessayer.' });
 			} else {
 				res.json({ message: 'ok' });
 			}
@@ -139,10 +139,10 @@ router.post('/request/code', ensureAuthentication, async (req, res) => {
 
 router.post('/request', ensureAuthentication, async (req, res) => {
 	Account.findOne({ _id: req.user._id, isAccountValidated: 'Validé' }, (err, account) => {
-		if (err) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+		if (err) return res.status(500).json({ message: 'Erreur technique survenue!' });
 
 		bcrypt.compare(req.body.pwd, account.pwd, async (bcrypt_err, bcrypt_res) => {
-			if (bcrypt_err) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+			if (bcrypt_err) return res.status(500).json({ message: 'Erreur technique survenue!' });
 			if (!bcrypt_res) return res.status(400).json({ message: 'Mot de passe incorrect' });
 			if (account.operationConfirmationCode !== req.body.code)
 				return res.status(400).json({ message: 'Échec! Code invalide.' });
@@ -175,7 +175,7 @@ router.post('/request', ensureAuthentication, async (req, res) => {
 				await operation.save();
 				return res.json({ message: 'ok' });
 			} catch (error) {
-				return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+				return res.status(500).json({ message: 'Erreur technique survenue!' });
 			}
 		});
 	});

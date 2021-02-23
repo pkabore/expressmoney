@@ -1,12 +1,11 @@
 <template>
   <div>
-    <p class="has-text-primary has-text-weight-bold">1. Profile</p>
-    <p class="has-text-right has-text-primary is-family-secondary">
+    <p class="has-text-right has-text-primary my-0 is-family-secondary">
       <b-button
         icon-left="pen"
         outlined
         size="is-small"
-        class="my-2"
+        class="mb-1"
         type="is-primary"
         @click="readonly = !readonly"
       >Modifier</b-button>
@@ -62,8 +61,7 @@
     </div>
     <p class="has-text-right mt-2" v-if="readonly">
       <b-button
-        icon-right="check"
-        class="is-primary is-fullwidth is-outlined"
+        class="is-primary is-fullwidth"
         @click="accountUpdateHandler()"
       >Enregistrer les modifications</b-button>
     </p>
@@ -143,7 +141,7 @@ export default {
       } catch (err) {
         this.error = err.response.data
           ? err.response.data.message
-          : "Erreur technique. Veuillez reéssayer";
+          : "Erreur technique. Veuillez réessayer";
         this.openNotification();
       }
     },

@@ -41,7 +41,7 @@
                 <div class="column my-0 py-0">
                   <div class="field">
                     <div class="control my-0">
-                      <label class="label help is-black" for="telInput">N° de téléphone:</label>
+                      <label class="label help is-black" for="telInput">Numéro de téléphone:</label>
                       <VueTelInput
                         @input="phoneNumberValidation"
                         v-model="account.tel"
@@ -208,7 +208,7 @@ export default {
         if (err.response) {
           this.isLoading = false;
           if (!err.response.data) {
-            this.error = "Erreur survenue. Veuillez reéssayer";
+            this.error = "Erreur technique survenue! Veuillez reéssayer.";
             return;
           }
           if (

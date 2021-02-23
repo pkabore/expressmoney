@@ -22,14 +22,14 @@ const ensureAuthentication = (req, res, next) => {
 /*-------------------------account routes------------------------------*/
 router.get('/account', ensureAuthentication, (req, res) => {
 	Account.findOne({ email: req.user.email }).select('-pwd -_id').exec((err, account) => {
-		if (err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+		if (err) return res.status(500).json({ message: 'Erreur technique survenue! Veuillez reéssayer..' });
 		return res.json(account);
 	});
 });
 
 router.post('/delete', ensureAuthentication, (req, res) => {
 	Account.findOne({ email: req.user.email }, async (err, account) => {
-		if (err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+		if (err) return res.status(500).json({ message: 'Erreur technique survenue! Veuillez reéssayer..' });
 		account.isAccountValidated = 'Suppression';
 		await account.save();
 		return res.json({ message: 'ok' });
@@ -56,14 +56,14 @@ router.post('/register', (req, res, next) => {
 	const tel = req.body.tel;
 	const email = req.body.email;
 	Account.findOne({ $or: [ { tel }, { email } ] }, (err, doc) => {
-		if (err) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+		if (err) return res.status(500).json({ message: 'Erreur technique survenue!' });
 		if (doc) return res.status(400).json({ message: 'Numéro ou e-mail déjà utilisé. Veuillez vous connecter.' });
 		const fieldsValidationResult = validateAccountInformations(req.body.data);
 		if (fieldsValidationResult) return res.status(400).json({ message: fieldsValidationResult });
 		if (req.body.pwd !== req.body.confirmedPWD)
 			return res.status(400).json({ message: 'Mots de passe différents' });
 		bcrypt.hash(req.body.pwd, parseInt(process.env.BCRYPT_WORK_FACTOR), async (bcrypt_err, hashedPassword) => {
-			if (bcrypt_err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+			if (bcrypt_err) return res.status(500).json({ message: 'Erreur technique survenue! Veuillez reéssayer..' });
 			let verificationToken = '';
 			verificationToken = await crypto.randomBytes(32);
 			verificationToken = verificationToken.toString('hex');
@@ -78,7 +78,7 @@ router.post('/register', (req, res, next) => {
 			account.save((mongoose_err, result) => {
 				if (mongoose_err)
 					return res.status(500).json({
-						message: 'Erreur survenue. Veuillez reéssayer.'
+						message: 'Erreur technique survenue! Veuillez reéssayer..'
 					});
 				const mailOptions = {
 					from: process.env.USER_EMAIL,
@@ -90,7 +90,7 @@ router.post('/register', (req, res, next) => {
 					if (err) {
 						console.log(err);
 						await account.delete();
-						res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+						res.status(500).json({ message: 'Erreur technique survenue! Veuillez reéssayer..' });
 					} else {
 						res.json({ message: 'ok' });
 					}
@@ -113,7 +113,7 @@ router.post('/emailchallenge', async (req, res) => {
 	utils.transporter.sendMail(mailOptions, async (err, info) => {
 		if (err) {
 			console.log(err);
-			res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+			res.status(500).json({ message: 'Erreur technique survenue! Veuillez reéssayer..' });
 		} else {
 			res.json({ message: 'ok' });
 		}
@@ -133,19 +133,20 @@ router.post('/emailchange', async (req, res) => {
 	};
 	utils.transporter.sendMail(mailOptions, async (err, info) => {
 		if (err) {
-			res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+			res.status(500).json({ message: 'Erreur technique survenue! Veuillez reéssayer..' });
 		} else {
 			let email = '';
 			if (req.user) email = req.user.email;
 			else email = req.body.email;
 			Account.findOne({ email }, async (err, account) => {
-				if (err || !account) return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+				if (err || !account)
+					return res.status(500).json({ message: 'Erreur technique survenue! Veuillez reéssayer..' });
 				try {
 					account.accountRegistrationCode = verificationToken;
 					await account.save();
 					res.json({ message: 'ok' });
 				} catch (error) {
-					res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+					res.status(500).json({ message: 'Erreur technique survenue! Veuillez reéssayer..' });
 				}
 			});
 		}
@@ -156,10 +157,10 @@ router.get('/verification/:id', (req, res) => {
 	Account.findOne(
 		{ $or: [ { accountRegistrationCode: req.params.id }, { emailChangeCode: req.params.id } ] },
 		async (err, account) => {
-			if (err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+			if (err) return res.status(500).json({ message: 'Erreur technique survenue! Veuillez reéssayer..' });
 			if (!account) return res.status(400).json({ message: 'Code invalide ou déjà utilisé' });
 			try {
-				if (account.emailChangeCode !== 'default') account.accountRegistrationCode = '';
+				if (account.accountRegistrationCode !== '') account.accountRegistrationCode = '';
 				else {
 					account.emailChangeCode = '';
 					account.email = account.tempoEmail;
@@ -168,7 +169,7 @@ router.get('/verification/:id', (req, res) => {
 				await account.save();
 				res.json({ message: 'ok' });
 			} catch (error) {
-				res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+				res.status(500).json({ message: 'Erreur technique survenue! Veuillez reéssayer..' });
 			}
 		}
 	);
@@ -177,8 +178,8 @@ router.get('/verification/:id', (req, res) => {
 router.post('/updatepassword', ensureAuthentication, (req, res) => {
 	if (req.body.pwd !== req.body.confirmedPWD) return res.status(400).json({ message: 'Mots de passe différents.' });
 	Account.findOne({ email: req.user.email }, async (err, account) => {
-		if (err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
-		if (!account) return res.status(403).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+		if (err) return res.status(500).json({ message: 'Erreur technique survenue! Veuillez reéssayer..' });
+		if (!account) return res.status(403).json({ message: 'Erreur technique survenue! Veuillez reéssayer..' });
 		const passwordsDoMatch = await bcrypt.compare(req.body.oldPWD, account.pwd);
 		if (!passwordsDoMatch) return res.status(400).json({ message: 'Ancien mot de passe incorrect.' });
 		const hashedPassword = await bcrypt.hash(req.body.pwd, parseInt(process.env.BCRYPT_WORK_FACTOR));
@@ -192,8 +193,8 @@ router.post('/updateprofile', ensureAuthentication, (req, res) => {
 	if (req.body.name === '' || req.body.email === '' || req.body.tel === '' || req.body.city === '')
 		return res.status(400).json({ message: 'Veuillez remplir touts les champs necéssaires.' });
 	Account.findOne({ email: req.user.email }, async (err, account) => {
-		if (err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
-		if (!account) return res.status(403).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+		if (err) return res.status(500).json({ message: 'Erreur technique survenue! Veuillez reéssayer..' });
+		if (!account) return res.status(403).json({ message: 'Erreur technique survenue! Veuillez reéssayer..' });
 
 		account.name = req.body.name;
 		account.tel = req.body.tel;
@@ -211,14 +212,14 @@ router.post('/updateprofile', ensureAuthentication, (req, res) => {
 			};
 			utils.transporter.sendMail(mailOptions, async (err, info) => {
 				if (err) {
-					res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+					res.status(500).json({ message: 'Erreur technique survenue! Veuillez reéssayer..' });
 				} else {
 					let email = '';
 					if (req.user) email = req.user.email;
 					else email = req.body.email;
 					Account.findOne({ email }, async (err, account) => {
 						if (err || !account)
-							return res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+							return res.status(500).json({ message: 'Erreur technique survenue! Veuillez reéssayer..' });
 						try {
 							account.emailChangeCode = verificationToken;
 							await account.save();
@@ -229,7 +230,7 @@ router.post('/updateprofile', ensureAuthentication, (req, res) => {
 									' pour la vérification.'
 							});
 						} catch (error) {
-							res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+							res.status(500).json({ message: 'Erreur technique survenue! Veuillez reéssayer..' });
 						}
 					});
 				}
@@ -273,7 +274,7 @@ router.post('/updatedossier', ensureAuthentication, async (req, res) => {
 			$and: [ { isAccountValidated: { $ne: 'Validé' } }, { isAccountValidated: { $ne: 'Suppression' } } ]
 		},
 		async (err, doc) => {
-			if (err || !doc) return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+			if (err || !doc) return res.status(500).json({ message: 'Erreur technique survenue!' });
 			if (doc.accountRegistrationCode !== '')
 				return res.status(403).json({
 					message:
@@ -285,18 +286,20 @@ router.post('/updatedossier', ensureAuthentication, async (req, res) => {
 						const filesErrorMessage = `Format supporté: PDF|JPEG|JPG, taille max: 4MB`;
 						return res.status(400).json({ message: filesErrorMessage });
 					} else if (err) {
-						return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+						return res.status(500).json({ message: 'Erreur technique survenue!' });
 					}
 					if (uris.length < 3) return res.status(400).json({ message: 'Fichiers incomplets' });
 					utils.deleteOldFiles(doc.idUri, doc.wcardUri, doc.codcUri);
 					doc.idUri = uris[0];
 					doc.wcardUri = uris[1];
 					doc.codcUri = uris[2];
+					doc.city = req.body.city;
+					doc.isAccountValidated = 'En attente';
 					await doc.save();
 					res.json({ message: 'ok' });
 				});
 			} catch (error) {
-				return res.status(500).json({ message: 'Échec! Veuillez reésayer' });
+				return res.status(500).json({ message: 'Erreur technique survenue!' });
 			}
 		}
 	);
@@ -304,7 +307,7 @@ router.post('/updatedossier', ensureAuthentication, async (req, res) => {
 
 router.post('/resetemail', (req, res) => {
 	Account.findOne({ email: req.body.email }, async (err, account) => {
-		if (err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reésayer.' });
+		if (err) return res.status(500).json({ message: 'Erreur technique survenue! Veuillez reéssayer..' });
 		if (!account)
 			return res.status(400).json({ message: 'Aucun compte associé à cet e-mail. Veuillez créer un compte.' });
 
@@ -312,10 +315,10 @@ router.post('/resetemail', (req, res) => {
 		const token = authenticator.generate(secret);
 		try {
 			account.passwordResetCode = token;
-			account.passwordResetCodeExpires = 60 * 60 * 1000 + new Date();
+			account.passwordResetCodeExpires = 60 * 60 * 1000 + new Date().getTime();
 			await account.save();
 		} catch (error) {
-			return res.status(500).json({ message: 'Erreur survenue. Veuillez reésayer.' });
+			return res.status(500).json({ message: 'Erreur technique survenue! Veuillez reéssayer.' });
 		}
 		const mailOptions = {
 			from: '<no-reply>@expressmoney.com',
@@ -327,8 +330,7 @@ router.post('/resetemail', (req, res) => {
 
 		utils.transporter.sendMail(mailOptions, function(err, info) {
 			if (err) {
-				console.log(err);
-				res.status(500).json({ message: "Echec d'envoi de code à votre adresse email. Veuillez reéssayer." });
+				res.status(500).json({ message: "Echec d'envoi de code à votre adresse email. Veuillez réessayer." });
 			} else {
 				res.json({ message: 'ok' });
 			}
@@ -338,10 +340,14 @@ router.post('/resetemail', (req, res) => {
 
 router.post('/resetcode', (req, res) => {
 	Account.findOne(
-		{ email: req.body.email, passwordResetCode: req.body.code, passwordResetCodeExpires: { $gte: new Date() } },
+		{
+			email: req.body.email,
+			passwordResetCode: req.body.code,
+			passwordResetCodeExpires: { $gte: new Date().getTime() }
+		},
 		async (err, account) => {
-			if (err || !account) return res.status(500).json({ message: 'Erreur survenue. Veuillez reésayer.' });
-			if (JSON.stringify(account.passwordResetCode) !== JSON.stringify(req.body.code.trim()))
+			if (err) return res.status(500).json({ message: 'Erreur technique survenue! Veuillez reéssayer..' });
+			if (!account || JSON.stringify(account.passwordResetCode) !== JSON.stringify(req.body.code.trim()))
 				return res.status(400).json({ message: 'Code de changement de mot de passe expiré ou invalide.' });
 			res.json({ message: 'ok' });
 		}
@@ -351,9 +357,13 @@ router.post('/resetcode', (req, res) => {
 router.post('/resetpass', (req, res) => {
 	if (req.body.pwd !== req.body.confirmedPWD) return res.status(400).json({ message: 'Mots de passe différents.' });
 	Account.findOne(
-		{ email: req.body.email, passwordResetCode: req.body.code, passwordResetCodeExpires: { $gte: new Date() } },
+		{
+			email: req.body.email,
+			passwordResetCode: req.body.code,
+			passwordResetCodeExpires: { $gte: new Date().getTime() }
+		},
 		async (err, account) => {
-			if (err) return res.status(500).json({ message: 'Erreur survenue. Veuillez reésayer.' });
+			if (err) return res.status(500).json({ message: 'Erreur technique survenue! Veuillez reéssayer..' });
 			if (!account)
 				return res.status(400).json({ message: 'Code de changement de mot de passe expiré ou invalide.' });
 			const hashedPassword = await bcrypt.hash(req.body.pwd, parseInt(process.env.BCRYPT_WORK_FACTOR));
@@ -378,7 +388,7 @@ router.post('/email', (req, res) => {
 	utils.transporter.sendMail(mailOptions, async (err, info) => {
 		if (err) {
 			console.log(err);
-			res.status(500).json({ message: 'Erreur survenue. Veuillez reéssayer.' });
+			res.status(500).json({ message: 'Erreur technique survenue! Veuillez reéssayer..' });
 		} else {
 			res.json({ message: 'ok' });
 		}
