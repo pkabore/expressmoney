@@ -2,8 +2,12 @@
   "builds": [
     {
        "src": "api/**/*.js",
-      "use": "node",
+      "use": "@vercel/node",
       "config": {}
-    }
+    },
+    {
+            "src": "nuxt.config.js",
+            "use": "@nuxtjs/vercel-builder"
+        }
   ]
 }
