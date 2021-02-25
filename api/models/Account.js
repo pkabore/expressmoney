@@ -21,6 +21,7 @@ const AccountSchema = new Schema(
 		totalRequestedAmount: { type: Number, default: 0 },
 		accountRegistrationCode: { type: String, default: '' },
 		operationConfirmationCode: { type: String, default: '' },
+		operationConfirmationCodeExpires: { type: Date},
 		passwordResetCode: { type: String, default: '' },
 		passwordResetCodeExpires: { type: Date },
 		emailChangeCode: { type: String, default: '' },

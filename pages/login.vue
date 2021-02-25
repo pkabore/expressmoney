@@ -28,7 +28,7 @@
                   password-reveal
                 />
                 <button
-                  :class="['button mt-2 is-fullwidth is-outlined is-primary', {'is-loading': isLoading}]"
+                  :class="['button mt-2 is-fullwidth is-primary', {'is-loading': isLoading}]"
                   type="submit"
                 >Se connecter</button>
               </div>

@@ -113,6 +113,7 @@ router.post('/request/code', ensureAuthentication, async (req, res) => {
 		const secret = authenticator.generateSecret();
 		const token = authenticator.generate(secret);
 		account.operationConfirmationCode = token;
+		account.operationConfirmationCodeExpires = 60 * 60 * 1000 + new Date().getTime();
 		try {
 			await account.save();
 		} catch (error) {
@@ -144,8 +145,11 @@ router.post('/request', ensureAuthentication, async (req, res) => {
 		bcrypt.compare(req.body.pwd, account.pwd, async (bcrypt_err, bcrypt_res) => {
 			if (bcrypt_err) return res.status(500).json({ message: 'Erreur technique survenue!' });
 			if (!bcrypt_res) return res.status(400).json({ message: 'Mot de passe incorrect' });
-			if (account.operationConfirmationCode !== req.body.code)
-				return res.status(400).json({ message: 'Échec! Code invalide.' });
+			if (
+				account.operationConfirmationCode !== req.body.code ||
+				account.operationConfirmationCodeExpires < new Date().getTime()
+			)
+				return res.status(400).json({ message: 'Code invalide ou expiré.' });
 			if (
 				parseFloat(req.body.amount) < parseFloat(process.env.SOMME_MIN) ||
 				parseFloat(req.body.amount) > parseFloat(process.env.SOMME_MAX)
@@ -163,11 +167,13 @@ router.post('/request', ensureAuthentication, async (req, res) => {
 				});
 			const operation = new Operation({
 				sender_id: new mongoose.Types.ObjectId(account._id),
+				sender_email: req.user.email,
 				amount: req.body.amount,
 				sender: account.name,
 				fees: new Number(parseFloat(req.body.amount) * parseFloat(process.env.RATE)).toFixed(3),
 				rname: req.body.rfname + ' ' + req.body.rlname,
 				rnumber: req.body.rnumber
+
 			});
 			try {
 				account.totalRequestedAmount += parseFloat(operation.amount);

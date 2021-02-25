@@ -21,7 +21,6 @@ const app = require('express')();
 
 const operations = require('./api/routes/operations.js');
 const account = require('./api/routes/account.js');
-const complete = require('./api/routes/complete.js');
 
 const isDev = process.env.NODE_ENV !== 'production';
 const port = process.env.PORT || 3000;
@@ -141,7 +140,6 @@ async function start() {
 	app.use(passport.session());
 
 	app.use('/api/auth', account);
-	app.use('/api/complete', complete);
 	app.use('/api/operations', operations);
 
 	const fs = require('fs');

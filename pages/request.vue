@@ -4,12 +4,11 @@
     <div class="columns is-centered">
       <div class="column is-6-desktop is-8-tablet">
         <form autocomplete="off" class="mt-4" method="POST">
-          <p class="has-text-danger has-text-centered">{{ error }}</p>
           <b-message type="is-info">
             <b-icon icon="info-circle" size="is-small" />&nbsp;Note importante: Il s'agit ici de renseigner le nom et le prénom
             qui ont identifié le numéro Orange Money que vous allez renseigner.
           </b-message>
-          <br />
+          <p class="has-text-danger label has-text-centered">{{ error }}</p>
           <div class="columns my-0 py-0">
             <div class="column my-0 py-0">
               <div class="field my-0">
@@ -74,7 +73,7 @@
                 <b-input icon="lock" v-model="request.pwd" type="password" id="pwd" name="pwd" />
                 <button
                   class="button mt-2 is-fullwidth is-primary box"
-                  @click.prevent="modal = !modal"
+                  @click.prevent="submitHandler()"
                 >Envoyer la demande</button>
               </div>
             </div>
@@ -82,7 +81,7 @@
         </form>
       </div>
     </div>
-    <div :class="['modal', {'is-active': modal}]">
+    <div :class="['modal', {'is-active': confirmationModal}]">
       <div class="modal-background"></div>
       <div class="card is-radiusless larger">
         <header class="card-header">
@@ -110,42 +109,11 @@
           </ul>
         </section>
         <footer class="card-footer">
-          <a class="card-footer-item has-text-danger" @click.prevent="closeModal()">
+          <a class="card-footer-item has-text-danger" @click.prevent="confirmationModal = false">
             <b-icon icon="times"></b-icon>&nbsp; Annuler
           </a>
           <a class="card-footer-item" @click.prevent="requestCodeHandler()">
             <b-icon icon="check"></b-icon>&nbsp; Envoyer
-          </a>
-        </footer>
-      </div>
-    </div>
-    <div :class="['modal', {'is-active': codeConfirmationModal}]">
-      <div class="modal-background"></div>
-      <div class="card is-radiusless larger">
-        <h2 class="has-text-centered has-text-weight-bold">Code de confirmation</h2>
-        <section class="card-content">
-          <b-message
-            type="is-success is-light"
-            aria-close-label="Close notification"
-          >Veuillez entrer le code de confirmation envoyé à votre adresse email.</b-message>
-          <p class="has-text-centered label has-text-danger is-danger">{{ error }}</p>
-          <div class="field">
-            <div class="control">
-              <p class="label help" for="code">Code de confirmation</p>
-              <b-input type="text" icon="user" id="code" v-model="request.code" />
-            </div>
-          </div>
-        </section>
-        <footer class="card-footer">
-          <a
-            href="#"
-            class="card-footer-item has-text-danger"
-            @click.prevent="codeConfirmationModal = false"
-          >
-            <b-icon icon="times"></b-icon>&nbsp; Annuler
-          </a>
-          <a href="#" class="card-footer-item" @click.prevent="submitFinalHandler()">
-            <b-icon icon="check"></b-icon>&nbsp; Confirmer
           </a>
         </footer>
       </div>
@@ -201,7 +169,8 @@ export default {
         return;
       } else this.canProceed = true;
     },
-    async submitHandler() {
+    submitHandler() {
+      this.error = "";
       if (
         this.request.rfname === "" ||
         this.request.rlname === "" ||
@@ -213,16 +182,18 @@ export default {
       }
       if (this.canProceed === false) {
         this.error = "Numéro de téléphone incorrect.";
+        console.log("something")
         return;
       }
       if (this.request.amount < 500 || this.request.amount > 50000) {
         this.error = "Veuillez choisir un montant entre 500 et 50 000.";
         return;
       }
-      if (this.codeSent) this.codeConfirmationModal = true;
+      if (this.codeSent) this.confirmCode();
       else this.confirmationModal = true;
     },
     async requestCodeHandler() {
+
       this.confirmationModal = false;
       try {
         const csrf = await this.$axios.$get("/api/auth/csrf");
@@ -231,12 +202,28 @@ export default {
           amount: this.request.amount,
         });
         this.codeSent = true;
-        this.codeConfirmationModal = true;
+        this.confirmCode();
       } catch (err) {
         if (!err.response.data) {
           this.error = "Erreur survenue, veuillez réessayer";
         } else this.error = err.response.data.message;
       }
+    },
+    confirmCode(){
+      this.$buefy.dialog.prompt({
+                message: `Veuillez entrer le code envoyé à votre adresse email:`,
+                inputAttrs: {
+                    placeholder: 'Code',
+                    maxlength: 6
+                },
+                confirmText: "Envoyer",
+                cancelText: "Annuler",
+                trapFocus: true,
+                onConfirm: (value) => {
+                  this.request.code = value;
+                  this.submitFinalHandler();
+                }
+            })
     },
     async submitFinalHandler() {
       this.isLoading = true;

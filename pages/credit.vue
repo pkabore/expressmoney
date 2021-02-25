@@ -9,7 +9,7 @@
             tag="nuxt-link"
             to="/request"
             type="primary"
-            class="is-success is-outlined label"
+            class="is-success label"
           >Cliquez ici pour une demande de crédit</b-button>
         </p>
         <div v-if="isLoading">
@@ -22,7 +22,6 @@
             narrowed
             bordered
             scrollable
-            class="has-background-dark"
             hoverable
             paginated
             :per-page="perPage"

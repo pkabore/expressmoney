@@ -148,11 +148,11 @@
       <p class="has-text-centered" v-if="!isAuthenticated">
         <NuxtLink
           to="/register"
-          class="button is-outlined is-primary"
+          class="button is-primary"
         >Créer un compte pour commencer</NuxtLink>
       </p>
       <p class="has-text-centered" v-else>
-        <NuxtLink to="/credit" class="button is-outlined is-primary">Faire une demande de crédit</NuxtLink>
+        <NuxtLink to="/credit" class="button is-primary">Faire une demande de crédit</NuxtLink>
       </p>
     </section>
     <AppFooter />

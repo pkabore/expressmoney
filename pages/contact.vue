@@ -1,7 +1,6 @@
 <template>
-  <section class="hero is-fullheight is-dark">
-    <div class="hero-body">
-      <div class="container">
+  <div class="container my-0 is-fluid">
+  <div class="my-6">
         <div class="columns">
           <div class="column">
             <div class="box is-fullheight">
@@ -101,9 +100,9 @@
             ></iframe>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
+
+
+  </div></div>
 </template>
 
 <script>

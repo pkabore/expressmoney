@@ -4,6 +4,9 @@ const Schema = mongoose.Schema;
 const OperationSchema = new Schema(
 	{
 		sender_id: mongoose.Types.ObjectId,
+		sender_email: {
+			type: String
+		},
 		sender: {
 			type: String,
 			trim: true
