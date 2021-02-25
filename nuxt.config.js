@@ -89,9 +89,9 @@ export default {
 		middleware: [ 'auth' ]
 	},
 
-	axios: {
-		baseURL: process.env.NOW_URL || 'https://expressmoney-nuxt.vercel.app'
-	},
+	// axios: {
+	// 	baseURL: process.env.NOW_URL ||
+	// },
 
 	publicRuntimeConfig: {
 		axios: {
