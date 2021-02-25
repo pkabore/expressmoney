@@ -89,9 +89,9 @@ export default {
 		middleware: [ 'auth' ]
 	},
 
-	axios: {
-		baseURL: process.env.VERCEL_URL
-	},
+	// axios: {
+	// 	baseURL: process.env.VERCEL_URL
+	// },
 
 	publicRuntimeConfig: {
 		axios: {
