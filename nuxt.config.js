@@ -90,7 +90,7 @@ export default {
 	},
 
 	axios: {
-		baseURL: 'https://expressmoney-nuxt.vercel.app'
+		baseURL: process.env.NOW_URL || 'https://expressmoney-nuxt.vercel.app'
 	},
 
 	publicRuntimeConfig: {
