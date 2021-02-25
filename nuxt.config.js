@@ -89,21 +89,21 @@ export default {
 		middleware: [ 'auth' ]
 	},
 
-	axios: {
-		baseURL: process.env.VERCEL_URL
-	},
+	// axios: {
+	// 	baseURL: process.env.VERCEL_URL
+	// },
 
-	publicRuntimeConfig: {
-		axios: {
-			browserBaseURL: process.env.VERCEL_URL
-		}
-	},
+	// publicRuntimeConfig: {
+	// 	axios: {
+	// 		browserBaseURL: process.env.VERCEL_URL
+	// 	}
+	// },
 
-	privateRuntimeConfig: {
-		axios: {
-			baseURL: process.env.VERCEL_URL
-		}
-	},
+	// privateRuntimeConfig: {
+	// 	axios: {
+	// 		baseURL: process.env.VERCEL_URL
+	// 	}
+	// },
 	build: {
 		cssSourceMap: true,
 		node: {
