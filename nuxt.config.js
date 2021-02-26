@@ -40,7 +40,7 @@ export default {
 	buildModules: [],
 
 	telemetry: false,
-	serverMiddleware: [ { path: '/api/**', handler: 'server.js' } ],
+	serverMiddleware: [ { path: '/api/**', handler: '~/api/server.js' } ],
 	modules: [ '@nuxtjs/auth-next', '@nuxtjs/axios', 'nuxt-helmet', 'nuxt-buefy', 'nuxt-fontawesome' ],
 
 	buefy: {
