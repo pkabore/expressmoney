@@ -19,7 +19,6 @@ const app = require('express')();
 
 const operations = require('./routes/operations.js');
 const account = require('./routes/account.js');
-const port = process.env.PORT || 3000;
 
 databaseConnection(() => {
 	console.log('Database connected ...');
@@ -112,6 +111,8 @@ passport.use(
 		}
 	)
 );
+
+console.log(process.env);
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
