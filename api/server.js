@@ -112,26 +112,30 @@ passport.use(
 	)
 );
 
-console.log(process.env);
-
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(csurf({ cookie: true }));
+
+const sessionSecret = process.env.SESSION_SECRET;
+const sessionDuration = parseInt(process.env.SESSION_DURATION, 10);
+const isSessionSecure = process.env.NODE_ENV === 'production';
+
 app.use(
 	session({
 		cookieName: 'session',
-		secret: process.env.SESSION_SECRET,
-		duration: parseInt(process.env.SESSION_DURATION, 10),
+		secret: sessionSecret,
+		duration: sessionDuration,
 		saveUninitialized: false,
 		resave: false,
 		cookie: {
 			ephemeral: true,
 			httpOnly: true,
-			secure: process.env.NODE_ENV === 'production'
+			secure: isSessionSecure
 		}
 	})
 );
+
 app.use(passport.initialize());
 app.use(passport.session());
 
