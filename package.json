@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "node server.js",
+    "dev": "nuxt",
     "build": "nuxt generate",
-    "start": "NODE_ENV=production node server.js"
+    "start": "nuxt"
   },
   "dependencies": {
     "@fortawesome/free-brands-svg-icons": "^5.15.2",
