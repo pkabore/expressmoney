@@ -189,7 +189,7 @@ app.get('/api/auth/csrf', (req, res) => {
 // }
 
 //Listen the server
-app.listen(port, () => console.log('Server listening on `localhost:' + port + '`.'));
+//app.listen(port, () => console.log('Server listening on `localhost:' + port + '`.'));
 //}
 //start()
 
