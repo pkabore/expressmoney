@@ -1,9 +1,7 @@
 {
   "builds": [
-    {
-		"src": "api/**/*.js",
-		"use": "@vercel/node",
-		"config": {}
-    }
+    { "src": "server.js", "use": "@vercel/node" },
+    "src": "nuxt.config.js",
+	    "use": "@nuxtjs/vercel-builder"
   ]
 }
