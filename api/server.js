@@ -14,19 +14,12 @@ const bcrypt = require('bcryptjs');
 const csurf = require('csurf');
 const onHeaders = require('on-headers');
 
-require('dotenv').config();
 const databaseConnection = require('./utils/database.js');
-//const { loadNuxt, build } = require('nuxt');
 const app = require('express')();
 
 const operations = require('./routes/operations.js');
 const account = require('./routes/account.js');
-
-// const isDev = process.env.NODE_ENV !== 'production';
 const port = process.env.PORT || 3000;
-
-//async function start() {
-// const nuxt = await loadNuxt(isDev ? 'dev' : 'start');
 
 databaseConnection(() => {
 	console.log('Database connected ...');
@@ -179,18 +172,5 @@ app.get(
 app.get('/api/auth/csrf', (req, res) => {
 	res.json({ token: req.csrfToken() });
 });
-
-//Render every route with Nuxt.js
-// app.use(nuxt.render);
-
-// //Build only in dev mode with hot-reloading
-// if (isDev) {
-// 	build(nuxt);
-// }
-
-//Listen the server
-//app.listen(port, () => console.log('Server listening on `localhost:' + port + '`.'));
-//}
-//start()
 
 module.exports = app;
