@@ -93,17 +93,17 @@ export default {
 	// 	baseURL: process.env.VERCEL_URL
 	// },
 
-	publicRuntimeConfig: {
+	/*publicRuntimeConfig: {
 		axios: {
 			browserBaseURL: process.env.VERCEL_URL
 		}
-	},
+	},*/
 
-	// privateRuntimeConfig: {
-	// 	axios: {
-	// 		baseURL: process.env.VERCEL_URL
-	// 	}
-	// },
+	privateRuntimeConfig: {
+		axios: {
+			baseURL: '/'
+		}
+	},
 	build: {
 		cssSourceMap: true,
 		node: {
