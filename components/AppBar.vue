@@ -16,9 +16,9 @@
           <b-navbar-item class="has-text-primary" tag="nuxt-link" to="/account">
             <b-icon icon="user"></b-icon>&nbsp; Compte
           </b-navbar-item>
-          <a class="has-text-primary navbar-item" tag="nuxt-link" @click.prevent="handleLogout">
+          <b-navbar-item class="has-text-primary" @click.prevent="handleLogout">
             <b-icon icon="sign-out-alt"></b-icon>&nbsp; Déconnection
-          </a>
+          </b-navbar-item>
         </b-navbar-dropdown>
         <div v-else class="navbar-item">
           <div class="buttons">

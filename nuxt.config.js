@@ -41,7 +41,7 @@ export default {
 	buildModules: [],
 
 	telemetry: false,
-	serverMiddleware: [ appRoot.path + '/api/server' ],
+	serverMiddleware: [ __dirname + '/api/server' ],
 	modules: [ '@nuxtjs/auth-next', '@nuxtjs/axios', 'nuxt-helmet', 'nuxt-buefy', 'nuxt-fontawesome' ],
 
 	buefy: {
