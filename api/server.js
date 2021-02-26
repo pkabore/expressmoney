@@ -2,10 +2,10 @@ const express = require('express');
 const session = require('client-sessions');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
-const Account = require('./api/models/Account.js');
-const Operation = require('./api/models/Operation.js');
-const Notification = require('./api/models/Notification.js');
-const APIKey = require('./api/models/APIKey.js');
+const Account = require('./models/Account.js');
+const Operation = require('./models/Operation.js');
+const Notification = require('./models/Notification.js');
+const APIKey = require('./models/APIKey.js');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const HeaderAPIKeyStrategy = require('passport-headerapikey').HeaderAPIKeyStrategy;
@@ -15,12 +15,12 @@ const csurf = require('csurf');
 const onHeaders = require('on-headers');
 
 require('dotenv').config();
-const databaseConnection = require('./api/utils/database.js');
+const databaseConnection = require('./utils/database.js');
 //const { loadNuxt, build } = require('nuxt');
 const app = require('express')();
 
-const operations = require('./api/routes/operations.js');
-const account = require('./api/routes/account.js');
+const operations = require('./routes/operations.js');
+const account = require('./routes/account.js');
 
 // const isDev = process.env.NODE_ENV !== 'production';
 const port = process.env.PORT || 3000;
