@@ -31,7 +31,7 @@ export default {
 	plugins: [],
 
 	loading: {
-		color: '#3273dc',
+		color: '#fff',
 		height: '3px'
 	},
 
@@ -93,22 +93,22 @@ export default {
 		baseURL: process.env.BASE_URL || 'https://expressmoney-nuxt.vercel.app'
 	},
 
-	axios: {
-		baseURL: process.env.VERCEL_URL || 'https://expressmoney-nuxt.vercel.app'
-	},
+	// axios: {
+	// 	baseURL: process.env.VERCEL_URL || 'https://expressmoney-nuxt.vercel.app'
+	// },
 
-	publicRuntimeConfig: {
-		axios: {
-			//browserBaseURL: process.env.VERCEL_URL,
-			baseURL: process.env.VERCEL_URL || 'https://expressmoney-nuxt.vercel.app'
-		}
-	},
+	// publicRuntimeConfig: {
+	// 	axios: {
+	// 		//browserBaseURL: process.env.VERCEL_URL,
+	// 		baseURL: process.env.VERCEL_URL || 'https://expressmoney-nuxt.vercel.app'
+	// 	}
+	// },
 
-	privateRuntimeConfig: {
-		axios: {
-			baseURL: process.env.VERCEL_URL || 'https://expressmoney-nuxt.vercel.app'
-		}
-	},
+	// privateRuntimeConfig: {
+	// 	axios: {
+	// 		baseURL: process.env.VERCEL_URL || 'https://expressmoney-nuxt.vercel.app'
+	// 	}
+	// },
 	build: {
 		cssSourceMap: true,
 		node: {
