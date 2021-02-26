@@ -89,19 +89,24 @@ export default {
 		middleware: [ 'auth' ]
 	},
 
-	// axios: {
-	// 	baseURL: process.env.VERCEL_URL
-	// },
+	publicRuntimeConfig: {
+		baseURL: process.env.BASE_URL || 'https://expressmoney-nuxt.vercel.app'
+	},
 
-	/*publicRuntimeConfig: {
+	axios: {
+		baseURL: process.env.VERCEL_URL || 'https://expressmoney-nuxt.vercel.app'
+	},
+
+	publicRuntimeConfig: {
 		axios: {
-			browserBaseURL: process.env.VERCEL_URL
+			//browserBaseURL: process.env.VERCEL_URL,
+			baseURL: process.env.VERCEL_URL || 'https://expressmoney-nuxt.vercel.app'
 		}
-	},*/
+	},
 
 	privateRuntimeConfig: {
 		axios: {
-			baseURL: '/'
+			baseURL: process.env.VERCEL_URL || 'https://expressmoney-nuxt.vercel.app'
 		}
 	},
 	build: {
