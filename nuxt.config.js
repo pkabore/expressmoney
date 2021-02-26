@@ -1,3 +1,4 @@
+import appRoot from 'app-root-path';
 export default {
 	// Global page headers (https://go.nuxtjs.dev/config-head)
 	head: {
@@ -40,7 +41,7 @@ export default {
 	buildModules: [],
 
 	telemetry: false,
-	serverMiddleware: [ '~/api/server' ],
+	serverMiddleware: [ appRoot.path + '/api/server' ],
 	modules: [ '@nuxtjs/auth-next', '@nuxtjs/axios', 'nuxt-helmet', 'nuxt-buefy', 'nuxt-fontawesome' ],
 
 	buefy: {
