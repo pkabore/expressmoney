@@ -118,7 +118,6 @@ app.use(cookieParser());
 
 const sessionSecret = process.env.SESSION_SECRET;
 const sessionDuration = parseInt(process.env.SESSION_DURATION, 10);
-console.log(sessionSecret, sessionDuration);
 app.use(
 	session({
 		cookieName: 'session',

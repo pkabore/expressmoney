@@ -41,7 +41,6 @@ export default {
 	buildModules: [],
 
 	telemetry: false,
-	//serverMiddleware: [ { path: '/api/**', handler: '~/api/server' } ],
 	serverMiddleware: [ '~/api/server' ],
 	modules: [ '@nuxtjs/auth-next', '@nuxtjs/axios', 'nuxt-helmet', 'nuxt-buefy', 'nuxt-fontawesome' ],
 
@@ -59,7 +58,7 @@ export default {
 		]
 	},
 
-	css: [ '~/assets/scss/main', '~/assets/css/style', 'animate.css' ],
+	css: [ '~/assets/scss/main', '~/assets/css/style' ],
 
 	auth: {
 		watchLoggedIn: true,
@@ -101,7 +100,6 @@ export default {
 
 	publicRuntimeConfig: {
 		axios: {
-			//browserBaseURL: process.env.VERCEL_URL,
 			baseURL: '/'
 		}
 	},

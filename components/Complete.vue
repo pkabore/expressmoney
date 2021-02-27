@@ -12,7 +12,7 @@
     </p>
     <p class="has-text-centered help is-danger">{{error}}</p>
     <section>
-      <div class="field mt-1 mb-0">
+      <div v-if="this.$auth.user.isAccountValidated !== 'Validé'" class="field mt-1 mb-0">
         <div class="control">
           <label for="files" class="label help">Informations professionnelles:</label>
           <b-upload v-model="dropFiles" multiple drag-drop expanded :disabled="!readonly">
@@ -123,26 +123,30 @@ export default {
       this.dropFiles.splice(index, 1);
     },
     async accountUpdateHandler() {
-      if (this.dropFiles.length !== 3) {
+      if (
+        this.dropFiles.length !== 3 &&
+        this.account.isAccountValidated !== "Validé"
+      ) {
         this.error = "Veuillez charger touts les 3 fichiers requis";
         return;
       }
       if (
-        !(
+        this.account.isAccountValidated !== "Validé" &&
+        (!(
           this.dropFiles[0].type.includes("image/") ||
           this.dropFiles[0].type.includes("pdf")
         ) ||
-        !this.dropFiles[0].size > 4194304 ||
-        !(
-          this.dropFiles[1].type.includes("image/") ||
-          this.dropFiles[1].type.includes("pdf")
-        ) ||
-        !this.dropFiles[1].size > 4194304 ||
-        !(
-          this.dropFiles[2].type.includes("image/") ||
-          this.dropFiles[2].type.includes("pdf")
-        ) ||
-        !this.dropFiles[2].size > 4194304
+          !this.dropFiles[0].size > 4194304 ||
+          !(
+            this.dropFiles[1].type.includes("image/") ||
+            this.dropFiles[1].type.includes("pdf")
+          ) ||
+          !this.dropFiles[1].size > 4194304 ||
+          !(
+            this.dropFiles[2].type.includes("image/") ||
+            this.dropFiles[2].type.includes("pdf")
+          ) ||
+          !this.dropFiles[2].size > 4194304)
       ) {
         this.error = "Format supporté: Image et PDF, taille Max: 4M";
         return;
@@ -153,9 +157,12 @@ export default {
       }
       let formData = new FormData();
 
-      this.dropFiles.map((file) => {
-        formData.append("papers", file);
-      });
+      if (this.account.isAccountValidated !== "Validé") {
+        this.dropFiles.map((file) => {
+          formData.append("papers", file);
+        });
+      }
+
       formData.append("city", this.city);
       try {
         const csrf = await this.$axios.$get("/api/auth/csrf");

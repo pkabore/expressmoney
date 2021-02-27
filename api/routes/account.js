@@ -266,12 +266,11 @@ router.post('/updatedossier', ensureAuthentication, async (req, res) => {
 			cb(null, true);
 		}
 	});
-	upload = upload.array('papers', 3);
+
 	/**------------------------------------------------------------------ */
 	Account.findOne(
 		{
-			email: req.user.email,
-			$and: [ { isAccountValidated: { $ne: 'Validé' } }, { isAccountValidated: { $ne: 'Suppression' } } ]
+			email: req.user.email
 		},
 		async (err, doc) => {
 			if (err || !doc) return res.status(500).json({ message: 'Erreur technique survenue!' });
@@ -280,24 +279,35 @@ router.post('/updatedossier', ensureAuthentication, async (req, res) => {
 					message:
 						"Votre compte n'a pas été vérifié. Veuillez cliquez sur le lien envoyé à votre adresse mail."
 				});
+			if (doc.isAccountValidated === 'Suppression')
+				return res.status(403).json({
+					message: 'Votre compte est en cours de suppression. Mise à jour impossible.'
+				});
 			try {
-				upload(req, res, async (err) => {
-					if (err instanceof multer.MulterError) {
-						const filesErrorMessage = `Format supporté: PDF|JPEG|JPG, taille max: 4MB`;
-						return res.status(400).json({ message: filesErrorMessage });
-					} else if (err) {
-						return res.status(500).json({ message: 'Erreur technique survenue!' });
-					}
-					if (uris.length < 3) return res.status(400).json({ message: 'Fichiers incomplets' });
-					utils.deleteOldFiles(doc.idUri, doc.wcardUri, doc.codcUri);
-					doc.idUri = uris[0];
-					doc.wcardUri = uris[1];
-					doc.codcUri = uris[2];
+				if (doc.isAccountValidated !== 'Validé') {
+					upload = upload.array('papers', 3);
+					upload(req, res, async (err) => {
+						if (err instanceof multer.MulterError) {
+							const filesErrorMessage = `Format supporté: PDF|JPEG|JPG, taille max: 4MB`;
+							return res.status(400).json({ message: filesErrorMessage });
+						} else if (err) {
+							return res.status(500).json({ message: 'Erreur technique survenue!' });
+						}
+						if (uris.length < 3) return res.status(400).json({ message: 'Fichiers incomplets' });
+						utils.deleteOldFiles(doc.idUri, doc.wcardUri, doc.codcUri);
+						doc.idUri = uris[0];
+						doc.wcardUri = uris[1];
+						doc.codcUri = uris[2];
+						doc.city = req.body.city;
+						doc.isAccountValidated = 'En attente';
+						await doc.save();
+						res.json({ message: 'ok' });
+					});
+				} else {
 					doc.city = req.body.city;
-					doc.isAccountValidated = 'En attente';
 					await doc.save();
 					res.json({ message: 'ok' });
-				});
+				}
 			} catch (error) {
 				return res.status(500).json({ message: 'Erreur technique survenue!' });
 			}

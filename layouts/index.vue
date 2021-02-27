@@ -18,26 +18,26 @@
               <b-navbar-item class="has-text-primary" tag="nuxt-link" to="/account">
                 <b-icon icon="user"></b-icon>&nbsp; Compte
               </b-navbar-item>
-              <a class="has-text-primary navbar-item" tag="nuxt-link" @click.prevent="handleLogout">
+              <b-navbar-item class="has-text-primary" @click.prevent="handleLogout">
                 <b-icon icon="sign-out-alt"></b-icon>&nbsp; Déconnection
-              </a>
+              </b-navbar-item>
             </b-navbar-dropdown>
-            <div v-else class="navbar-item">
+            <b-navbar-item v-else tag="div">
               <div class="buttons">
                 <b-button
-                  type="is-primary"
+                  class="button is-primary"
                   icon-left="sign-in-alt"
                   tag="nuxt-link"
                   to="/login"
                 >Se connecter</b-button>
                 <b-button
                   icon-left="user-circle"
-                  class="is-light is-outlined"
+                  class="button is-light is-outlined"
                   tag="nuxt-link"
                   to="/register"
                 >S'inscrire</b-button>
               </div>
-            </div>
+            </b-navbar-item>
           </template>
         </b-navbar>
       </div>
@@ -146,10 +146,7 @@
         </div>
       </div>
       <p class="has-text-centered" v-if="!isAuthenticated">
-        <NuxtLink
-          to="/register"
-          class="button is-primary"
-        >Créer un compte pour commencer</NuxtLink>
+        <NuxtLink to="/register" class="button is-primary">Créer un compte pour commencer</NuxtLink>
       </p>
       <p class="has-text-centered" v-else>
         <NuxtLink to="/credit" class="button is-primary">Faire une demande de crédit</NuxtLink>
