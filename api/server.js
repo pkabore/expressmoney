@@ -1,5 +1,5 @@
 const express = require('express');
-const session = require('client-sessions');
+const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const Account = require('./models/Account.js');
