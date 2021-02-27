@@ -115,7 +115,7 @@ passport.use(
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
-app.use(csurf({ cookie: true }));
+
 const sessionSecret = process.env.SESSION_SECRET;
 const sessionDuration = parseInt(process.env.SESSION_DURATION, 10);
 console.log(sessionSecret, sessionDuration);
@@ -127,14 +127,14 @@ app.use(
 		saveUninitialized: false,
 		resave: false,
 		cookie: {
-			maxAge: sessionDuration,
 			ephemeral: true,
 			httpOnly: true,
-			secure: true
+			secure: process.env.NODE_ENV === 'production'
 		}
 	})
 );
 
+app.use(csurf({ cookie: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
