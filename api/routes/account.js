@@ -387,12 +387,15 @@ router.post('/email', (req, res) => {
 	};
 	utils.transporter.sendMail(mailOptions, async (err, info) => {
 		if (err) {
-			console.log(err);
 			res.status(500).json({ message: 'Erreur technique survenue! Veuillez reéssayer..' });
 		} else {
 			res.json({ message: 'ok' });
 		}
 	});
+});
+
+router.get('/csrf', (req, res) => {
+	res.json({ token: req.csrfToken() });
 });
 
 const accountValidationSchema = Joi.object({

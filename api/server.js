@@ -1,7 +1,7 @@
 const express = require('express');
-const session = require('express-session');
-const cookieParser = require('cookie-parser');
+const session = require('client-sessions');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
 const Account = require('./models/Account.js');
 const Operation = require('./models/Operation.js');
 const Notification = require('./models/Notification.js');
@@ -111,12 +111,11 @@ passport.use(
 		}
 	)
 );
-app.use(csurf({ cookie: true }));
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
-
+app.use(csurf({ cookie: true }));
 const sessionSecret = process.env.SESSION_SECRET;
 const sessionDuration = parseInt(process.env.SESSION_DURATION, 10);
 const isSessionSecure = process.env.NODE_ENV === 'production';
@@ -174,8 +173,5 @@ app.get(
 	}
 );
 /*------------------------------------------------------------------------*/
-app.get('/api/auth/csrf', (req, res) => {
-	res.json({ token: req.csrfToken() });
-});
 
 module.exports = app;
