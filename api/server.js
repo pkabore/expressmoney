@@ -129,7 +129,7 @@ app.use(
 		cookie: {
 			ephemeral: true,
 			httpOnly: true,
-			secure: process.env.NODE_ENV === 'production'
+			secureProxy: process.env.NODE_ENV === 'production'
 		}
 	})
 );
