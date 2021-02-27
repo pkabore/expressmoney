@@ -111,11 +111,11 @@ passport.use(
 		}
 	)
 );
+app.use(csurf({ cookie: true }));
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-//app.use(cookieParser());
-app.use(csurf({ cookie: true }));
+app.use(cookieParser());
 
 const sessionSecret = process.env.SESSION_SECRET;
 const sessionDuration = parseInt(process.env.SESSION_DURATION, 10);
