@@ -172,6 +172,8 @@ export default {
             "Content-Type": "multipart/form-data",
           },
         };
+        if (this.account.isAccountValidated === "Validé")
+          formData = { city: this.city };
         const res = await this.$axios.$post(
           "/api/auth/updatedossier",
           formData,

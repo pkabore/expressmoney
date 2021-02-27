@@ -114,10 +114,10 @@ passport.use(
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(cookieParser());
 
 const sessionSecret = process.env.SESSION_SECRET;
 const sessionDuration = parseInt(process.env.SESSION_DURATION, 10);
+app.use(cookieParser());
 app.use(
 	session({
 		cookieName: 'session',
@@ -128,14 +128,15 @@ app.use(
 		cookie: {
 			ephemeral: true,
 			httpOnly: true,
-			secureProxy: process.env.NODE_ENV === 'production'
+			secure: process.env.NODE_ENV === 'production'
 		}
 	})
 );
 
-app.use(csurf({ cookie: true }));
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(csurf({ cookie: true }));
 
 app.use('/api/auth', account);
 app.use('/api/operations', operations);
