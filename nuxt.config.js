@@ -75,7 +75,7 @@ export default {
 					type: false
 				},
 				user: {
-					autoFetch: true,
+					autoFetch: false,
 					property: false
 				},
 				endpoints: {
