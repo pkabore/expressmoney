@@ -172,13 +172,17 @@ export default {
             "Content-Type": "multipart/form-data",
           },
         };
-        if (this.account.isAccountValidated === "Validé")
+        let res = "";
+        if (this.account.isAccountValidated === "Validé") {
+          this.$axios.setHeader("XSRF-TOKEN", csrf.token);
           formData = { city: this.city };
-        const res = await this.$axios.$post(
-          "/api/auth/updatedossier",
-          formData,
-          config
-        );
+          res = await this.$axios.$post("/api/auth/updatedossier", formData);
+        } else
+          res = await this.$axios.$post(
+            "/api/auth/updatedossier",
+            formData,
+            config
+          );
         if (res.message) {
           this.dropFiles = [];
           await this.$auth.fetchUser();
