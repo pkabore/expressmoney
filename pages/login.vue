@@ -47,7 +47,6 @@
 
 <script>
 export default {
-  auth: "guest",
   head: {
     title: "Connection",
     meta: [
@@ -67,6 +66,7 @@ export default {
       isLoading: false,
     };
   },
+  auth: "guest",
   methods: {
     async handleLogin() {
       this.isLoading = true;

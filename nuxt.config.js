@@ -1,4 +1,3 @@
-import appRoot from 'app-root-path';
 export default {
 	// Global page headers (https://go.nuxtjs.dev/config-head)
 	head: {
@@ -30,36 +29,7 @@ export default {
 	},
 
 	plugins: [],
-
-	loading: {
-		color: '#fff',
-		height: '3px'
-	},
-
-	components: true,
-
-	buildModules: [],
-
-	telemetry: false,
-	serverMiddleware: [ '~/api/server' ],
-	modules: [ '@nuxtjs/auth-next', '@nuxtjs/axios', 'nuxt-helmet', 'nuxt-buefy', 'nuxt-fontawesome' ],
-
-	buefy: {
-		materialDesignIcons: false,
-		defaultIconPack: 'fas',
-		defaultIconComponent: 'font-awesome-icon'
-	},
-	fontawesome: {
-		imports: [
-			{
-				set: '@fortawesome/free-solid-svg-icons',
-				icons: [ 'fas' ]
-			}
-		]
-	},
-
-	css: [ '~/assets/scss/main', '~/assets/css/style' ],
-
+	loading: false,
 	auth: {
 		watchLoggedIn: true,
 		redirect: {
@@ -86,12 +56,42 @@ export default {
 		}
 	},
 
-	router: {
-		middleware: [ 'auth' ]
+	loading: {
+		color: '#fff',
+		height: '3px'
 	},
 
-	publicRuntimeConfig: {
-		baseURL: '/'
+	components: true,
+
+	buildModules: [],
+	env: {
+		WS_URL: process.env.VERCEL_URL || 'http://localhost:3000'
+	},
+	telemetry: false,
+
+	serverMiddleware: [ '~/api/server' ],
+
+	buildModules: [ 'nuxt-fontawesome' ],
+	modules: [ '@nuxtjs/auth-next', '@nuxtjs/axios', 'nuxt-helmet', 'nuxt-buefy' ],
+
+	buefy: {
+		materialDesignIcons: false,
+		defaultIconPack: 'fas',
+		defaultIconComponent: 'font-awesome-icon'
+	},
+	fontawesome: {
+		imports: [
+			{
+				set: '@fortawesome/free-solid-svg-icons',
+				icons: [ 'fas' ]
+			}
+		]
+	},
+
+	css: [ '~/assets/scss/main', '~/assets/css/style' ],
+
+	router: {
+		middleware: [ 'auth' ]
 	},
 
 	axios: {
@@ -100,40 +100,17 @@ export default {
 
 	publicRuntimeConfig: {
 		axios: {
-			baseURL: '/'
+			browserBaseURL: process.env.BROWSER_BASE_URL
 		}
 	},
 
 	privateRuntimeConfig: {
 		axios: {
-			baseURL: '/'
-		}
-	},
-	build: {
-		cssSourceMap: true,
-		node: {
-			__filename: true,
-			__dirname: true
-		},
-		loaders: {
-			vue: {
-				transformAssetUrls: {
-					audio: 'src'
-				}
-			}
-		},
-		extend(config, ctx) {
-			config.module.rules.push({
-				test: /\.(ogg|mp3|wav|mpe?g)$/i,
-				loader: 'file-loader',
-				options: {
-					name: '[path][name].[ext]'
-				}
-			});
+			baseURL: process.env.BASE_URL
 		}
 	},
 
-	render: {
-		csp: true
+	build: {
+		cssSourceMap: true
 	}
 };

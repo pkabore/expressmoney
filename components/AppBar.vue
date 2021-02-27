@@ -30,7 +30,7 @@
             >Se connecter</b-button>
             <b-button
               icon-left="user-circle"
-              class="is-small is-light is-outlined"
+              class="is-small is-outlined"
               tag="nuxt-link"
               to="/register"
             >S'inscrire</b-button>

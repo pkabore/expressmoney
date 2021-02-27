@@ -25,14 +25,14 @@
             <b-navbar-item v-else tag="div">
               <div class="buttons">
                 <b-button
-                  class="button is-primary"
+                  class="is-small is-primary"
                   icon-left="sign-in-alt"
                   tag="nuxt-link"
                   to="/login"
                 >Se connecter</b-button>
                 <b-button
                   icon-left="user-circle"
-                  class="button is-light is-outlined"
+                  class="is-small is-light is-outlined"
                   tag="nuxt-link"
                   to="/register"
                 >S'inscrire</b-button>

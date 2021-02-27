@@ -1,7 +1,6 @@
 const express = require('express');
 const session = require('client-sessions');
 const mongoose = require('mongoose');
-const cookieParser = require('cookie-parser');
 const Account = require('./models/Account.js');
 const Operation = require('./models/Operation.js');
 const Notification = require('./models/Notification.js');
@@ -15,10 +14,10 @@ const csurf = require('csurf');
 const onHeaders = require('on-headers');
 
 const databaseConnection = require('./utils/database.js');
-const app = require('express')();
-
 const operations = require('./routes/operations.js');
 const account = require('./routes/account.js');
+
+const app = require('express')();
 
 databaseConnection(() => {
 	console.log('Database connected ...');
@@ -117,7 +116,6 @@ app.use(express.json());
 
 const sessionSecret = process.env.SESSION_SECRET;
 const sessionDuration = parseInt(process.env.SESSION_DURATION, 10);
-app.use(cookieParser());
 app.use(
 	session({
 		cookieName: 'session',
@@ -126,20 +124,20 @@ app.use(
 		saveUninitialized: false,
 		resave: false,
 		cookie: {
-			ephemeral: true,
+			ephemeral: false,
+			maxAge: sessionDuration,
 			httpOnly: true,
-			secureProxy: process.env.NODE_ENV === 'production'
+			secure: process.env.NODE_ENV === 'production'
 		}
 	})
 );
 
+app.use(csurf());
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(csurf({ cookie: true }));
-
 app.use('/api/auth', account);
-app.use('/api/operations', operations);
+app.use('/api/operations', ensureAuthentication, operations);
 
 const fs = require('fs');
 app.get('/dossiers/:id', ensureAuthentication, async (req, res) => {
