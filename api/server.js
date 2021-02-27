@@ -1,5 +1,5 @@
 const express = require('express');
-const session = require('express-session');
+const session = require('client-sessions');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const Account = require('./models/Account.js');
@@ -122,8 +122,9 @@ const isSessionSecure = process.env.NODE_ENV === 'production';
 
 app.use(
 	session({
+		cookieName: 'session',
 		secret: sessionSecret,
-		// duration: sessionDuration,
+		duration: sessionDuration,
 		saveUninitialized: false,
 		resave: false,
 		cookie: {
