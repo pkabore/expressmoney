@@ -118,7 +118,6 @@ app.use(cookieParser());
 app.use(csurf({ cookie: true }));
 const sessionSecret = process.env.SESSION_SECRET;
 const sessionDuration = parseInt(process.env.SESSION_DURATION, 10);
-const isSessionSecure = process.env.NODE_ENV === 'production';
 
 app.use(
 	session({
@@ -130,7 +129,7 @@ app.use(
 		cookie: {
 			ephemeral: true,
 			httpOnly: true,
-			secure: isSessionSecure
+			secure: true
 		}
 	})
 );
