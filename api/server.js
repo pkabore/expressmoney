@@ -114,7 +114,6 @@ passport.use(
 );
 
 app.use(cookieParser());
-app.use(csurf({ cookie: true }));
 
 const sessionSecret = process.env.SESSION_SECRET;
 app.use(
@@ -129,6 +128,8 @@ app.use(
 		}
 	})
 );
+
+app.use(csurf({ cookie: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
