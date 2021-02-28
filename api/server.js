@@ -126,7 +126,8 @@ let sessionConfig = {
 	resave: false,
 	cookie: {
 		ephemeral: true,
-		httpOnly: true
+		httpOnly: true,
+		secureProxy: true
 	}
 };
 
