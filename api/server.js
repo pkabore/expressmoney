@@ -111,7 +111,6 @@ passport.use(
 		}
 	)
 );
-app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
@@ -130,8 +129,8 @@ let sessionConfig = {
 	}
 };
 
-app.use(csurf({ cookie: true }));
 app.use(session(sessionConfig));
+app.use(csurf());
 app.use(passport.initialize());
 app.use(passport.session());
 
