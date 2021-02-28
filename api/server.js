@@ -11,7 +11,6 @@ const HeaderAPIKeyStrategy = require('passport-headerapikey').HeaderAPIKeyStrate
 const Joi = require('joi');
 const bcrypt = require('bcryptjs');
 const csurf = require('csurf');
-const cookieParser = require('cookie-parser');
 const onHeaders = require('on-headers');
 
 const databaseConnection = require('./utils/database.js');
