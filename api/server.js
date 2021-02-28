@@ -132,12 +132,11 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 app.use('/api/auth', account);
 app.use('/api/operations', ensureAuthentication, operations);
-
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
 
 app.get('/dossiers/:id', ensureAuthentication, async (req, res) => {
 	if (!req.params.id) return res.status(403).end();
