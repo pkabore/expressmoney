@@ -130,14 +130,8 @@ let sessionConfig = {
 	}
 };
 
-if (app.get('env') === 'production') {
-	app.set('trust proxy', 1); // trust first proxy
-	sessionConfig.cookie.secure = true; // serve secure cookies
-}
 app.use(csurf({ cookie: true }));
-
 app.use(session(sessionConfig));
-
 app.use(passport.initialize());
 app.use(passport.session());
 
