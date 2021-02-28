@@ -127,10 +127,8 @@ app.use(
 		saveUninitialized: false,
 		resave: false,
 		cookie: {
-			ephemeral: false,
-			maxAge: sessionDuration,
-			httpOnly: true,
-			secureProxy: process.env.NODE_ENV === 'production'
+			ephemeral: true,
+			httpOnly: true
 		}
 	})
 );
