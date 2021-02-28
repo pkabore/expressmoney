@@ -69,7 +69,7 @@ export default {
 	},
 	telemetry: false,
 
-	serverMiddleware: [ '~/api/server' ],
+	serverMiddleware: [ 'redirect-ssl', '~/api/server' ],
 
 	buildModules: [ 'nuxt-fontawesome' ],
 	modules: [ '@nuxtjs/auth-next', '@nuxtjs/axios', 'nuxt-helmet', 'nuxt-buefy' ],

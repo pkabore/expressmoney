@@ -11,6 +11,7 @@ const HeaderAPIKeyStrategy = require('passport-headerapikey').HeaderAPIKeyStrate
 const Joi = require('joi');
 const bcrypt = require('bcryptjs');
 const csurf = require('csurf');
+const cookieParser = require('cookie-parser');
 const onHeaders = require('on-headers');
 
 const databaseConnection = require('./utils/database.js');
@@ -116,10 +117,11 @@ app.use(express.json());
 
 const sessionSecret = process.env.SESSION_SECRET;
 const sessionDuration = parseInt(process.env.SESSION_DURATION, 10);
+app.use(cookieParser(process.env.SESSION_SECRET));
+
 app.use(
 	session({
 		cookieName: 'session',
-		secret: sessionSecret,
 		duration: sessionDuration,
 		saveUninitialized: false,
 		resave: false,
@@ -132,7 +134,7 @@ app.use(
 	})
 );
 
-app.use(csurf());
+app.use(csurf({ cookie: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
