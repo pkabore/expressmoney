@@ -69,7 +69,13 @@ export default {
 	},
 	telemetry: false,
 
-	serverMiddleware: [ 'redirect-ssl', '~/api/server' ],
+	serverMiddleware: [
+		// redirectSSL.create({
+		// 	enabled: process.env.NODE_ENV === 'production'
+		// }),
+		// { path: '/api', handler: '~/api/server.js' }
+		'~api/server.js'
+	],
 
 	buildModules: [ 'nuxt-fontawesome' ],
 	modules: [ '@nuxtjs/auth-next', '@nuxtjs/axios', 'nuxt-helmet', 'nuxt-buefy' ],

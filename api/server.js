@@ -122,6 +122,7 @@ app.use(cookieParser(process.env.SESSION_SECRET));
 app.use(
 	session({
 		cookieName: 'session',
+		secret: sessionSecret,
 		duration: sessionDuration,
 		saveUninitialized: false,
 		resave: false,
@@ -129,7 +130,7 @@ app.use(
 			ephemeral: false,
 			maxAge: sessionDuration,
 			httpOnly: true,
-			secure: process.env.NODE_ENV === 'production'
+			secureProxy: process.env.NODE_ENV === 'production'
 		}
 	})
 );
