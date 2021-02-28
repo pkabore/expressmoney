@@ -1,5 +1,5 @@
 const express = require('express');
-const session = require('client-sessions');
+const session = require('express-session');
 const mongoose = require('mongoose');
 const Account = require('./models/Account.js');
 const Operation = require('./models/Operation.js');
@@ -11,6 +11,7 @@ const HeaderAPIKeyStrategy = require('passport-headerapikey').HeaderAPIKeyStrate
 const Joi = require('joi');
 const bcrypt = require('bcryptjs');
 const csurf = require('csurf');
+const cookieParser = require('cookie-parser');
 const onHeaders = require('on-headers');
 
 const databaseConnection = require('./utils/database.js');
@@ -113,25 +114,31 @@ passport.use(
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-
+app.use(cookieParser());
 const sessionSecret = process.env.SESSION_SECRET;
 const sessionDuration = parseInt(process.env.SESSION_DURATION, 10);
 
-app.use(
-	session({
-		cookieName: 'session',
-		secret: sessionSecret,
-		duration: sessionDuration,
-		saveUninitialized: false,
-		resave: false,
-		cookie: {
-			ephemeral: true,
-			httpOnly: true
-		}
-	})
-);
+let sessionConfig = {
+	secret: sessionSecret,
+	//duration: sessionDuration,
+	saveUninitialized: false,
+	resave: false,
+	cookie: {
+		maxAge: sessionDuration,
+		httpOnly: true,
+		proxy: false,
+		sameSite: true
+	}
+};
 
-app.use(csurf());
+if (app.get('env') === 'production') {
+	app.set('trust proxy', 1); // trust first proxy
+	session.cookie.secure = true; // serve secure cookies
+}
+
+app.use(session(sessionConfig));
+
+app.use(csurf({ cookie: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -169,6 +176,11 @@ app.get(
 		}
 	}
 );
+
+// app.use((req, res, err) => {
+// 	console.log(err);
+// 	next();
+// });
 /*------------------------------------------------------------------------*/
 
 module.exports = app;
