@@ -1,5 +1,5 @@
 const express = require('express');
-const session = require('express-session');
+const session = require('client-sessions');
 const mongoose = require('mongoose');
 const Account = require('./models/Account.js');
 const Operation = require('./models/Operation.js');
@@ -114,17 +114,18 @@ passport.use(
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(cookieParser());
 const sessionSecret = process.env.SESSION_SECRET;
 const sessionDuration = parseInt(process.env.SESSION_DURATION, 10);
+app.use(cookieParser(sessionSecret));
 
 let sessionConfig = {
 	secret: sessionSecret,
 	//duration: sessionDuration,
+	cookieName: 'session',
 	saveUninitialized: false,
 	resave: false,
 	cookie: {
-		maxAge: sessionDuration,
+		maxAge: 12 * 60 * 60 * 1000,
 		httpOnly: true,
 		proxy: false,
 		sameSite: true
@@ -137,8 +138,8 @@ if (app.get('env') === 'production') {
 }
 
 app.use(session(sessionConfig));
-
 app.use(csurf({ cookie: true }));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -177,10 +178,10 @@ app.get(
 	}
 );
 
-// app.use((req, res, err) => {
-// 	console.log(err);
-// 	next();
-// });
+app.use((err, req, res, next) => {
+	console.log(err);
+	next();
+});
 /*------------------------------------------------------------------------*/
 
 module.exports = app;
