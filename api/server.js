@@ -111,32 +111,32 @@ passport.use(
 		}
 	)
 );
-
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
 const sessionSecret = process.env.SESSION_SECRET;
 const sessionDuration = parseInt(process.env.SESSION_DURATION, 10);
-app.use(cookieParser());
 
 let sessionConfig = {
 	secret: sessionSecret,
+	cookieName: 'session',
+	duration: 12 * 60 * 60 * 1000,
 	saveUninitialized: false,
 	resave: false,
 	cookie: {
-		maxAge: 12 * 60 * 60 * 1000,
-		httpOnly: true,
-		proxy: false,
-		sameSite: true
+		ephemeral: true,
+		httpOnly: true
 	}
 };
 
 if (app.get('env') === 'production') {
 	app.set('trust proxy', 1); // trust first proxy
-	session.cookie.secure = true; // serve secure cookies
+	sessionConfig.cookie.secure = true; // serve secure cookies
 }
+app.use(csurf({ cookie: true }));
 
 app.use(session(sessionConfig));
-app.use(csurf());
 
 app.use(passport.initialize());
 app.use(passport.session());
