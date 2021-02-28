@@ -66,7 +66,6 @@ export default {
       isLoading: false,
     };
   },
-  auth: "guest",
   methods: {
     async handleLogin() {
       this.isLoading = true;
