@@ -13,6 +13,7 @@ const bcrypt = require('bcryptjs');
 const csurf = require('csurf');
 const cookieParser = require('cookie-parser');
 const onHeaders = require('on-headers');
+const fs = require('fs');
 
 const databaseConnection = require('./utils/database.js');
 const operations = require('./routes/operations.js');
@@ -111,34 +112,33 @@ passport.use(
 		}
 	)
 );
+
 app.use(cookieParser());
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
 
 const sessionSecret = process.env.SESSION_SECRET;
-const sessionDuration = parseInt(process.env.SESSION_DURATION, 10);
-
-let sessionConfig = {
-	secret: sessionSecret,
-	cookieName: 'session',
-	duration: 12 * 60 * 60 * 1000,
-	saveUninitialized: false,
-	resave: false,
-	cookie: {
-		httpOnly: true,
-		secureProxy: true
-	}
-};
-
 app.use(csurf({ cookie: true }));
-app.use(session(sessionConfig));
+app.use(
+	session({
+		secret: sessionSecret,
+		cookieName: 'session',
+		duration: 12 * 60 * 60 * 1000,
+		saveUninitialized: false,
+		resave: false,
+		cookie: {
+			maxAge: 12 * 60 * 60 * 1000,
+			httpOnly: true
+		}
+	})
+);
 app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/api/auth', account);
 app.use('/api/operations', ensureAuthentication, operations);
 
-const fs = require('fs');
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
 app.get('/dossiers/:id', ensureAuthentication, async (req, res) => {
 	if (!req.params.id) return res.status(403).end();
 	const account = await Account.findById(req.user.id);
