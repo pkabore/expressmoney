@@ -121,7 +121,6 @@ app.use(
 	session({
 		secret: sessionSecret,
 		cookieName: 'session',
-		duration: 12 * 60 * 60 * 1000,
 		saveUninitialized: false,
 		resave: false,
 		cookie: {
