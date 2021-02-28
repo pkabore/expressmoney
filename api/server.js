@@ -125,7 +125,6 @@ let sessionConfig = {
 	saveUninitialized: false,
 	resave: false,
 	cookie: {
-		ephemeral: true,
 		httpOnly: true,
 		secureProxy: true
 	}
@@ -170,11 +169,6 @@ app.get(
 		}
 	}
 );
-
-app.use((err, req, res, next) => {
-	console.log(err);
-	next();
-});
 /*------------------------------------------------------------------------*/
 
 module.exports = app;
