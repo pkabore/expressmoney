@@ -116,12 +116,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 const sessionSecret = process.env.SESSION_SECRET;
 const sessionDuration = parseInt(process.env.SESSION_DURATION, 10);
-app.use(cookieParser(sessionSecret));
+app.use(cookieParser());
 
 let sessionConfig = {
 	secret: sessionSecret,
-	//duration: sessionDuration,
-	cookieName: 'session',
 	saveUninitialized: false,
 	resave: false,
 	cookie: {
@@ -138,7 +136,7 @@ if (app.get('env') === 'production') {
 }
 
 app.use(session(sessionConfig));
-app.use(csurf({ cookie: true }));
+app.use(csurf());
 
 app.use(passport.initialize());
 app.use(passport.session());
