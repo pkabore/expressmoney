@@ -27,6 +27,7 @@ export default {
 			}
 		]
 	},
+	target: 'server',
 
 	plugins: [],
 	loading: false,

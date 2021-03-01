@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "nuxt",
-    "build": "nuxt build",
-    "start": "nuxt",
-    "generate": "nuxt generate"
+  "build": "nuxt build",
+  "start": "nuxt start",
+  "generate": "nuxt generate"
   },
   "dependencies": {
     "@fortawesome/free-brands-svg-icons": "^5.15.2",
