@@ -28,6 +28,7 @@ export default {
 		]
 	},
 	target: 'server',
+	buildDir: 'dist',
 	plugins: [],
 	loading: false,
 	auth: {
