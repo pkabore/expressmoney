@@ -37,7 +37,7 @@ module.exports = {
 		}
 	},
 	getEmailHtml: (subject, code) => {
-		const link = `${process.env.VERCEL_URL}/verification/${code}`;
+		const link = `https://expressmoney.vercel.app/verification/${code}`;
 		let message = `
 		<mjml>
 			<mj-head>
