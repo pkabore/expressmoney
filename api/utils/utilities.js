@@ -50,10 +50,10 @@ module.exports = {
 						<mj-text font-size="25px" align="center" color="#1976d2" font-weight="bold" font-family="Roboto, sans-serif, Arial">Express Money, Service Client</mj-text>
 						<mj-divider border-color="#1976d2"></mj-divider>`;
 		if (subject.includes('Cliquez')) {
-			message += `<mj-button font-family="Roboto, sans-serif, Arial" font-size="20px" background-color="#1976d2" color="white" href=${link}>
+			message += `<mj-button font-family="Roboto, sans-serif, Arial" font-size="20px" background-color="#1976d2" color="white" href="${link}">
 						Cliquez ici pour vérifier votre adresse email
 					</mj-button>`;
-			message += `<mj-text font-family="Roboto, sans-serif, Arial" font-size="20px" align="center" padding-top="20px">Si le lien en haut ne fonctionne pas, veuillez copier et aller à ce lien pour vérifier votre email: ${link}</mj-text>`;
+			message += `<mj-text font-family="Roboto, sans-serif, Arial" font-size="20px" align="center" padding-top="20px">Si le lien en haut ne fonctionne pas, veuillez copier et aller à ce lien pour vérifier votre email: <a href="${link}">${link}</a></mj-text>`;
 		} else {
 			message += `<mj-text font-family="Roboto, sans-serif, Arial" font-size="20px" align="center" padding-top="20px">${subject}</mj-text>`;
 			message += `<mj-text font-family="Roboto, sans-serif, Arial" margin-top="15px" font-weight="bold" font-size="40px" align="center" padding-top="35px">${code}</mj-text>`;
