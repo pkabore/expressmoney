@@ -113,6 +113,7 @@ passport.use(
 	)
 );
 
+//Cookie middleware
 app.use(cookieParser());
 app.use(csurf({ cookie: true }));
 
