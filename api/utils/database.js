@@ -1,8 +1,6 @@
 'use strict';
 /* This is a database connection function*/
 const mongoose = require('mongoose');
-require('dotenv').config();
-
 const connection = {}; /* creating connection object*/
 
 async function databaseConnection() {

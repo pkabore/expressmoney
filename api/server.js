@@ -4,7 +4,9 @@ const mongoose = require('mongoose');
 const Account = require('./models/Account.js');
 const Operation = require('./models/Operation.js');
 const Notification = require('./models/Notification.js');
-require('dotenv').config();
+const path = require('path');
+
+require('dotenv').config({ path: '../.env' });
 const APIKey = require('./models/APIKey.js');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
