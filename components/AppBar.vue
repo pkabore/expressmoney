@@ -1,6 +1,6 @@
 <template>
   <header>
-    <b-navbar class="is-dark" centered>
+    <b-navbar class="is-light" centered>
       <template #brand>
         <b-navbar-item tag="nuxt-link" to="/">Express Money</b-navbar-item>
       </template>

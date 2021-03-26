@@ -27,6 +27,8 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
+    "fibers": "^5.0.0",
+    "googleapis": "^68.0.0",
     "helmet": "^4.2.0",
     "joi": "^17.3.0",
     "mjml": "^4.8.1",
@@ -45,7 +47,6 @@
     "vue-tel-input": "^5.0.4"
   },
   "devDependencies": {
-    "fibers": "^5.0.0",
     "sass": "^1.32.2",
     "sass-loader": "^10.1.0"
   }

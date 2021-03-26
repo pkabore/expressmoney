@@ -1,8 +1,8 @@
 <template>
   <div>
-    <section class="hero is-dark is-medium">
+    <section class="hero is-light is-medium">
       <div class="hero-head">
-        <b-navbar class="is-primary" centered>
+        <b-navbar class="is-light" centered>
           <template #brand>
             <b-navbar-item tag="nuxt-link" to="/">Express Money</b-navbar-item>
           </template>
@@ -32,7 +32,7 @@
                 >Se connecter</b-button>
                 <b-button
                   icon-left="user-circle"
-                  class="is-small is-light is-outlined"
+                  class="is-small is-outlined"
                   tag="nuxt-link"
                   to="/register"
                 >S'inscrire</b-button>
@@ -51,7 +51,7 @@
           </p>
           <p class="has-text-centered" v-if="!isAuthenticated">
             <NuxtLink to="/login" class="button mx-1 is-primary">Se connecter</NuxtLink>
-            <NuxtLink to="/register" class="button mx-1 is-light is-outlined">Créer un compte</NuxtLink>
+            <NuxtLink to="/register" class="button mx-1 is-outlined">Créer un compte</NuxtLink>
           </p>
           <p class="has-text-centered" v-else>
             <NuxtLink to="/account" class="button mx-1 is-light is-outlined">Compte</NuxtLink>
