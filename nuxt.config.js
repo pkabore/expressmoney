@@ -42,6 +42,14 @@ export default {
 					property: 'token',
 					type: 'Bearer'
 				},
+				cookie: {
+            prefix: 'auth.', // Default token prefix used in building a key for token storage in the browser's localStorage.
+            options: {
+                path: '/', // Path where the cookie is visible. Default is '/'.
+                    // domain: '', // Domain (and by extension subdomain/s) where the cookie is visible. Default is domain and all subdomains.
+                    // secure - false, // Sets whether the cookie requires a secure protocol (https). Default is false, should be set to true if possible.
+            }
+        },
 				user: {
 					autoFetch: true,
 					property: false

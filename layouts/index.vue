@@ -54,7 +54,7 @@
             <NuxtLink to="/register" class="button mx-1 is-outlined">Créer un compte</NuxtLink>
           </p>
           <p class="has-text-centered" v-else>
-            <NuxtLink to="/account" class="button mx-1 is-light is-outlined">Compte</NuxtLink>
+            <NuxtLink to="/account" class="button mx-1 is-outlined">Compte</NuxtLink>
             <NuxtLink to="/credit" class="button mx-1 is-primary">Crédit</NuxtLink>
           </p>
         </div>

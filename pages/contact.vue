@@ -38,7 +38,7 @@
             <form action="POST" @submit.prevent="sendMail()">
               <p class="help has-text-centered is-danger">{{ error }}</p>
               <div class="field mt-1 mb-0">
-                <label class="label help" for="subject">Sujet:</label>
+                <!-- <label class="label help" for="subject">Sujet:</label> -->
                 <b-input
                   label="Sujet"
                   class="is-link"
@@ -50,7 +50,7 @@
                 />
               </div>
               <div class="field mt-1 mb-0">
-                <label class="label help" for="mail">Votre adresse email:</label>
+                <!-- <label class="label help" for="mail">Votre adresse email:</label> -->
                 <b-input
                   label="Email"
                   class="is-link"
@@ -62,7 +62,7 @@
                 />
               </div>
               <div class="field mt-1 mb-0">
-                <label class="label help" for="msg">Message:</label>
+                <!-- <label class="label help" for="msg">Message:</label> -->
                 <b-input
                   label="Message"
                   class="is-link"
