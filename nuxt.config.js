@@ -37,11 +37,11 @@ export default {
 			home: '/credit'
 		},
 		strategies: {
-			cookie: {
-				localStorage: false,
+			local: {
+				localStorage: true,
 				token: {
-					required: false,
-					type: false
+					required: true,
+					// type: false
 				},
 				user: {
 					autoFetch: true,

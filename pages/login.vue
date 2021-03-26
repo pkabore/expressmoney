@@ -77,7 +77,7 @@ export default {
       try {
         const csrf = await this.$axios.$get("/api/auth/csrf");
         this.$axios.setHeader("XSRF-TOKEN", csrf.token);
-        await this.$auth.loginWith("cookie", {
+        await this.$auth.loginWith("local", {
           data: { email: this.email, pwd: this.pwd },
         });
       } catch (err) {

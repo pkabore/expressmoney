@@ -11,6 +11,11 @@ const appRoot = require('app-root-path');
 const router = express.Router();
 const authenticator = require('otplib').authenticator;
 const utils = require('../utils/utilities');
+const jwt = require('jsonwebtoken');
+
+
+
+
 
 /*----------------Google Drive API start ----------------*/
 
@@ -156,16 +161,60 @@ router.post('/delete', ensureAuthentication, (req, res) => {
 	});
 });
 
-router.post('/login', (req, res, next) => {
-	passport.authenticate('local', (err, user, info) => {
-		if (err) return next(err);
-		if (!user) return res.status(400).json(info);
-		req.logIn(user, (err) => {
-			if (err) return next(err);
-			return res.status(200).end();
-		});
-	})(req, res, next);
-});
+// router.post('/login', (req, res, next) => {
+// 	passport.authenticate('local', (err, user, info) => {
+// 		if (err) return next(err);
+// 		if (!user) return res.status(400).json(info);
+// 		req.logIn(user, (err) => {
+// 			if (err) return next(err);
+// 			return res.status(200).end();
+// 		});
+// 	})(req, res, next);
+// });
+
+
+// ...
+
+router.post(
+  '/login',
+  async (req, res, next) => {
+    passport.authenticate(
+      'local',
+      async (err, user, info) => {
+        try {
+          if (err || !user) {
+            const error = new Error('Erreur survenue.');
+
+            return next(error);
+          }
+
+          req.login(
+            user,
+            { session: false },
+            async (error) => {
+              if (error) return next(error);
+
+              const body = {_id: user._id,
+						name: user.name,
+						tel: user.tel,
+						email: user.email,
+						isAccountValidated: user.isAccountValidated,
+						isEmailVerified: user.accountRegistrationCode === '' ? true : false,
+						uploadingFile: user.uploadingFile};
+              const token = jwt.sign({ user: body }, process.env.SESSION_SECRET);
+
+              return res.json({ token });
+            }
+          );
+        } catch (error) {
+          return next(error);
+        }
+      }
+    )(req, res, next);
+  }
+);
+
+module.exports = router;
 
 router.post('/logout', (req, res) => {
 	req.logout();

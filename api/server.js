@@ -5,7 +5,6 @@ const Account = require('./models/Account.js');
 const Operation = require('./models/Operation.js');
 const Notification = require('./models/Notification.js');
 const path = require('path');
-
 require('dotenv').config({ path: '../.env' });
 const APIKey = require('./models/APIKey.js');
 const passport = require('passport');
@@ -48,7 +47,28 @@ passport.deserializeUser((_id, done) => {
 	});
 });
 
+
+
+const JWTstrategy = require('passport-jwt').Strategy;
+const ExtractJWT = require('passport-jwt').ExtractJwt;
+
 passport.use(
+  new JWTstrategy(
+    {
+      secretOrKey: process.env.SESSION_SECRET,
+      jwtFromRequest: ExtractJWT.fromUrlQueryParameter('secret_token')
+    },
+    async (token, done) => {
+      try {
+        return done(null, token.user);
+      } catch (error) {
+        done(error);
+      }
+    }
+  )
+);
+
+passport.use('local',
 	new LocalStrategy(
 		{
 			usernameField: 'email',
@@ -94,6 +114,8 @@ passport.use(
 		}
 	)
 );
+
+
 
 passport.use(
 	new HeaderAPIKeyStrategy(
