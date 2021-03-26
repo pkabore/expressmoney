@@ -3,7 +3,7 @@
     <div class="hero-body">
       <div class="container">
         <div class="columns is-centered">
-          <div class="column is-6-desktop is-8-tablet">
+          <div class="column is-4-desktop is-6-tablet">
             <h3 class="title has-text-black has-text-centered mb-0">Connection</h3>
             <form autocomplete="off" @submit.prevent="handleLogin">
               <p class="help has-text-centered is-danger">{{ error }}</p>
@@ -81,6 +81,7 @@ export default {
           data: { email: this.email, pwd: this.pwd },
         });
       } catch (err) {
+        console.log(err);
         this.isLoading = false;
         if (err.response.data) this.error = err.response.data.message;
         else this.error = "Erreur technique survenue! Veuillez reéssayer.";

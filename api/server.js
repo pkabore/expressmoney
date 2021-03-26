@@ -15,6 +15,8 @@ const bcrypt = require('bcryptjs');
 const csurf = require('csurf');
 const cookieParser = require('cookie-parser');
 const onHeaders = require('on-headers');
+const JWTstrategy = require('passport-jwt').Strategy;
+const ExtractJWT = require('passport-jwt').ExtractJwt;
 const fs = require('fs');
 
 const databaseConnection = require('./utils/database.js');
@@ -27,12 +29,12 @@ databaseConnection(() => {
 	console.log('Database connected ...');
 });
 
-const ensureAuthentication = (req, res, next) => {
-	if (req.isAuthenticated()) {
-		return next();
-	}
-	res.status(401).send('Not authenticated');
-};
+// const passport.authenticate('jwt', { session: false }) = (req, res, next) => {
+// 	if (req.isAuthenticated()) {
+// 		return next();
+// 	}
+// 	res.status(401).send('Not authenticated');
+// };
 
 passport.serializeUser((account, done) => {
 	return done(null, account._id);
@@ -47,26 +49,6 @@ passport.deserializeUser((_id, done) => {
 	});
 });
 
-
-
-const JWTstrategy = require('passport-jwt').Strategy;
-const ExtractJWT = require('passport-jwt').ExtractJwt;
-
-passport.use(
-  new JWTstrategy(
-    {
-      secretOrKey: process.env.SESSION_SECRET,
-      jwtFromRequest: ExtractJWT.fromUrlQueryParameter('secret_token')
-    },
-    async (token, done) => {
-      try {
-        return done(null, token.user);
-      } catch (error) {
-        done(error);
-      }
-    }
-  )
-);
 
 passport.use('local',
 	new LocalStrategy(
@@ -115,7 +97,21 @@ passport.use('local',
 	)
 );
 
-
+passport.use(
+  new JWTstrategy(
+    {
+      secretOrKey: process.env.SESSION_SECRET,
+      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken()
+    },
+    async (token, done) => {
+      try {
+        return done(null, token.user);
+      } catch (error) {
+        done(error);
+      }
+    }
+  )
+);
 
 passport.use(
 	new HeaderAPIKeyStrategy(
@@ -156,16 +152,13 @@ app.use(
 	})
 );
 
-app.use(passport.initialize());
-app.use(passport.session());
-
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.use('/api/auth', account);
-app.use('/api/operations', ensureAuthentication, operations);
+app.use('/api/operations', passport.authenticate('jwt', { session: false }), operations);
 
-app.get('/dossiers/:id', ensureAuthentication, async (req, res) => {
+app.get('/dossiers/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
 	if (!req.params.id) return res.status(403).end();
 	const account = await Account.findById(req.user.id);
 	if (!account) return res.status(403).end();

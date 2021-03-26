@@ -38,10 +38,9 @@ export default {
 		},
 		strategies: {
 			local: {
-				localStorage: true,
 				token: {
-					required: true,
-					// type: false
+					property: 'token',
+					type: 'Bearer'
 				},
 				user: {
 					autoFetch: true,
