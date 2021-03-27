@@ -9,7 +9,8 @@
               <p class="help has-text-centered is-danger">{{ error }}</p>
               <div class="field my-0">
                 <label class="label help" for="email">Adresse email, numéro de téléphone</label>
-                <b-input
+                <input
+                  class="input"
                   icon="envelope"
                   v-model="email"
                   id="email"
@@ -19,7 +20,8 @@
               </div>
               <div class="field my-0">
                 <label class="label help" for="pass">Mot de passe</label>
-                <b-input
+                <input
+                  class="input"
                   icon="lock"
                   v-model="pwd"
                   id="pass"
